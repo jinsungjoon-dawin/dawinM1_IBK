@@ -77,11 +77,10 @@ const tperftest = {
                                                             from tperfcode
                                                             where gb='3'
                                                             and lastDt = ?
-                                                            and asisDt = ?
-                                                        )
+                                                            and asisDt = ? )
                                             group by sid)
-                                        select x.apnm as apnm
-                                            , x.tcnt as tcnt
+                                        select x.apnm                   as apnm
+                                            , x.tcnt                    as tcnt
                                             , x.scnt as scnt
                                             , x.nocnt as nocnt
                                             , x.tcnt-(x.nocnt+x.scnt) as delay
@@ -114,7 +113,7 @@ const tperftest = {
                                                             from tperfcode
                                                             where gb='3'
                                                             and lastDt = ?
-                                                            and asisDt = ?
+                                                            and asisDt = ? )
                                             group by sid)
                                             select tcnt						as tcnt
                                                 , improve					as scnt

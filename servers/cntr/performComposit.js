@@ -18,8 +18,8 @@ router.get('/perfcomp_title', async function (req, res, next) {
 });
 
 router.get('/perfcomp_list', async function (req, res, next) {
-    console.log("req.query.asisdt : " + req.query.asisdt);
-    console.log("req.query.tobedt : " + req.query.tobedt);
+    // console.log("req.query.asisdt : " + req.query.asisdt);
+    // console.log("req.query.tobedt : " + req.query.tobedt);
 
     const rdata = await tperftest.tperfchklist(req) ;
     res.json(rdata) ;
