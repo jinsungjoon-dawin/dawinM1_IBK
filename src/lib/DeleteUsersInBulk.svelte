@@ -1,358 +1,242 @@
-
 <script>
-    import DashBoard  from "./DashBoard.svelte";
-    import LoadDataVerifyResult from "./LoadDataVerifyResult.svelte";
-    import LoadDataVerifyResultPage from "./LoadDataVerifyResultPage.svelte";
-    import { onMount } from "svelte";
+  import DashBoard from "./DashBoard.svelte";
+  import LoadDataVerifyResult from "./LoadDataVerifyResult.svelte";
+  import LoadDataVerifyResultPage from "./LoadDataVerifyResultPage.svelte";
+  import { onMount } from "svelte";
+  import * as XLSX from "xlsx";
 
-    
-    let pageNm = "일괄 삭제";
-  
-    let cnm = DashBoard ;
-  
-      export let tcode ;
-      let conds = {
-        tcode: "",
-        rcode: '',
-        page: 0,
-        psize: 20,
-        cond: "",
-        uri: "",
-        task:""
-      };
-      /*
-      let sv_row;
-      let promise = Promise.resolve([]);
-      async function getdata() {
-          const res = await fetch( "/dashboard/list/"+$authApps);
-          promise = await res.json();
-    //      console.log(" call dashboard end", promise) ;
-      }
-    */
-    let list = [];
+  let pageNm = "일괄 등록";
+  let cnm = DashBoard;
+
+  export let tcode;
+  let conds = {
+      tcode: "",
+      rcode: '',
+      page: 0,
+      psize: 20,
+      cond: "",
+      uri: "",
+      task:""
+  };
+
+  let list = [];
 
   async function getData() {
-    const res = await fetch("/performComposit" );
-    if (res.ok)
-      return await res.json();
-    else
-      throw new Error(res.statusText);
+      const res = await fetch("/performComposit");
+      if (res.ok) return await res.json();
+      else throw new Error(res.statusText);
   }
-  
-  
+
   onMount(async () => {
-    list = await getData() ;
-    list = list.data;
+      list = await getData();
+      list = list.data;
   });
-   
 
-  /**관리id/사용자id/pswd/부서/직급/권한 
-     * @type {any[]}
-     */
-  let rdata = [];
-  let curRow = {};
-  let cols = [true,0, "User","Host", "사용자명",false,"",(new Date()).toLocaleDateString()];
-  let newRow = [...cols];
-  const columns = [" ", "UserId ", "Host", "사용자명", "Admin", "접근가능업무", "등록일",  ];
+  let users = [
+      { id: 1, Id:"test1", host:"172.172.0.1",name: "David McHenry",  role: "admin", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 2, Id:"test2", host:"172.172.0.2",name: "Frank Kirk",  role: "user", AccessibleWork:"All", RegDT:"2024-08-29 09:20:50" },
+      { id: 3, Id:"test3", host:"172.172.0.3",name: "Rafael Morales",  role: "user", AccessibleWork:"All", RegDT:"2024-01-29 09:20:50" },
+      { id: 4, Id:"test4", host:"172.172.0.4",name: "Minnie Walter",  role: "admin", AccessibleWork:"All", RegDT:"2025-01-22 09:20:50" },
+      { id: 5, Id:"test5", host:"172.172.0.5",name: "John Doe",  role: "admin", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 6, Id:"test6", host:"172.172.0.6",name: "Jane Smith",  role: "user", AccessibleWork:"All", RegDT:"2024-12-29 09:20:50" },
+      { id: 7, Id:"test7", host:"172.172.0.7",name: "Alice Johnson",  role: "admin", AccessibleWork:"All", RegDT:"2024-09-29 09:20:50" },
+      { id: 8, Id:"test8", host:"172.172.0.8",name: "Bob Brown",  role: "admin", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 9, Id:"test9", host:"172.172.0.9",name: "Charlie White",  role: "admin", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 10, Id:"test10", host:"172.172.0.10",name: "Eve Black",  role: "user", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 11, Id:"test11", host:"172.172.0.11",name: "David McHenry1",  role: "admin", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+      { id: 12, Id:"test12", host:"172.172.0.12",name: "David McHenry2",  role: "user", AccessibleWork:"All", RegDT:"2023-08-29 09:20:50" },
+  ];
 
-  // function updService() {
-  //   const upds = rdata.filter((r) => ( r[0] && r[1] != 0) ).map((r) => [...(r.slice(2,7)),r[1] ]);
-  //   const inss = rdata.filter((r) => ( r[0] && r[1] == 0) ).map((r) => r.slice(2,7) );
-  // console.log(inss)     ;
-  //   fetch("/tuser", {
-  //     method: "POST" ,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       upd: upds,
-  //       ins: inss
-  //     }),
-  //   })
-  //     .then(async (res) => {
-  //       let rmsg = await res.json();
-  //       alert(rmsg.message);
-  //       if (res.status < 300) {
-  //         getdata();
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       alert("error:" + err.message);
-  //     });
-  // }
+  let currentPage = 1;
+  let itemsPerPage = 10;
 
-  // function delService() {
-  //   const delcodes = rdata.filter((r) => (r[0] && r[1] > 0) ).map((r) => r[1]);
+  $: paginatedUsers = users.slice(
+      (currentPage - 1) * itemsPerPage,
+      currentPage * itemsPerPage
+  );
 
-  //   if (delcodes.length == 0) return;
-  //   // console.log("del code:", delcodes) ;
-  //   fetch("/tuser", {
-  //     method: "DELETE",
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //     body: JSON.stringify({
-  //       pkeys: delcodes,
-  //     }),
-  //   })
-  //     .then(async (res) => {
-  //       let rmsg = await res.json();
-  //       if (res.status < 400) {
-  //         alert("정상 삭제되었습니다");
-  //         getdata();
-  //       }
-  //     })
-  //     .catch((err) => {
-  //       throw err;
-  //     });
-  // }
-  // async function getdata() {
-  //   const res = await fetch("/tuser");
-  //   if (res.status === 200) {
-  //     rdata = await res.json();
-  //   } else {
-  //     throw new Error(res.statusText);
-  //   }
-  // }
+  $: totalPages = Math.ceil(users.length / itemsPerPage);
 
-  // onMount(getdata);    
-</script>   
-<style>
-    .tcode-status {
-    font-family: Arial, Helvetica, sans-serif;
-    border-collapse: collapse;
-    width: 100%;
-    overflow-y: auto;
-    border: 1px solid black;
-    }
-    .table-title {
-    /* background-color: #a9c8ff; */
-    border-bottom-style: solid;
-    }
-
-    html, body {
-    margin: 0;
-    padding: 0;
-    height: 100%;
-    width: 100%;
-    overflow: hidden; /* 스크롤 제거 */
+  function goToPage(page) {
+      if (page > 0 && page <= totalPages) {
+          currentPage = page;
+      }
   }
-  .width-29 { width: 29%;}
-  .width-49 { width: 49%;}
-  .width-35 { width: 35%;}
-  .width-69 { width: 69%;}
-  .width-85 { width: 85%;}
-  .bb1gray{ border-bottom: 1px solid gray;}
-  .bl1gray{ border-left: 1px solid gray;}
-  .br1gray{ border-right: 1px solid gray;}
-  .bt1gray{ border-top: 1px solid gray;}
 
-  a {
-  font-weight: 500;
-  color: #646cff;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #535bf2;
-}
+  function addUser() {
+      const newUser = {
+          id: users.length + 1,
+          Host: " % ",
+          name: "",
+          role: "user",
+          AccessibleWork: "",
+          RegDT: new Date().toISOString().split("T")[0],
+      };
+      users = [newUser, ...users];
+      currentPage = 1;
+  }
 
-body {
-  margin: 0;
-  display: flex;
-  place-items: center;
-  min-width: 96vw;
-  height: 100%;
+  function saveUser(index) {
+      console.log("Saved user:", paginatedUsers[index]);
+  }
 
-  color: #333;
-	padding: 8px;
-	box-sizing: border-box;
-	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+  function deleteUser(index) {
+      const userToDelete = paginatedUsers[index];
+      users = users.filter((user) => user.id !== userToDelete.id);
+  }
 
-}
+  function handleFileUpload(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
 
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+      reader.onload = (e) => {
+          const data = new Uint8Array(e.target.result);
+          const workbook = XLSX.read(data, { type: "array" });
+          const sheetName = workbook.SheetNames[0];
+          const sheet = workbook.Sheets[sheetName];
+          const parsedData = XLSX.utils.sheet_to_json(sheet);
 
-.card {
-  padding: 2em;
-}
+          users = [...users, ...parsedData];
+          currentPage = 1;
+      };
 
-#app {
-  max-width: 100vw;
-  width: 98vw;
-  height: 92vh;
-  margin: 0 ;
-  padding: 2px;
-  text-align: center;
-}
+      reader.readAsArrayBuffer(file);
+  }
 
-a {
-	color: rgb(0,100,200);
-	text-decoration: none;
-}
+  function printTable() {
+      window.print();
+  }
+</script>
 
-a:hover {
-	text-decoration: underline;
-}
+<style>
+  .tcode-status {
+      font-family: Arial, Helvetica, sans-serif;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-y: hidden; /* 스크롤 제거 */
+      border: 1px solid black;
+  }
 
-a:visited {
-	color: rgb(0,80,160);
-}
+  html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden; /* 스크롤 제거 */
+  }
 
-label {
-	display: block;
-}
+  .table-container {
+      width: 100%; /* 화면 너비에 맞춤 */
+      overflow: hidden;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+  }
 
-input, button, select, textarea {
-	font-family: inherit;
-	font-size: 18px;
-	-webkit-padding: 0.4em 0;
-	padding: 0.4em;
-	margin: 0 0 0.5em 0;
-	box-sizing: border-box;
-	border: 1px solid #ccc;
-	border-radius: 2px;
-	outline: none;
-}
+  table {
+      width: 100%;
+      table-layout: fixed; /* 열 너비 고정 */
+  }
 
-input:disabled {
-	color: #ccc;
-}
+  th, td {
+      word-wrap: break-word; /* 텍스트 줄바꿈 허용 */
+  }
 
-/* button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #1a1a1a;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #646cff;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-} */
-
-button {
-	color: #333;
-	background-color: #f4f4f4;
-	outline: 2px;
-	cursor: pointer ;
-	font-size: 1rem;
-	padding: 3px 0.8rem ;
-	margin: 0 0.3rem ;
-  border-radius: 6px;
-}
-
-button:disabled {
-	color: #999;
-}
-
-button:not(:disabled):active {
-	background-color: #ddd;
-}
-
-button:focus {
-	border-color: #666;
-}
-button:hover {
-  box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
- }
-
- table {
-	border-collapse: collapse;
-	overflow: auto;
-  overflow-x: scroll;
-  width: 100%;
-}
-
-td, th {
-    border: 1px solid rgb(214, 214, 230);
-    padding: 5px;
-}
-
-td {
-	overflow:hidden;
-	white-space : wrap;
-	text-overflow: clip;
-	font-size: 0.9rem;
-  vertical-align: top;
-}
-
-thead {
-	background-color: var(--th_bgcolor);
-	color: var(--th_color);
-  position: sticky;
-  top: 0;
-}
-
-tbody tr:nth-child(odd) td {
-	background-color: #fafbff;
-}
-
-thead th:first-child {
-	border-top-left-radius: 5px;
-}
-
-thead th:last-child {
-	border-top-right-radius: 5px;
-}
+  .hover\:bg-orange-100:hover {
+      background-color: darkgrey 
+  }
 </style>
-    <div class="flex-col bg-gray-700 rounded-lg scroll-m-14">
-        <div class="flex-col rounded-lg br1gray" style="height: 300px;">
-          <!-- <div class="flex justify-between w-full  p-3"> -->
-            <div class="fle width-39">             
-                
-              <!-- <div id="btns" style="display:flex; justify-content: flex-start; ">
-              <button on:click={() => {rdata = [[...newRow], ...rdata]; newRow = cols; }}>추가</button>
-              <button on:click={delService}>선택삭제</button>
-              <button on:click={updService}>적용</button>
-              <button on:click={getdata}>적용취소</button>
-            </div> -->
-            <hr />
-            <div class="tList">
-              <table >
-                <!-- <thead>
-                  <tr>
-                    {#each columns as column}
-                      <th>
-                        {column}
-                      </th>
-                    {/each}
-                  </tr>
-                </thead> -->
-                <!-- <tbody>
-                    {#each rdata as row }
-                      <tr on:click={() => (curRow = row)} >
-                        <td><input type="checkbox" bind:checked={row[0]} /></td>
-                        {#if row[1] === 0}
-                        <td class="usrid" contenteditable="true" style="width:10rem" bind:textContent={row[2]}/>
-                        {:else}
-                        <td class="usrid" style="width:10rem">{row[2]}</td>
-                        {/if}
-                        <td class="host" contenteditable="true" style="width:15rem" bind:textContent={row[3]}/>
-                        <td contenteditable="true" class="usrdesc" style="width:20%" bind:textContent={row[4]}/>
-                        <td><input type="checkbox" bind:checked={row[5]}/></td> 
-                        <td contenteditable="true" class="apps" bind:textContent={row[6]}/>
-                        <td>{row[7]}</td>
-                        {#if curRow === row}
-                          <td>◀</td>
-                        {/if}
-                      </tr>
-                    {/each}
-                </tbody> -->
-              </table>
-            </div>
-               
-            </div>
-        <!-- </div>  -->
-    </div>
-</div>
 
+<div class="flex-col bg-gray-700 rounded-lg">
+  <div class="flex-col rounded-lg br1gray" style="height: 870px;">
+      <div class="flex justify-between w-full p-3">
+          <div class="fle width-39">             
+              <div class="p-4 flex">
+                  <h5 class="text-yellow-100 ">성능 Data 관리</h5>
+              </div>                
+              <div class="flex gap-4 justify-end mr-14">
+                  <label for="file-upload" class="bg-blue-500 hover:bg-blue-700 text-yellow-100 py-2 px-4 rounded cursor-pointer ">
+                      Upload Excel
+                      <input id="file-upload" type="file" accept=".xlsx, .xls" on:change={handleFileUpload} class="hidden" />
+                  </label>
+                  <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline" on:click={addUser}>
+                      Add User
+                  </button>
+                  <button class="bg-gray-500 hover:bg-gray-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline" on:click={printTable}>
+                      Print
+                  </button>
+              </div>
+              <div class="px-3 py-4 flex justify-center width-39">
+                  <div class="table-container">
+                      <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                          <thead>
+                              <tr class="border-b">
+                                  <th class="text-left p-3 px-5">UserId</th>
+                                  <th class="text-left p-3 px-5">Host</th>
+                                  <th class="text-left p-3 px-5">사용자명</th>
+                                  <th class="text-left p-3 px-5">권한</th>
+                                  <th class="text-left p-3 px-5">접근 가능페이지</th>
+                                  <th class="text-left p-3 px-5">등록일</th>
+                                  <th></th>
+                              </tr>
+                          </thead>
+                          <tbody>
+                              {#if paginatedUsers.length > 0}
+                                  {#each paginatedUsers as user, index}
+                                      <tr class="border-b hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                                          <td class="p-3 px-5">
+                                              <input type="text" bind:value={user.Id} class="bg-transparent" />
+                                          </td>
+                                          <td class="p-3 px-5">
+                                              <input type="text" bind:value={user.host} class="bg-transparent" />
+                                          </td>
+                                          <td class="p-3 px-5">
+                                              <input type="text" bind:value={user.name} class="bg-transparent" />
+                                          </td>
+                                          <td class="p-3 px-5">
+                                              <select bind:value={user.role} class="bg-transparent">
+                                                  <option value="user">user</option>
+                                                  <option value="admin">admin</option>
+                                              </select>
+                                          </td>
+                                          <td class="p-3 px-5">
+                                              <input type="text" bind:value={user.AccessibleWork} class="bg-transparent" />
+                                          </td>
+                                          <td class="p-3 px-5">
+                                              <input type="text" bind:value={user.RegDT} class="bg-transparent" />
+                                          </td>
+                                          <td class="p-3 px-5 flex justify-end">
+                                              <button type="button" class="mr-3 text-sm bg-blue-500 hover:bg-blue-700 text-yellow-100 py-1 px-2 rounded focus:outline-none focus:shadow-outline" on:click={() => saveUser(index)}>
+                                                  Save
+                                              </button>
+                                              <button type="button" class="text-sm bg-red-500 hover:bg-red-700 text-yellow-100 py-1 px-2 rounded focus:outline-none focus:shadow-outline" on:click={() => deleteUser(index)}>
+                                                  Delete
+                                              </button>
+                                          </td>
+                                      </tr>
+                                  {/each}
+                              {:else}
+                                  <tr>
+                                      <td colspan="7" class="p-3 px-5 text-center text-yellow-100">사용자가 없습니다.</td>
+                                  </tr>
+                              {/if}
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+              <div class="flex justify-center mt-4">
+                  <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+                      Previous
+                  </button>
+                  {#each Array(totalPages).fill() as _, pageIndex}
+                      <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={pageIndex + 1 === currentPage} on:click={() => goToPage(pageIndex + 1)}>
+                          {pageIndex + 1}
+                      </button>
+                  {/each}
+                  <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
+                      Next
+                  </button>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

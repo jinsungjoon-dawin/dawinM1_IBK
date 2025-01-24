@@ -28,7 +28,7 @@
           datasets: [
             {
               // label: "Population (millions)",
-              backgroundColor: ["#3e95cd", "#8e5ea2","#3cba9f","#e8c3b9","#c45850"],
+              backgroundColor: ["#ff6384", "#3cba9f","#ffee00","#e8c3b9","#c45850"],
               // backgroundColor: ["#00d1d1", "#aaff00","#ffaa33","#ff4c4c","#ffee00"],
               // circumference: 180, // 도넛 반 자르기
               //rotation: 270,
@@ -56,7 +56,11 @@
             },
             datalabels: {
             color: 'white', // 텍스트 색상
-            font:{size:18}
+            font:{size:18},
+            formatter: function(v, ctx) {
+              if(v === 0)return "";
+                return v.toLocaleString(); 
+              }
             }
           }  
         }

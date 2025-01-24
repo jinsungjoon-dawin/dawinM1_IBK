@@ -110,7 +110,7 @@
         </div>
         
         <!-- 로그인 버튼 -->
-        <button class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none" on:click={login3} >
+        <button class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none" on:click={login2} >
           로그인
         </button>
       </form>
