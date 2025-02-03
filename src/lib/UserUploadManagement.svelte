@@ -89,6 +89,25 @@
         
 </script>   
 <style>
+  .table-title {
+        background-color: #a9c8ff;
+        border-bottom-style: solid;
+    }
+    /* Styling for the Tabs component */
+    :global(.tab-menu .tab-item) {
+        color: yellow; /* Set tab text color to yellow */
+        font-size: 16px;
+        font-weight: bold;
+    }
+
+    :global(.tab-menu .tab-item:hover) {
+        color: orange; /* Optional: Set hover color to orange */
+    }
+
+    :global(.tab-menu .tab-item.active) {
+        color: yellow; /* Keep active tab text yellow */
+        text-decoration: underline; /* Optional: Add underline to active tab */
+    }
     .tcode-status {
     font-family: Arial, Helvetica, sans-serif;
     border-collapse: collapse;
@@ -117,14 +136,14 @@
   .bl1gray{ border-left: 1px solid gray;}
   .br1gray{ border-right: 1px solid gray;}
   .bt1gray{ border-top: 1px solid gray;}
-
   
+
 </style>
 <div>
   <label for="date-from" class="text-sm font-medium text-white  font-bold whitespace-nowrap" style="font-size: 25px;">
   관리자 페이지
   </label>
-  <Tabs {items} />
+  <Tabs {items}  />
 </div>
 <!-- <div>
   <label for="date-from" class="text-sm font-medium text-white mt-10 font-bold whitespace-nowrap" style="font-size: 25px;">

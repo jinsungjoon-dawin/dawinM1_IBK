@@ -144,6 +144,10 @@
   .hover\:bg-orange-100:hover {
       background-color: darkgrey 
   }
+  .scroll-container {
+    max-height: 600px; /* 원하는 높이를 지정 */
+    overflow-y: scroll;
+  }
 </style>
 
 <div class="flex-col bg-gray-700 rounded-lg">
@@ -166,7 +170,7 @@
                   </button>
               </div>
               <div class="px-3 py-4 flex justify-center width-39">
-                  <div class="table-container">
+                  <div class="scroll-container">
                       <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
                           <thead>
                               <tr class="border-b">
