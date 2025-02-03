@@ -9,20 +9,20 @@ const tperfcode = {
                                             , trim(substr(max(X.performdt), 11, 500))     as performnm
                                             , substr(max(X.dataverifydt), 1, 10)          as dataverifydt
                                             , trim(substr(max(X.dataverifydt), 11, 500))  as dataverifynm
-                                            , trim(max(pjt_name))                         as pjt_name
+                                            , trim(max(pjtname))                         as pjtname
                                             , trim(max(corpnm))                           as corpnm
-                                            , trim(max(startDt))                          as startDt
-                                            , trim(max(endDt))                            as endDt
+                                            , trim(max(startDt))                          as startdt
+                                            , trim(max(endDt))                            as enddt
                                             , trim(max(intl))                             as intl
                                             , trim(max(vtotday))                          as vtotday
                                             , trim(max(vrday))                            as vrday
                                           from (
                                               select max(concat(lastDt,tname))            as performdt
                                                 , ''                                      as dataverifydt
-                                                , ''                                      as pjt_name
+                                                , ''                                      as pjtname
                                                 , ''                                      as corpnm
-                                                , ''                                      as startDt
-                                                , ''                                      as endDt
+                                                , ''                                      as startdt
+                                                , ''                                      as enddt
                                                 , ''                                      as intl
                                                 , ''                                      as vtotday
                                                 , ''                                      as vrday
@@ -31,10 +31,10 @@ const tperfcode = {
                                               union all
                                               select ''                                   as performdt
                                                 , max(concat(wdate,dname))                as dataverifydt
-                                                , ''                                      as pjt_name
+                                                , ''                                      as pjtname
                                                 , ''                                      as corpnm
-                                                , ''                                      as startDt
-                                                , ''                                      as endDt
+                                                , ''                                      as startdt
+                                                , ''                                      as enddt
                                                 , ''                                      as intl
                                                 , ''                                      as vtotday
                                                 , ''                                      as vrday
@@ -43,10 +43,10 @@ const tperfcode = {
                                               union all
                                               select ''                                   as performdt
                                                 , ''                                      as dataverifydt
-                                                , pjt_name                                as pjt_name
+                                                , pjt_name                                as pjtname
                                                 , corpnm                                  as corpnm
-                                                , startDt                                 as startDt
-                                                , endDt                                   as endDt
+                                                , startDt                                 as startdt
+                                                , endDt                                   as enddt
                                                 , intl                                    as intl
                                                 , vtotday                                 as vtotday
                                                 , vrday                                   as vrday
@@ -61,12 +61,13 @@ const tperfcode = {
      * 차수, ASIS 년월일, TOBE 년월일
      */
     tperflist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')	as seq
-	                                        , asisDt						as asisDt
-                                          , lastDt 						as tobeDt
-                                        from tperfcode
-                                        where gb = '3'
-                                        order by lastDt desc
+      let rows = await mondb.query(` select concat(seq,'차')				     as seq
+                                          , asisDt						           as asisdt
+                                          , lastDt 						           as tobedt
+                                          , concat(tname, ' 테스트 결과')	as tname
+                                      from tperfcode
+                                      where gb = '3'
+                                      order by lastDt desc
                                   ` ) ;                                               
       return(rows) ;
     },    
@@ -79,7 +80,7 @@ const tperfcode = {
       // console.log("args.query.tobedt : " + args.query.tobedt);
 
       let rows = await mondb.query(` select concat(tname, ' 테스트 결과')	as tname
-                                          , lastDt 						           as tobeDt
+                                          , lastDt 						           as tobedt
                                         from tperfcode
                                         where gb = '3'
                                         and lastDt = ?
@@ -97,7 +98,7 @@ const tperfcode = {
                                                   ,	lastDt=?
                                                 WHERE TID=?
                                                 and SEQ=?
-                                            `, [args.tname, args.gb, args.startDt, args.lastDt, args.TID, args.SEQ] ) ;
+                                            `, [args.tname, args.gb, args.startdt, args.lastdt, args.tid, args.seq] ) ;
 
           return 1;
         } catch (e) {

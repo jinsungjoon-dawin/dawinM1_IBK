@@ -7,9 +7,9 @@ const tperftest = {
      */
     tperftest_find : async () => {
         let rows = await mondb.query(` with t as
-                                        (select sid
-                                            , avg(svctime) svctime
-                                            , avg(svctime_asis) svctime_asis
+                                        (select sid               as sid
+                                              , avg(svctime)      as svctime
+                                              , avg(svctime_asis) as svctimeasis
                                          from tperftest
                                          where tid in (select max(tid) as tid from tperfcode where gb='3')
                                          group by sid)
@@ -22,7 +22,7 @@ const tperftest = {
                                                 select a.apnm 									as apnm
                                                     , count(1) 								    as tcnt
                                                     , sum(if(t.sid is null,1,0)) 				as nocnt
-                                                    , sum(if(t.svctime < t.svctime_asis,1,0)) 	as scnt
+                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) 	as scnt
                                                 from tsid s
                                                 join tapid a
                                                     on (s.apid = a.apid)
@@ -39,20 +39,20 @@ const tperftest = {
      */
     tperftest_result : async () => {
         let rows = await mondb.query(`  with t as
-                                            (select sid				as sid
-                                                , avg(svctime) 	    as svctime
-                                                , avg(svctime_asis) as svctime_asis
+                                            (select sid				    as sid
+                                                  , avg(svctime) 	    as svctime
+                                                  , avg(svctime_asis)   as svctimeasis
                                              from tperftest
                                              where tid in (select max(tid) as tid from tperfcode where gb='3')
                                              group by sid)
                                             select tcnt						as tcnt
                                                 , improve					as scnt
-                                                , not_perf					as nocnt
-                                                , tcnt-(not_perf+improve) 	as delay
+                                                , notperf					as nocnt
+                                                , tcnt-(notperf+improve) 	as delay
                                             from (
                                                     select count(1)                                 as tcnt
-                                                        , sum(if(t.sid is null,1,0))                as not_perf
-                                                        , sum(if(t.svctime < t.svctime_asis,1,0))   as improve
+                                                        , sum(if(t.sid is null,1,0))                as notperf
+                                                        , sum(if(t.svctime < t.svctimeasis,1,0))   as improve
                                                     from tsid s
                                                     left join t
                                                         on s.sid = t.sid
@@ -71,7 +71,7 @@ const tperftest = {
       let rows = await mondb.query(` with t as
                                             (select sid                 as sid
                                                   , avg(svctime)        as svctime
-                                                  , avg(svctime_asis)   as svctime_asis
+                                                  , avg(svctime_asis)   as svctimeasis
                                             from tperftest
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
@@ -81,14 +81,14 @@ const tperftest = {
                                             group by sid)
                                         select x.apnm                   as apnm
                                             , x.tcnt                    as tcnt
-                                            , x.scnt as scnt
-                                            , x.nocnt as nocnt
-                                            , x.tcnt-(x.nocnt+x.scnt) as delay
+                                            , x.scnt                    as scnt
+                                            , x.nocnt                   as nocnt
+                                            , x.tcnt-(x.nocnt+x.scnt)   as delay
                                         from (
-                                                select a.apnm as apnm
-                                                    , count(1) as tcnt
-                                                    , sum(if(t.sid is null,1,0)) as nocnt
-                                                    , sum(if(t.svctime < t.svctime_asis,1,0)) as scnt
+                                                select a.apnm                                as apnm
+                                                    , count(1)                               as tcnt
+                                                    , sum(if(t.sid is null,1,0))             as nocnt
+                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) as scnt
                                                 from tsid s
                                                 join tapid a
                                                     on (s.apid = a.apid)
@@ -105,9 +105,9 @@ const tperftest = {
      */
     tperfchkresult : async (args) => {
         let rows = await mondb.query(` with t as
-                                            (select sid				as sid
-                                                , avg(svctime) 	    as svctime
-                                                , avg(svctime_asis) as svctime_asis
+                                            (select sid				    as sid
+                                                  , avg(svctime) 	    as svctime
+                                                  , avg(svctime_asis)   as svctimeasis
                                             from tperftest
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
@@ -117,12 +117,12 @@ const tperftest = {
                                             group by sid)
                                             select tcnt						as tcnt
                                                 , improve					as scnt
-                                                , not_perf					as nocnt
-                                                , tcnt-(not_perf+improve) 	as delay
+                                                , notperf					as nocnt
+                                                , tcnt-(notperf+improve) 	as delay
                                             from (
                                                     select count(1)                                 as tcnt
-                                                         , sum(if(t.sid is null,1,0))               as not_perf
-                                                         , sum(if(t.svctime < t.svctime_asis,1,0))  as improve
+                                                         , sum(if(t.sid is null,1,0))               as notperf
+                                                         , sum(if(t.svctime < t.svctimeasis,1,0))   as improve
                                                     from tsid s
                                                     left join t
                                                         on s.sid = t.sid

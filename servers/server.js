@@ -24,7 +24,7 @@ app.use(express.static(path.join(__dirname, "../dist")));
 
 //app.use(express.static('public'));
 app.use((req,res,next) => {
-   console.log(req.originalUrl, req.query) ;
+   // console.log(req.originalUrl, req.query) ;
    next();
 });
 
@@ -35,6 +35,7 @@ app.get('/', (req, res) => {
 app.use('/projenv', projenv) ;
 app.use('/dashboard', dashboard) ;
 app.use('/performcomposit', performcomposit) ;
+app.use('/performdetail', performdetail) ;
 app.use('/logonchk', logonchk) ;
 
 app.listen(port,'0.0.0.0', () => {

@@ -5,18 +5,18 @@ const tdatacode = {
      * DashBoard 성능테스트 결과(최종) 년월일, 적재 Data 검증 결과(최종) 년월일
      */
     find : async () => {
-        let rows = await mondb.query(`	select substr(max(X.performdt), 1, 10)            as perform_dt
-	                                           , trim(substr(max(X.performdt), 11, 500))    as perform_nm
-	                                           , substr(max(X.dataverifydt), 1, 10)         as dataverify_dt
-	                                           , trim(substr(max(X.dataverifydt), 11, 500)) as dataverify_nm
+        let rows = await mondb.query(`	select substr(max(X.performdt), 1, 10)            as performdt
+	                                           , trim(substr(max(X.performdt), 11, 500))    as performnm
+	                                           , substr(max(X.dataverifydt), 1, 10)         as dataverifydt
+	                                           , trim(substr(max(X.dataverifydt), 11, 500)) as dataverifynm
                                         from ( 
                                                 select max(concat(lastDt,tname)) as performdt
 			                                               , ''                        as dataverifydt
                                                 from tperfcode
                                                 where gb='3'
                                                 union all
-                                                select ''                       as performdt
-                                                     , max(concat(wdate,dname)) as dataverifydt
+                                                select ''                        as performdt
+                                                     , max(concat(wdate,dname))  as dataverifydt
                                                 from tdatacode
 	                                         ) X
                                     ` ) ;
