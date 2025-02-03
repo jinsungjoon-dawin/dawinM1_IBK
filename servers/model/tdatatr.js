@@ -6,22 +6,21 @@ const tdatatr = {
      * BarChart
      */
     tdatatr_find : async () => {
-        let rows = await mondb.query("	select sum(b.tblAsis) as tblAsis            \
-                                    	     , sum(b.tblTobe) as tblTobe            \
-	                                         , sum(b.idxAsis) as idxAsis            \
-	                                         , sum(b.idxTobe) as idxTobe            \
-	                                         , sum(b.objAsis) as objAsis            \
-	                                         , sum(b.objTobe) as objTobe            \
-	                                         , sum(b.invalidAsis) as invalidAsis    \
-	                                         , sum(b.invalidTobe) as invalidTobe    \
-                                        from (select did                            \
-		                                        from tdatacode                      \
-		                                        where wdate in (select max(wdate)   \
-                                                                    from tdatacode) \
-	                                         ) A                                    \
-                                        join tdatatr B                              \
-	                                        on a.did = b.did                        \
-                                    ") ;
+        let rows = await mondb.query(`	select sum(b.tblAsis)       as tblAsis
+                                    	     , sum(b.tblTobe)       as tblTobe
+	                                         , sum(b.idxAsis)       as idxAsis
+	                                         , sum(b.idxTobe)       as idxTobe
+	                                         , sum(b.objAsis)       as objAsis
+	                                         , sum(b.objTobe)       as objTobe
+	                                         , sum(b.invalidAsis)   as invalidAsis
+	                                         , sum(b.invalidTobe)   as invalidTobe
+                                        from (select did
+		                                        from tdatacode
+		                                        where wdate in (select max(wdate) from tdatacode)
+	                                         ) A
+                                        join tdatatr B
+	                                        on a.did = b.did
+                                    `) ;
         return(rows) ;
     },
     /**
@@ -29,15 +28,15 @@ const tdatatr = {
      * BarChart
      */
     tdatatr_verify : async () => {
-        let rows = await mondb.query("	select sum(b.tblTobe) as tblTobe                            \
-	                                         , sum(b.tblAsis)-sum(b.tblTobe) as tblAsisTobeSum      \
-                                        from (select did                                            \
-		                                        from tdatacode                                      \
-		                                        where wdate in (select max(wdate) from tdatacode)   \
-	                                         ) A                                                    \
-                                        join tdatatr B                                              \
-	                                        on a.did = b.did                                        \
-                                    ") ;
+        let rows = await mondb.query(`	select sum(b.tblTobe)                   as tblTobe
+	                                         , sum(b.tblAsis)-sum(b.tblTobe)    as tblAsisTobeSum
+                                        from (select did
+		                                        from tdatacode
+		                                        where wdate in (select max(wdate) from tdatacode)
+	                                         ) A
+                                        join tdatatr B
+	                                        on a.did = b.did
+                                    `) ;
         return(rows) ;
     },    
 }

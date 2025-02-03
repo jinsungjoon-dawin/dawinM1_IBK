@@ -10,17 +10,26 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/perfcomp_title', async function (req, res, next) {
+    // console.log("req.query.asisdt : " + req.query.asisdt);
+    // console.log("req.query.tobedt : " + req.query.tobedt);
+
     const rdata = await tperfcode.tperftitle(req) ;
     res.json(rdata) ;
 });
 
 router.get('/perfcomp_list', async function (req, res, next) {
-    const rdata = await tperftest.tperfchklist() ;
+    // console.log("req.query.asisdt : " + req.query.asisdt);
+    // console.log("req.query.tobedt : " + req.query.tobedt);
+
+    const rdata = await tperftest.tperfchklist(req) ;
     res.json(rdata) ;
 });
 
 router.get('/perfcomp_checkres', async function (req, res, next) {
-    const rdata = await tperftest.tperfchkresult() ;
+    // console.log("req.query.asisdt : " + req.query.asisdt);
+    // console.log("req.query.tobedt : " + req.query.tobedt);
+
+    const rdata = await tperftest.tperfchkresult(req) ;
     res.json(rdata) ;
 });
 

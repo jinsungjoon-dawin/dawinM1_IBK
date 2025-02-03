@@ -17,7 +17,8 @@
           label: '대상',  // 첫 번째 데이터셋
           backgroundColor: ['#5156be'],  // 색상
           borderWidth: 1,
-          borderRadius:10
+          borderRadius:10,
+          
         }, {
           label: '이행',  // 두 번째 데이터셋
           // data: [7, 11, 5, 8, 3],
@@ -53,7 +54,8 @@
         plugins: {
           datalabels: {
             color: 'white', // 텍스트 색상
-            font:{size:18}
+            font:{size:18},
+            formatter: function(v, ctx) {return v.toLocaleString() }
           },
           title: {
             display: true,
@@ -75,7 +77,7 @@
     if(page === "S")      service = "/dashboard/perftest_list";
     else if(page === "D") service = "/dashboard/datatr_list"; 
     else if(page === "M") service = "/dashboard/datatr_checkres"; 
-    else if(page === "P") service = "/performcomposit/perfcomp_list?tobeDt="+ date;; 
+    else if(page === "P") service = "/performcomposit/perfcomp_list?tobeDt="+ date;
     const res = await fetch($rooturl + service);
     if (res.ok)
       return await res.json();
@@ -119,6 +121,7 @@
       config.options.plugins.title.text = "데이터 검증 현황";
       // config.options.plugins.title.display = false;
       config.data.datasets[0].backgroundColor =  ["#5156be", "#34c38f"];
+      config.data.datasets[0].barThickness= 50; // 바의 고정 넓이 (픽셀)
     }
     chartx.update();
   }

@@ -10,11 +10,18 @@ import HelpManagement from "./lib/HelpManagement.svelte";
 import BulkRegistrationOfUsers from "./lib/BulkRegistrationOfUsers.svelte";
 import IndividualUserManagement from "./lib/IndividualUserManagement.svelte";
 import UserUploadManagement from "./lib/UserUploadManagement.svelte";
-import { isLogged, userid } from "./aqtstore";
+import { isLogged, userid, isLogin } from "./aqtstore";
 
 let cnm = DashBoard ;
 let pageNm = "모니터링 종합";
-
+let menuIdx = 0;
+let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
+             {pageNm:"성능",cnm:PerformComposit},
+             {pageNm:"적재Data검증",cnm:LoadDataVerifyResultPage},
+             {pageNm:"이행",cnm:PerformComposit},
+             {pageNm:"관리자",cnm:UserUploadManagement},
+             {pageNm:"도움말말",cnm:HelpManagement}
+]
 
 </script>
 
@@ -26,7 +33,8 @@ let pageNm = "모니터링 종합";
   .bb1gray{ border-bottom: 1px solid gray;}
 </style>
 
-{#if !$isLogged}
+<!-- {#if !$isLogged} -->
+{#if !$isLogin}
 	<Login></Login>
 {:else}
 <div class="min-h-full">
@@ -40,13 +48,15 @@ let pageNm = "모니터링 종합";
           </div>
           <div class="hidden md:block">
             <ul class="ml-10 flex items-baseline space-x-4">
-              <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-              <li class="py-1"><a href="#" class="rounded-md bg-gray-900 px-3 py-2 text-sm font-medium text-white" aria-current="page" on:click|preventDefault={ _=> {cnm=DashBoard;pageNm = "모니터링 종합"}}>모니터링 종합</a>
-              <li class="py-1"><a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=PerformComposit;pageNm = "성능"}}>성능</a>
-              <li class="py-1"><a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=LoadDataVerifyResultPage;pageNm = "적재Data검증"}}>적재Data검증</a>
-              <li class="py-1"><a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=PerformComposit;pageNm = "이행"}}>이행</a>
-              <li class="py-1"><a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=UserUploadManagement;pageNm = "관리자"}}>관리자</a>
-                <li class="py-1"><a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=HelpManagement;pageNm = "도움말"}}>도움말</a>
+              {#each menus as item, idx}
+                <li class="py-1">
+                {#if idx === menuIdx}
+                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-white bg-gray-900   " on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
+                {:else}  
+                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
+                {/if}
+                </li>
+                {/each}
             </ul>
           </div>
         </div>

@@ -5,32 +5,32 @@ const tdatacode = {
      * DashBoard 성능테스트 결과(최종) 년월일, 적재 Data 검증 결과(최종) 년월일
      */
     find : async () => {
-        let rows = await mondb.query("	select substr(max(X.performdt), 1, 10) as perform_dt                     \
-	                                         , trim(substr(max(X.performdt), 11, 500)) as perform_nm             \
-	                                         , substr(max(X.dataverifydt), 1, 10) as dataverify_dt               \
-	                                         , trim(substr(max(X.dataverifydt), 11, 500)) as dataverify_nm       \
-                                        from ( select max(concat(lastDt,tname)) as performdt                    \
-			                                        , '' as dataverifydt                                        \
-		                                        from tperfcode                                                  \
-		                                        where gb='3'                                                    \
-		                                        union all                                                       \
-		                                        select '' as performdt                                          \
-			                                         , max(concat(wdate,dname)) as dataverifydt                 \
-		                                        from tdatacode                                                  \
-		                                        where wdate in (select max(wdate) from tdatacode)               \
-	                                         ) X                                                                \
-                                  " ) ;
+        let rows = await mondb.query(`	select substr(max(X.performdt), 1, 10)            as perform_dt
+	                                           , trim(substr(max(X.performdt), 11, 500))    as perform_nm
+	                                           , substr(max(X.dataverifydt), 1, 10)         as dataverify_dt
+	                                           , trim(substr(max(X.dataverifydt), 11, 500)) as dataverify_nm
+                                        from ( 
+                                                select max(concat(lastDt,tname)) as performdt
+			                                               , ''                        as dataverifydt
+                                                from tperfcode
+                                                where gb='3'
+                                                union all
+                                                select ''                       as performdt
+                                                     , max(concat(wdate,dname)) as dataverifydt
+                                                from tdatacode
+	                                         ) X
+                                    ` ) ;
         return(rows) ;
     },
     save : async (args) => {
         try {
-          let results = await mondb.query("update tdatacode     \
-                                            SET dname=?         \
-                                              , wdate=?         \
-                                              ,	sf=?            \
-                                            WHERE did=?         \
-                                            and seq=?"          
-            [args.dname, args.wdate, args.sf, args.did, args.seq] ) ;
+          let results = await mondb.query(`update tdatacode
+                                            SET dname = ?
+                                              , wdate = ?
+                                              ,	sf = ?
+                                            WHERE did = ?
+                                            and seq = ?
+                                          `, [args.dname, args.wdate, args.sf, args.did, args.seq] ) ;
           return 1;
         } catch (e) {
           console.error(e) ;
