@@ -9,11 +9,11 @@ router.get('/', async function (req, res, next) {
     res.json(rdata) ;
 });
 
-router.get('/perfcomp_list', async function (req, res, next) {
-    // console.log("req.query.asisdt : " + req.query.asisdt);
-    // console.log("req.query.tobedt : " + req.query.tobedt);
+router.get('/perfde_list', async function (req, res, next) {
+    console.log("req.query.asisdt : " + req.query.asisdt);
+    console.log("req.query.tobedt : " + req.query.tobedt);
 
-    const rdata = await tperftest.tperfchklist(req) ;
+    const rdata = await tperftest.tperfdelist(req) ;
     res.json(rdata) ;
 });
 
