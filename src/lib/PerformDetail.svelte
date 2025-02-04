@@ -146,13 +146,13 @@
     {/if}
   </div>
     <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
-      {#if datas.length !== 0}
-          {#each datas as item, idx}
+      <!-- {#if datas.length !== 0}
+          {#each datas as item, idx} -->
           <div class="flex-col bg-gray-700 rounded-lg w-full" >
-            <div class="flex w-full  border-b-2 border-gray-500 items-center">
+            <!-- <div class="flex w-full  border-b-2 border-gray-500 items-center">
                 <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{item.tname}</h1>
                 <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = item}}>{item.tobeDt}</h1>
-            </div>
+            </div> -->
               <div class="flex flex-wrap w-full p-3 justify-center">
                   <div class="table-container flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center">
                         <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
@@ -197,8 +197,8 @@
                 </div>
               </div>
           </div>
-      {/each}
-    {/if}
+      <!-- {/each}
+    {/if} -->
   </div>
 </div>
 {:else}

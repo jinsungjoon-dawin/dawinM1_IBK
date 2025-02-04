@@ -16,9 +16,23 @@ router.post('/', async function (req, res, next) {
     }
 });
 
-// router.post('/cp', async function (req, res, next) {ㄴ
-//     const rdata = await tperfcode.find() ;
-//     res.json(rdata) ;
-// });
+router.post('/cp', async function (req, res, next) {
+
+    // const opass = Buffer.from(req.body.opass.substring(2), 'base64').toString('utf8');
+    // const pass = Buffer.from(req.body.pass.substring(2), 'base64').toString('utf8');
+    const usrid = Buffer.from(req.body.usrid.substring(1), 'base64').toString('utf8');
+    // const r = await tlogon.getUserPass(req);
+    // // console.log("aa:", r);
+    // if (r !== 1) return res.status(200).send({ message: "권한이 없습니다.", err: 1 });
+  
+    let changeCnt = await tlogon.setPass(req);
+    console.log("changeCnt:" + changeCnt);
+    if(changeCnt === 1){
+        res.status(200).json({ message: `${usrid}` + " 변경 되었습니다." }) ;
+    }else{
+        res.status(200).send({ message: "권한이 없습니다.", err: 1 });
+    }
+   
+  });
 
 export default router;

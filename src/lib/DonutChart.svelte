@@ -7,47 +7,35 @@
   let ctx, chartx;
   let chartCanvas;
   let config = {
-    type: "bar",
+    type: "pie",
     data: {
-    labels: ['계좌1', '공통1', '대외', '모바일', '빅데이터', '신용','정산','출납'],
+    labels: ['TASK', '완료', '지연', '진행중'],
     datasets: [
       {
         label: '',
-        data: [100, 19, 3, 5, 2, 3, 20, 30],
+        data: [100, 19, 3, 5],
         backgroundColor:['#34c38f'],
-        // backgroundColor: [
-        //   'rgba(255, 99, 132, 0.2)',
-        //   'rgba(54, 162, 235, 0.2)',
-        //   'rgba(255, 206, 86, 0.2)',
-        //   'rgba(75, 192, 192, 0.2)',
+         circumference: 180, // 도넛 반 자르기
+            rotation: 270,
+        backgroundColor: [
+          "#ff6384", "#3cba9f","#ffee00","#e8c3b9"
         //   'rgba(153, 102, 255, 0.2)',
         //   'rgba(255, 159, 64, 0.2)',
-        // ],
+        ],
         // borderColor: [
         //   'rgba(255, 99, 132, 1)',
         //   'rgba(54, 162, 235, 1)',
         //   'rgba(255, 206, 86, 1)',
         //   'rgba(75, 192, 192, 1)',
-        //   'rgba(153, 102, 255, 1)',
-        //   'rgba(255, 159, 64, 1)',
+        //   // 'rgba(153, 102, 255, 1)',
+        //   // 'rgba(255, 159, 64, 1)',
         // ],
         borderWidth: 1,
       },
     ],
   },
   options: {
-    scales: {
-            x: {
-                ticks: {
-                    color: 'white' // X축 레이블 글씨 색상 설정
-                }
-            },
-            y: {
-                ticks: {
-                    color: 'white' // Y축 레이블 글씨 색상 설정
-                }
-            }
-        },
+   
     responsive: true,
     maintainAspectRatio: true,
     // aspectRatio: 1, // 차트를 정사각형으로 유지
@@ -67,7 +55,7 @@
       },
       title: {
         display: true,
-        text: '전체 수량: 9696 개',  
+        text: '타이틀 임시',  
         font:{size:20},
         color:'white'
       },
@@ -98,10 +86,6 @@
   // }, 5000);
   setInterval(async() => {
     config.data.datasets[0].data = [Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
         Math.floor(Math.random() * 100), 
         Math.floor(Math.random() * 100), 
         Math.floor(Math.random() * 100)

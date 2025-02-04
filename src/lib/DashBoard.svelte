@@ -30,7 +30,7 @@
 <div class="flex flex-col  max-h-svh">
   <div class=" bg-gray-700 rounded-lg">
     <div class="flex w-full border-b-2 border-gray-500 items-center text-yellow-100">
-        <h1 class="w-3/5 text-2xl tracking-tight p-3">성능 테스트(최종) {rdata[0]?.performnm}</h1>
+        <h1 class="w-3/5 text-2xl tracking-tight p-3">최신 {rdata[0]?.performnm} </h1>
         <h1 class="w-2/5 text-1xl tracking-tight text-end p-3">{rdata[0]?.performdt}</h1>
     </div>
       <div class="flex justify-between w-full p-3">
@@ -46,7 +46,7 @@
   </div>
   <div class="bg-gray-700 mt-3 rounded-lg">
     <div class="flex w-full border-b-2 border-gray-500 items-center text-yellow-100 ">
-      <h1 class="w-3/5 text-2xl tracking-tight p-3"> 적재 Data 검증(최종) {rdata[0]?.dataverifynm}</h1>
+      <h1 class="w-3/5 text-2xl tracking-tight p-3"> 적재 Data 검증 최신 {rdata[0]?.dataverifynm}</h1>
       <h1 class="text-1xl w-full text-end tracking-tight p-3"> {rdata[0]?.dataverifydt} </h1>
     </div>
       <div class="flex justify-between w-full p-3">

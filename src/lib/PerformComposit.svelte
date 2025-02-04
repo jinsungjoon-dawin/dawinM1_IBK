@@ -26,9 +26,7 @@
   }
 
   async function getPerformcompositTitle() {
-    console.log("asisDt:"+conds.asisDt +" lastDt:"+conds.lastDt);
     const res = await fetch($rooturl + "/performcomposit/perfcomp_title?asisdt=" + conds.asisDt + "&tobedt=" + conds.lastDt);
-    console.log(res);
     if (res.ok){
       datas = await res.json();
       return datas;
@@ -38,7 +36,6 @@
   }
   onMount(async () => {
     dates = await getPerformcomposit();
-    console.log("dates:" + JSON.stringify(dates));
     
     //[{"seq":"1차","asisDt":"2025-01-02","lastDt":"2025-01-20"}]
     if(dates.length > 0){
@@ -47,7 +44,6 @@
       datas = await getPerformcompositTitle();
     }
     //[{"tname":"성능1차 테스트 결과","lastDt":"2025-01-20"}]
-    console.log("datas:" + JSON.stringify(datas));
   });
   let selectedRow = null;
 

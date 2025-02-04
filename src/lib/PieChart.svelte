@@ -28,8 +28,8 @@ export let date;
         datasets: [
           {
             // label: "Population (millions)",
-            backgroundColor: ["#ff6384", "#3cba9f","#ffee00","#e8c3b9","#c45850"],
-            // backgroundColor: ["#00d1d1", "#aaff00","#ffaa33","#ff4c4c","#ffee00"],
+            // backgroundColor: ["#ff6384", "#3cba9f","#ffee00","#e8c3b9","#c45850"],
+            backgroundColor: ["#ff6384", "#3cba9f","#b604ce","#e8c3b9","#c45850"],
             // circumference: 180, // 도넛 반 자르기
             //rotation: 270,
              data: [],
@@ -44,9 +44,15 @@ export let date;
         // aspectRatio: 1, 
         plugins:{
           legend:{
-            display: false,
-            position: 'left',
-            labels: {color: 'white'}
+            display: true,
+            position: 'right',
+            
+            labels: {color: 'white',
+                  boxWidth: 14,
+                  font: {
+                    size: 14 // 범례 폰트 크기 조정
+                  }
+            }
           },
           title: {
             display: true,
@@ -83,7 +89,7 @@ function chartDraw(rdata){
     let totCnt = rdata[0].tcnt;
     config.data.labels = labels;
     config.data.datasets[0].data = datas ;
-    config.options.plugins.title.text = "총 테스트 대상: " + totCnt + "개";
+    config.options.plugins.title.text = "변경해야함 대상 합계: " + totCnt + "개";
     chartx.update();
   }
   

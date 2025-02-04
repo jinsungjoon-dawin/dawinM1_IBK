@@ -9,8 +9,10 @@ import Login from "./lib/Login.svelte";
 import HelpManagement from "./lib/HelpManagement.svelte";
 import BulkRegistrationOfUsers from "./lib/BulkRegistrationOfUsers.svelte";
 import IndividualUserManagement from "./lib/IndividualUserManagement.svelte";
+import DeleteUsersInBulk from "./lib/DeleteUsersInBulk.svelte";//성능 Data 관리
 import UserUploadManagement from "./lib/UserUploadManagement.svelte";
-import { isLogged, userid, isLogin } from "./aqtstore";
+import TransformBoard from "./lib/TransformBoard.svelte"
+import { isLogged, userid } from "./aqtstore";
 
 let cnm = DashBoard ;
 let pageNm = "모니터링 종합";
@@ -18,9 +20,9 @@ let menuIdx = 0;
 let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
              {pageNm:"성능",cnm:PerformComposit},
              {pageNm:"적재Data검증",cnm:LoadDataVerifyResultPage},
-             {pageNm:"이행",cnm:PerformComposit},
+             {pageNm:"이행",cnm:TransformBoard},
              {pageNm:"관리자",cnm:UserUploadManagement},
-             {pageNm:"도움말말",cnm:HelpManagement}
+             {pageNm:"도움말",cnm:HelpManagement}
 ]
 
 </script>
@@ -34,7 +36,7 @@ let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
 </style>
 
 <!-- {#if !$isLogged} -->
-{#if !$isLogin}
+{#if !$isLogged}
 	<Login></Login>
 {:else}
 <div class="min-h-full">
@@ -44,19 +46,31 @@ let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="shrink-0 text-white font-bold">
-            <img src="/src/img/logo.png">
+            <img src="src/img/logo.png">
+            <!-- <img class="size-8" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"> -->
+             <!-- DAWIN -->
           </div>
           <div class="hidden md:block">
             <ul class="ml-10 flex items-baseline space-x-4">
               {#each menus as item, idx}
                 <li class="py-1">
-                {#if idx === menuIdx}
-                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-white bg-gray-900   " on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
-                {:else}  
-                <a href="#" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
-                {/if}
+                  {#if idx === menuIdx && item.pageNm === "관리자"}
+                    <div class="group relative dropdown px-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
+                      <a>관리자</a>
+                      <div class="group-hover:block dropdown-menu absolute hidden h-auto">
+                        <ul class="top-0 w-48 bg-gray-900 shadow px-6 py-1">
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=BulkRegistrationOfUsers;pageNm = "사용자 관리"}}>사용자 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=DeleteUsersInBulk;pageNm = "성능 Data 관리"}}>성능 Data 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=IndividualUserManagement;pageNm = "Data 검증 관리"}}>Data 검증 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=UploadManagement;pageNm = "시나리오 관리"}}>시나리오 관리</a></li>
+                        </ul>
+                      </div>
+                    </div>
+                  {:else}
+                    <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
+                  {/if}
                 </li>
-                {/each}
+              {/each}
             </ul>
           </div>
         </div>

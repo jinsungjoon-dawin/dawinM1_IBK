@@ -1,5 +1,5 @@
 <script>
-  import { authApps, isLogged, userid, isLogin } from "../aqtstore";
+  import { authApps, isLogged, userid } from "../aqtstore";
   const imgUrl = new URL("/images/Logo.png", import.meta.url).href;
   import { Buffer } from 'buffer';
   import {rooturl} from "../aqtstore";
@@ -10,12 +10,6 @@
 	let password = "";
   let passwordInput;
 	let error = "";
-  let chkUsrid = "";
-  let chkUsridInput;
-  let chkPassword = "";
-  let chkPasswordInput;
-  let chkPassword2 = "";
-  let chkPassword2Input;
   let usridChk = ""; 
 
   async function login() {
@@ -75,10 +69,12 @@
 					if (error) error = "";
 				} else {
 					error = "비밀번호가 맞지않습니다.";
+          alert(error);
 				}
 			})
 			.catch((err) => {
 				error = err.message;
+				alert(error);
 			});
 	}
 
@@ -86,62 +82,77 @@
 		// $isLogged = 1;
     localStorage.setItem('usrid', usrid);
     localStorage.setItem('usridChk', usridChk);
-    isLogin.set(true);
+    isLogged.set(true);
 	}
 
-  async function changPassword() {
-    if(chkUsrid === ""){
-      alert("아이디를 입력하세요.");
-      chkUsridInput.focus();
-      return;
-    }else if(chkPassword === ""){
-      alert("비밀번호를 입력하세요.");
-      chkPasswordInput.focus();
-      return;
-    }else if(chkPassword2 === ""){
-      alert("확인 비밀번호를 입력하세요.");
-      chkPassword2Input.focus();
-      return;
-    }
-		
-		fetch($rooturl + "/비밀번호 변경 Url", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				pass:
-					Math.floor(Math.random() * 100)
-						.toString()
-						.padStart(2, "0") +
-					Buffer.from(password, "utf8").toString("base64"),
-				usrid:
-					Math.floor(Math.random() * 10) +
-					Buffer.from(usrid, "utf8").toString("base64"),
-			}),
-		})
-    .then(async (res) => {
-				const data = await res.json();
-        if (!res.ok) {
-          alert(data.message || 'API Error');
-        }
-				if (data.hg == 0) error = "허가되지않은 IP.";
-				else if (data.chk) {
-					$isLogged = data.admin == "1" ? 2 : 1;
-					$authApps = data.apps;
-					$userid = usrid;
-					//					getTcodelist() ;
-					if (error) error = "";
-				} else {
-					error = "비밀번호가 맞지않습니다.";
-				}
-			})
-			.catch((err) => {
-				error = err.message;
-			});
-	}
+  
+
+  
   function toggleModal() {
     showModal = !showModal;
+  }
+
+  let opass = "";
+  let opassInput;
+  let npass1 = "";
+  let npass1Input;
+  let npass2 = "";
+  let npass2Input;
+  
+  async function changepass() {
+    if(opass === ""){
+      alert("변경전 비밀번호");
+      opassInput.focus();
+      return;
+    }else if(npass1 === ""){
+      alert("변경할 비밀번호를 입력하세요.");
+      npass1Input.focus();
+      return;
+    }else if(npass2 === ""){
+      alert("변경확인 비밀번호를 입력하세요.");
+      npass2Input.focus();
+      return;
+    }
+    if (npass1 !== npass2) {
+      alert("비밀번호 확인값이 다릅니다.");
+      return ;
+    }
+    if (! /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,}$/.test(npass1)) {
+      alert("영숫자 및 특수문자를 포함하여 8자리이상이어야 합니다.");
+      return ;
+    }
+    fetch($rooturl + "/logonchk/cp", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        opass:
+          Math.floor(Math.random() * 100)
+            .toString()
+            .padStart(2, "0") + Buffer.from(opass, "utf8").toString("base64"),
+        pass:
+          Math.floor(Math.random() * 100)
+            .toString()
+            .padStart(2, "0") + Buffer.from(npass1, "utf8").toString("base64"),
+        usrid:
+          Math.floor(Math.random() * 10) +
+          Buffer.from(usrid, "utf8").toString("base64"),
+      }),
+    })
+      .then(async (res) => {
+        let rmsg = await res.json();
+        if (res.status < 400) {
+          alert(rmsg.message);
+          toggleModal();
+          // dialog.close();
+          // return ( ! rmsg.err );
+        }
+      })
+      .catch((err) => {
+        alert(err.message);
+      });
+      return false ;
   }
 
   onMount(() => {
@@ -188,7 +199,7 @@
         </div>
         
         <!-- 로그인 버튼 -->
-        <button class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none" on:click={login2} >
+        <button class="w-full py-2 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 focus:outline-none" on:click={login3} >
           로그인
         </button>
       </form>
@@ -200,9 +211,11 @@
   
      
       <div class="flex justify-center">
+        &nbsp;
         <img src="assets/src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" />
+         <!-- <img src="../img/DAWINICT_logo.png" alt="Logo" class="w-72 h-72 object-contain" /> -->
       </div>
-      <!-- <img src="../img/DAWINICT_logo.png" alt="Logo" class="w-72 h-72 object-contain" /> -->
+      
     </div>
   </div>
   {#if showModal}
@@ -211,37 +224,37 @@
       <h3 class="text-xl font-semibold mb-4">비밀번호 변경</h3>
 
       <div class="mb-4">
-        <label for="email" class="block text-sm font-medium text-gray-600">아이디</label>
+        <label for="email" class="block text-sm font-medium text-gray-600">변경전 비밀번호</label>
         <input
-          type="text"
+          type="password"
           id="id"
           class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="아이디를 입력하세요."
-          bind:value={chkUsrid}
-          bind:this={chkUsridInput}
+          bind:value={opass}
+          bind:this={opassInput}
         />
       </div>
       
       <!-- 비밀번호 입력 -->
       <div class="mb-6">
-        <label for="password" class="block text-sm font-medium text-gray-600">비밀번호</label>
+        <label for="password" class="block text-sm font-medium text-gray-600">변경할 비밀번호</label>
         <input
           type="password"
           id="password"
           class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="비밀번호를 입력하세요."
-          bind:value={chkPassword} 
-          bind:this={chkPasswordInput}/>
+          bind:value={npass1} 
+          bind:this={npass1Input}/>
       </div>
       <div class="mb-6">
-        <label for="password" class="block text-sm font-medium text-gray-600">확인 비밀번호</label>
+        <label for="password" class="block text-sm font-medium text-gray-600">변경확인 비밀번호</label>
         <input
           type="password"
           id="password"
           class="w-full px-4 py-2 mt-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="확인 비밀번호를 입력하세요."
-          bind:value={chkPassword2} 
-          bind:this={chkPassword2Input}/>
+          bind:value={npass2} 
+          bind:this={npass2Input}/>
       </div>
       <div class="mt-4 flex justify-between">
         <button
@@ -250,7 +263,7 @@
         >
           취소
         </button>
-        <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" on:click={changPassword}>
+        <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" on:click={changepass}>
           비밀번호 재설정
         </button>
       </div>
