@@ -1,30 +1,11 @@
 <script lang="ts">
-  import Chart, { plugins } from 'chart.js/auto';
+  import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount } from "svelte";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
   let chartCanvas;
-  
-  let totalSum = 999;
-  // 플러그인 정의
-  const centerTextPlugin = {
-  id: "centerText",
-  beforeDraw(chart) {
-    const { width, height, ctx } = chart;
-    ctx.restore();
-    const fontSize = 1;
-    ctx.font = `${fontSize}em sans-serif`;
-    ctx.textBaseline = "middle";
-    ctx.textAlign = "center";
-    ctx.fillStyle = "#ffffff";
-
-    // 중앙에 총합 표시
-    ctx.fillText(`총합: ${totalSum}`, width / 2, height - 30);
-    ctx.save();
-  },
-};
   let config = {
     type: "doughnut",
     data: {
@@ -53,7 +34,6 @@
       },
     ],
   },
-  plugins:[centerTextPlugin],
   options: {
    
     responsive: true,
@@ -82,7 +62,22 @@
     },
   },
   };
+  // 플러그인 정의
+const centerTextPlugin = {
+  id: "centerText",
+  beforeDraw(chart) {
+    const { width, height, ctx } = chart;
+    ctx.restore();
+    const fontSize = (height / 100).toFixed(2);
+    ctx.font = `${fontSize}em sans-serif`;
+    ctx.textBaseline = "middle";
+    ctx.textAlign = "center";
 
+    // 중앙에 총합 표시
+    ctx.fillText('총합: 100, width / 2, height / 2');
+    ctx.save();
+  },
+};
 
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");

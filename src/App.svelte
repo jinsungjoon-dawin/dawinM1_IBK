@@ -13,11 +13,13 @@ import DeleteUsersInBulk from "./lib/DeleteUsersInBulk.svelte";//성능 Data 관
 import UserUploadManagement from "./lib/UserUploadManagement.svelte";
 import TransformBoard from "./lib/TransformBoard.svelte"
 import { isLogged, userid } from "./aqtstore";
+import { onMount } from "svelte";
 
 let cnm = DashBoard ;
 let pageNm = "모니터링 종합";
 let menuIdx = 0;
 let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
+             {pageNm:"테스트",cnm:PerformComposit},
              {pageNm:"성능",cnm:PerformComposit},
              {pageNm:"적재Data검증",cnm:LoadDataVerifyResultPage},
              {pageNm:"이행",cnm:TransformBoard},
@@ -25,6 +27,22 @@ let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
              {pageNm:"도움말",cnm:HelpManagement}
 ]
 
+
+function getToDate(){
+    var today = new Date();
+
+    var year = today.getFullYear();
+    var month = ('0' + (today.getMonth() + 1)).slice(-2);
+    var day = ('0' + today.getDate()).slice(-2);
+
+    return year + '-' + month  + '-' + day;
+    
+  }
+
+  let today = '';
+  onMount(async () => {
+    today = getToDate();
+  });
 </script>
 
 
@@ -72,10 +90,17 @@ let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
                 </li>
               {/each}
             </ul>
+            
           </div>
         </div>
+        <span class="text-yellow-100 text-lg">현재 일자: {today}</span>
       </div>
     </div>
+
+
+
+
+
   </nav>
   <main class="bg-gray-800">
     <!-- <div class="mx-auto max-w-7xl p-3 "> -->

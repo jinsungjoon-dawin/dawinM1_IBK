@@ -10,7 +10,6 @@
   export let date;
   let ctx, chartx;
   let chartCanvas;
-  // backgroundColor: ["#ff6384", "#3cba9f","#ffee00","#e8c3b9","#c45850"],
   let config =  {
       type: 'bar',
       data: {
@@ -86,7 +85,7 @@
     if(page === "S")      service = "/dashboard/perftest_list";
     else if(page === "D") service = "/dashboard/datatr_list"; 
     else if(page === "M") service = "/dashboard/datatr_checkres"; 
-    else if(page === "P") service = "/performcomposit/perfcomp_list?tobeDt="+ date;
+    else if(page === "P") service = "/performcomposit/perfcomp_list?tobedt="+ date;
     const res = await fetch($rooturl + service);
     if (res.ok)
       return await res.json();
@@ -122,18 +121,13 @@
           if(config.data.datasets.length==2){
           config.data.datasets.push({
             label: '지연',  // 두 번째 데이터셋
-            // data: [7, 11, 5, 8, 3],
-            // backgroundColor:['#ffee00'],
             backgroundColor:['#b604ce'],
-            // borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
             borderRadius:10
           });
           config.data.datasets.push({
             label: '미수행',  // 두 번째 데이터셋
-            // data: [7, 11, 5, 8, 3],
             backgroundColor:['#3cba9f'],
-            // borderColor: 'rgba(54, 162, 235, 1)',
             borderWidth: 1,
             borderRadius:10
           });
@@ -148,12 +142,12 @@
         config.data.datasets[2].color = "black";
         config.data.datasets[3].data = nocnts;
       }
-      config.options.plugins.title.text = "업무별 테스트 진행 현황";
+      config.options.plugins.title.text = "주제별 진행 현황";
     }else if(page === "D"){
       let labels = ["Table", "Index", "Object", "Invalid Object"];
-      let asiss = [rdata[0].tblAsis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidasis];
-      let tobes = [rdata[0].tblTobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidtobe];
-      let totCnt = rdata[0].tblAsis + rdata[0].idxasis + rdata[0].objasis + rdata[0].invalidasis;
+      let asiss = [rdata[0].tblasis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidasis];
+      let tobes = [rdata[0].tbltobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidtobe];
+      let totCnt = rdata[0].tblasis + rdata[0].idxasis + rdata[0].objasis + rdata[0].invalidasis;
       config.data.labels = labels;
       config.data.datasets[0].data = asiss;
       config.data.datasets[1].data = tobes;
@@ -161,14 +155,16 @@
       config.options.plugins.title.text = "데이터 이행 현황";
       // config.options.plugins.title.display = false;
     }else if(page === "M"){
-      // [{"tblTobe":2650,"tblasistobesum":50}]
-      config.data.labels = ["Table", "오류 건수"];
-      config.data.datasets[0].data = [rdata[0].tblTobe,rdata[0].tblasistobesum];
-      if(config.data.datasets.length > 1)config.data.datasets.pop();
+      config.data.labels = ["Table", "불일치 건수"];
+      config.data.datasets[0].label = "Table";
+      config.data.datasets[1].label = "불일치 건수";
+      config.data.datasets[0].data = [rdata[0].tbltobe,0];
+      config.data.datasets[1].data = [0,rdata[0].tblasistobesum];
+      // if(config.data.datasets.length >   1)config.data.datasets.pop();
       config.options.plugins.title.text = "데이터 Value 검증";
-      // config.options.plugins.title.display = false;
-      config.data.datasets[0].backgroundColor =  ["#5156be", "#34c38f"];
+
       config.data.datasets[0].barThickness= 50; // 바의 고정 넓이 (픽셀)
+      config.data.datasets[1].barThickness= 50; // 바의 고정 넓이 (픽셀)
     }
     chartx.update();
   }

@@ -46,12 +46,13 @@ export let date;
           legend:{
             display: true,
             position: 'right',
-            
             labels: {color: 'white',
-                  boxWidth: 14,
-                  font: {
-                    size: 14 // 범례 폰트 크기 조정
-                  }
+                     boxWidth: 14,
+                     font: {
+                      size: 14 // 범례 폰트 크기 조정
+                     },
+                    //  padding:{right:10}
+                    // padding:{right:50}
             }
           },
           title: {
@@ -68,13 +69,19 @@ export let date;
               return v.toLocaleString(); 
             }
           }
+        },
+        layout: {
+            margin: {
+                left: 100  // 차트와 범례 사이의 여백 설정
+            }
         }  
-      }
+      },
+      
   };
 async function getData() {
   let service = '';
   if(page === "S") service = "/dashboard/perftest_checkres";
-  if(page === "P") service = "/performcomposit/perfcomp_checkres?tobeDt="+date;
+  if(page === "P") service = "/performcomposit/perfcomp_checkres?tobedt="+date;
   const res = await fetch($rooturl + service);
   if (res.ok)
     return await res.json();

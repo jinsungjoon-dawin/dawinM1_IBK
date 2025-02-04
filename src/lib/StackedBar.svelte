@@ -102,19 +102,19 @@
       config.options.plugins.title.text = "전체 수량: " + totCnt +"개";
     }else if(page === "D"){
       let labels = ["Table", "Index", "Object", "Invalid Object"];
-      let asiss = [rdata[0].tblAsis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidAsis];
-      let tobes = [rdata[0].tblTobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidTobe];
-      let totCnt = rdata[0].tblAsis + rdata[0].idxasis + rdata[0].objasis + rdata[0].invalidAsis;
+      let asiss = [rdata[0].tblasis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidAsis];
+      let tobes = [rdata[0].tbltobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidTobe];
+      let totCnt = rdata[0].tblasis + rdata[0].idxasis + rdata[0].objasis + rdata[0].invalidAsis;
       config.data.labels = labels;
       config.data.datasets[0].data = asiss;
       config.data.datasets[1].data = tobes;
       config.options.plugins.title.text = "전체 수량: " + totCnt +"개";
     }else if(page === "M"){
-      // [{"tblTobe":2650,"tblasistobesum":50}]
+      // [{"tbltobe":2650,"tblasistobesum":50}]
       config.data.labels = ["Table", "As-is Sum - To-be Sum"];
-      config.data.datasets[0].data = [rdata[0].tblTobe,rdata[0].tblasistobesum];
+      config.data.datasets[0].data = [rdata[0].tbltobe,rdata[0].tblasistobesum];
       if(config.data.datasets.length > 1)config.data.datasets.pop();
-      config.options.plugins.title.text = "전체 수량: " + rdata[0].tblTobe + " 개";
+      config.options.plugins.title.text = "전체 수량: " + rdata[0].tbltobe + " 개";
       config.data.datasets[0].backgroundColor =  ["#5156be", "#34c38f"];
     }
     chartx.update();
