@@ -5,6 +5,7 @@ import { notFound, errorHandler } from './middle/errors.js';
 import projenv  from './cntr/proJenv.js' ;
 import dashboard  from './cntr/dashBoard.js' ;
 import performcomposit  from './cntr/performComposit.js' ;
+import performdetail  from './cntr/performDetail.js' ;
 import logonchk from './cntr/logonchk.js';
 import { fileURLToPath } from "url";   
 
