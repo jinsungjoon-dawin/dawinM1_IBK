@@ -1,5 +1,5 @@
 <script>
-  import PerformDetail from "./PerformDetail.svelte";
+  import TestDetail from "./TestDetail.svelte";
   import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
@@ -17,22 +17,38 @@
   
   //차수, ASIS 일자, TOBE 일자 조회
   async function getPerformcomposit() {
-    const res = await fetch($rooturl + "/performcomposit" );
-    if (res.ok){
+    // const res = await fetch($rooturl + "/performcomposit" );
+    // if (res.ok){
     
-      return await res.json();
-    }else
-      throw new Error(res.statusText);
+    //   return await res.json();
+    // }else
+    //   throw new Error(res.statusText);
+    return [
+              {
+                  "seq": "2차",
+                  "asisdt": "2025-02-02",
+                  "tobedt": "2025-02-20",
+                  "tname": "테스트2차 결과"
+              },
+              {
+                  "seq": "1차",
+                  "asisdt": "2025-01-02",
+                  "tobedt": "2025-01-20",
+                  "tname": "테스트1차 결과"
+              }
+          ];
   }
 
   async function getPerformcompositTitle() {
-    const res = await fetch($rooturl + "/performcomposit/perfcomp_title?asisdt=" + conds.asisdt + "&tobedt=" + conds.lastDt);
-    if (res.ok){
-      datas = await res.json();
-      return datas;
-    }
-    else
-      throw new Error(res.statusText);
+    // const res = await fetch($rooturl + "/performcomposit/perfcomp_title?asisdt=" + conds.asisdt + "&tobedt=" + conds.lastDt);
+    // if (res.ok){
+    //   datas = await res.json();
+    //   return datas;
+    // }
+    // else
+    //   throw new Error(res.statusText);
+
+    return [{"tname":"테스트2차  결과","tobedt":"2025-02-20"}];
   }
   onMount(async () => {
     dates = await getPerformcomposit();
@@ -81,12 +97,12 @@
               <div class="flex flex-wrap w-full p-3 justify-center">
                 <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center">
                   <div class="flex w-2/6  justify-center items-center">
-                    <PieChart page={'P'} date={dates[selectedRow]}></PieChart>
+                    <PieChart page={'T'} date={dates[selectedRow]}></PieChart>
                   </div>
                 </div>
                 <div class="flex justify-center bg-gray-800 p-3 rounded-lg w-11/12 ">
                   <div class="w-9/12">
-                    <BarChart page={'P'} date={dates[selectedRow]}></BarChart>
+                    <BarChart page={'T'} date={dates[selectedRow]}></BarChart>
                   </div>
                 </div>
                 
@@ -97,5 +113,5 @@
   </div>
 </div>
 {:else}
-  <PerformDetail {selectedValue}></PerformDetail>
+  <TestDetail {selectedValue}></TestDetail>
 {/if}

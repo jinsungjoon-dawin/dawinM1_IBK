@@ -81,11 +81,12 @@
     };
 
   async function getData() {
+    
     let service = "";
     if(page === "S")      service = "/dashboard/perftest_list";
     else if(page === "D") service = "/dashboard/datatr_list"; 
     else if(page === "M") service = "/dashboard/datatr_checkres"; 
-    else if(page === "P") service = "/performcomposit/perfcomp_list?tobedt="+ date;
+    else if(page === "P" || page === "T") service = "/performcomposit/perfcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
     const res = await fetch($rooturl + service);
     if (res.ok)
       return await res.json();
@@ -95,7 +96,7 @@
   
   
   function chartDraw(rdata){
-    if(page === "S"){//성능
+    if(page === "S" || page === "P" || page === "T"){//성능
       let apnms = [];
       let tcnts = [];
       let scnts = [];

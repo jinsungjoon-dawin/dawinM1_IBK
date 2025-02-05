@@ -81,7 +81,7 @@ export let date;
 async function getData() {
   let service = '';
   if(page === "S") service = "/dashboard/perftest_checkres";
-  if(page === "P") service = "/performcomposit/perfcomp_checkres?tobedt="+date;
+  if(page === "P" || page === "T") service = "/performcomposit/perfcomp_checkres?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
   const res = await fetch($rooturl + service);
   if (res.ok)
     return await res.json();
@@ -90,7 +90,7 @@ async function getData() {
 }   
 
 function chartDraw(rdata){
-  if(page === "S" || page === "P") {
+  if(page === "S" || page === "P" || page === "T") {
     let labels = ["향상", "미수행", "지연"]
     let datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
     let totCnt = rdata[0].tcnt;
