@@ -12,6 +12,7 @@ import IndividualUserManagement from "./lib/IndividualUserManagement.svelte";
 import DeleteUsersInBulk from "./lib/DeleteUsersInBulk.svelte";//성능 Data 관리
 import UserUploadManagement from "./lib/UserUploadManagement.svelte";
 import TransformBoard from "./lib/TransformBoard.svelte"
+import TestComposit from "./lib/TestComposit.svelte";
 import { isLogged, userid } from "./aqtstore";
 import { onMount } from "svelte";
 
@@ -19,7 +20,7 @@ let cnm = DashBoard ;
 let pageNm = "모니터링 종합";
 let menuIdx = 0;
 let menus = [{pageNm:"모니터링 종합",cnm:DashBoard},
-             {pageNm:"테스트",cnm:PerformComposit},
+             {pageNm:"테스트",cnm:TestComposit},
              {pageNm:"성능",cnm:PerformComposit},
              {pageNm:"적재Data검증",cnm:LoadDataVerifyResultPage},
              {pageNm:"이행",cnm:TransformBoard},
@@ -64,7 +65,7 @@ function getToDate(){
       <div class="flex h-16 items-center justify-between">
         <div class="flex items-center">
           <div class="shrink-0 text-white font-bold">
-            <img src="src/img/logo.png">
+            <img src="/src/img/logo.png">
             <!-- <img class="size-8" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"> -->
              <!-- DAWIN -->
           </div>
@@ -85,7 +86,11 @@ function getToDate(){
                       </div>
                     </div>
                   {:else}
+                    {#if item.pageNm === "관리자"}
+                    <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:mouseover={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
+                    {:else}
                     <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
+                    {/if}
                   {/if}
                 </li>
               {/each}

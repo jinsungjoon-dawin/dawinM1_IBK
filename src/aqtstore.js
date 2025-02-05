@@ -9,6 +9,7 @@ export const authApps = writable("");
 export const userid = writable("");
 export const appids = writable([]) ;
 export const rooturl = readable('http://localhost:5880');
+export const intlMs = writable(0);
 export const getCheckPass = async ( password ) => {
 	if ( password === aqtpass )
 		return 1
