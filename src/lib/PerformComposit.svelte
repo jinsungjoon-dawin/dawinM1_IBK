@@ -81,12 +81,12 @@
               <div class="flex flex-wrap w-full p-3 justify-center">
                 <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center">
                   <div class="flex w-2/6  justify-center items-center">
-                    <PieChart page={'P'} date={item.tobedt}></PieChart>
+                    <PieChart page={'S'} date={item.tobedt}></PieChart>
                   </div>
                 </div>
                 <div class="flex justify-center bg-gray-800 p-3 rounded-lg w-11/12 ">
                   <div class="w-9/12">
-                    <BarChart page={'P'} date={item.tobedt}></BarChart>
+                    <BarChart page={'S'} date={item.tobedt}></BarChart>
                   </div>
                 </div>
                 

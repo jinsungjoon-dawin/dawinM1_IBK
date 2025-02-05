@@ -3,7 +3,7 @@
   import Chart, { Legend } from 'chart.js/auto';
   import { onMount, onDestroy } from 'svelte';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import {rooturl} from '../aqtstore';
+  import {rooturl, intlMs} from '../aqtstore';
 
   const chartColors = [
   "#00d1d1", "#aaff00", "#ffaa33", "#ff4c4c", 
@@ -112,7 +112,7 @@ onMount( async () => {
 const interval = setInterval(async() => {
   const rdata = await getData() ;
   chartDraw(rdata);
-}, 5000);
+}, $intlMs);
 
 onDestroy(()=> clearInterval(interval));
 

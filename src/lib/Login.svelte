@@ -1,5 +1,5 @@
 <script>
-  import { authApps, isLogged, userid } from "../aqtstore";
+  import { authApps, isLogged, userid, intlMs } from "../aqtstore";
   const imgUrl = new URL("/images/Logo.png", import.meta.url).href;
   import { Buffer } from 'buffer';
   import {rooturl} from "../aqtstore";
@@ -155,12 +155,35 @@
       return false ;
   }
 
-  onMount(() => {
+  let rdata = [];
+
+  async function getData() {
+    try{
+    const res = await fetch($rooturl + "/dashboard");
+    if (res.ok){
+      return await res.json();
+    }
+    else
+      throw new Error(res.statusText);
+    }catch(error){
+      alert(error)
+    }
+  }
+
+  onMount(async() => {
+    
+    rdata = await getData();
+    intlMs.set(rdata[0].intl * 1000); // 타이머 주기 설정값 store 저장 $intlMs 사용
+      
     if(localStorage.getItem('usridChk') === "true"){
       usridChk = true;
       usrid = localStorage.getItem('usrid');
     }
+    
   })
+
+
+  
   </script>
   
   <style>
@@ -168,7 +191,7 @@
   </style>
     <div class="min-h-screen bg-gray-100 flex items-center flex-start  justify-center" >
     <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-      <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">IBK 기업은행 EDW 시스템 인프라 재구축</h2>
+      <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h2>
       
       <!-- 로그인 폼 -->
       <form on:submit|preventDefault={() => {}} >
