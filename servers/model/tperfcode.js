@@ -5,52 +5,60 @@ const tperfcode = {
      * 년월일, 테스트제목
      */
     find : async () => {
-        let rows = await mondb.query(` select substr(max(X.performdt), 1, 10)             as performdt      
-                                            , trim(substr(max(X.performdt), 11, 500))     as performnm
-                                            , substr(max(X.dataverifydt), 1, 10)          as dataverifydt
-                                            , trim(substr(max(X.dataverifydt), 11, 500))  as dataverifynm
-                                            , trim(max(pjtname))                         as pjtname
-                                            , trim(max(corpnm))                           as corpnm
-                                            , trim(max(startDt))                          as startdt
-                                            , trim(max(endDt))                            as enddt
-                                            , trim(max(intl))                             as intl
-                                            , trim(max(vtotday))                          as vtotday
-                                            , trim(max(vrday))                            as vrday
-                                          from (
-                                              select max(concat(lastDt,tname))            as performdt
-                                                , ''                                      as dataverifydt
-                                                , ''                                      as pjtname
-                                                , ''                                      as corpnm
-                                                , ''                                      as startdt
-                                                , ''                                      as enddt
-                                                , ''                                      as intl
-                                                , ''                                      as vtotday
-                                                , ''                                      as vrday
-                                              from tperfcode
-                                              union all
-                                              select ''                                   as performdt
-                                                , max(concat(wdate,dname))                as dataverifydt
-                                                , ''                                      as pjtname
-                                                , ''                                      as corpnm
-                                                , ''                                      as startdt
-                                                , ''                                      as enddt
-                                                , ''                                      as intl
-                                                , ''                                      as vtotday
-                                                , ''                                      as vrday
-                                              from tdatacode
-                                              union all
-                                              select ''                                   as performdt
-                                                , ''                                      as dataverifydt
-                                                , pjt_name                                as pjtname
-                                                , corpnm                                  as corpnm
-                                                , startDt                                 as startdt
-                                                , endDt                                   as enddt
-                                                , intl                                    as intl
-                                                , vtotday                                 as vtotday
-                                                , vrday                                   as vrday
-                                              from tprojenv
-                                              where pkey=1
-                                            ) X 
+        let rows = await mondb.query(` select substr(max(X.performdt), 1, 10)         as performdt      
+                                        , trim(substr(max(X.performdt), 12, 500))     as performnm
+                                        , substr(max(X.dataverifydt), 1, 10)          as dataverifydt
+                                        , trim(substr(max(X.dataverifydt), 11, 500))  as dataverifynm
+                                        , trim(max(pjtname))                          as pjtname
+                                        , trim(max(corpnm))                           as corpnm
+                                        , trim(max(startDt))                          as startdt
+                                        , trim(max(endDt))                            as enddt
+                                        , trim(max(intl))                             as intl
+                                        , trim(max(vtotday))                          as vtotday
+                                        , trim(max(vrday))                            as vrday
+                                        , trim(substr(max(X.performdt), 11, 1))       as gb
+                                      from (
+                                          select concat(concat(lastDt,gb),tname) 		as performdt
+                                            , ''                                      as dataverifydt
+                                            , ''                                      as pjtname
+                                            , ''                                      as corpnm
+                                            , ''                                      as startdt
+                                            , ''                                      as enddt
+                                            , ''                                      as intl
+                                            , ''                                      as vtotday
+                                            , ''                                      as vrday
+                                          from tperfcode
+                                          where tid in (select tid
+                                                        from tperfcode
+                                                          where (lastDt, gb) in (select max(lastDt), min(gb) 
+                                                                                      from tperfcode 
+                                                                                      where lastDt in (select max(lastDt) from tperfcode)
+                                                                                  )
+                                                          )
+                                            union all
+                                            select ''                                   as performdt
+                                              , max(concat(wdate,dname))                as dataverifydt
+                                              , ''                                      as pjtname
+                                              , ''                                      as corpnm
+                                              , ''                                      as startdt
+                                              , ''                                      as enddt
+                                              , ''                                      as intl
+                                              , ''                                      as vtotday
+                                              , ''                                      as vrday
+                                            from tdatacode
+                                            union all
+                                            select ''                                   as performdt
+                                              , ''                                      as dataverifydt
+                                              , pjt_name                                as pjtname
+                                              , corpnm                                  as corpnm
+                                              , startDt                                 as startdt
+                                              , endDt                                   as enddt
+                                              , intl                                    as intl
+                                              , vtotday                                 as vtotday
+                                              , vrday                                   as vrday
+                                            from tprojenv
+                                            where pkey=1
+                                        ) X 
                                     ` ) ;                                               
         return(rows) ;
     },
