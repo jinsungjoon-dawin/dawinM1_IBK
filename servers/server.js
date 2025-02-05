@@ -2,12 +2,16 @@ import express from 'express';
 import cors from 'cors' ;
 import path from 'path';
 import { notFound, errorHandler } from './middle/errors.js';
-import projenv  from './cntr/proJenv.js' ;
+import { fileURLToPath } from "url";   
+
+import logonchk from './cntr/logonchk.js';
 import dashboard  from './cntr/dashBoard.js' ;
 import performcomposit  from './cntr/performComposit.js' ;
 import performdetail  from './cntr/performDetail.js' ;
-import logonchk from './cntr/logonchk.js';
-import { fileURLToPath } from "url";   
+import testcomposit  from './cntr/testComposit.js' ;
+import testdetail  from './cntr/testDetail.js' ;
+import transformboard  from './cntr/transformBoard.js' ;
+import transformscenario  from './cntr/transformScenario.js' ;
 
 const app  = express();
 const port = process.argv[2] ?? process.env.DMONPORT ?? 5880;
@@ -33,11 +37,14 @@ app.get('/', (req, res) => {
    res.sendFile(path.resolve(__dirname, '../dist', 'index.html'));
 });
 
-app.use('/projenv', projenv) ;
+app.use('/logonchk', logonchk) ;
 app.use('/dashboard', dashboard) ;
 app.use('/performcomposit', performcomposit) ;
 app.use('/performdetail', performdetail) ;
-app.use('/logonchk', logonchk) ;
+app.use('/testcomposit', testcomposit) ;
+app.use('/testdetail', testdetail) ;
+app.use('/transformboard', transformboard) ;
+app.use('/transformscenario', transformscenario) ;
 
 app.listen(port,'0.0.0.0', () => {
    console.log(`Server is up at port ${port}`);
