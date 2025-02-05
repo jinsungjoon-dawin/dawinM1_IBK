@@ -1,12 +1,12 @@
 <script lang="ts">
-  import Chart, { plugins } from 'chart.js/auto';
+  import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount } from "svelte";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
   let chartCanvas;
-  
+
   let totalSum = 999;
   // 플러그인 정의
   const centerTextPlugin = {
@@ -14,17 +14,17 @@
   beforeDraw(chart) {
     const { width, height, ctx } = chart;
     ctx.restore();
-    const fontSize = 1;
+    const fontSize = 2;
     ctx.font = `${fontSize}em sans-serif`;
+    ctx.fillStyle = "#ffffff";
     ctx.textBaseline = "middle";
     ctx.textAlign = "center";
-    ctx.fillStyle = "#ffffff";
-
     // 중앙에 총합 표시
-    ctx.fillText(`총합: ${totalSum}`, width / 2, height - 30);
+    ctx.fillText(` ${totalSum}%`, width / 2, height - 50);
     ctx.save();
   },
 };
+
   let config = {
     type: "doughnut",
     data: {
@@ -46,14 +46,15 @@
         //   'rgba(54, 162, 235, 1)',
         //   'rgba(255, 206, 86, 1)',
         //   'rgba(75, 192, 192, 1)',
-        //   // 'rgba(153, 102, 255, 1)',
-        //   // 'rgba(255, 159, 64, 1)',
+        //   'rgba(153, 102, 255, 1)',
+        //   'rgba(255, 159, 64, 1)',
         // ],
         borderWidth: 1,
       },
     ],
   },
   plugins:[centerTextPlugin],
+
   options: {
    
     responsive: true,
@@ -62,20 +63,23 @@
     plugins: {
       datalabels: {
         color: 'white', // 텍스트 색상
-        anchor: 'end', // 라벨 위치 조정
-        align: 'top', // 라벨 정렬
+        anchor: 'center', // 라벨 위치 조정
+        align: 'center', // 라벨 정렬
         font: {
           size: 12, // 폰트 크기
         },
         formatter: (value) => value, // 표시할 값 (기본은 데이터 값)
       },
       legend: {
-        display: false, // 범례 표시 여부
-        labels:{color:'#fff'}
+        display: true, // 범례 표시 여부
+        labels:{color:'#fff',
+          boxWidth:14
+        }
       },
       title: {
         display: true,
-        text: '타이틀 임시',  
+        // text: '타이틀 임시',
+        text:"선행 차수 종합 현황",  // 동적으로 생성된 제목 사용
         font:{size:20},
         color:'white'
       },
@@ -83,15 +87,33 @@
   },
   };
 
-
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
-   
     chartx = new Chart(ctx, config);
-
-    
   });
-
+  // 박스 데이터 타입 정의
+  interface ChartTitle {
+    title: string;
+   
+  }
+  // 박스 데이터 배열
+  const chartTitle: ChartTitle[] = [
+      // 상단 종합 현황 차트
+      { title: "선행 차수 종합 현황" },
+      // 첫번 째 프로젝트 
+      { title: "1.사전작업" },
+      { title: "2.사전이행" },
+      { title: "3.본 이행" },
+      { title: "4.사후 작업" },
+      
+      { title: "Box 2" },
+      { title: "Box 3" },
+      { title: "Box 4" }
+  ];
+  // 차트 제목을 chartTitle 배열을 기반으로 동적으로 생성하는 함수
+  const generateTitle = () => {
+    return chartTitle.map(item => `${item.title}`).join(' | ');
+  };
   // async function getData() {
   //   const res = await fetch("/barChart");
   //   if (res.ok)
@@ -116,8 +138,58 @@
     ];
     chartx.update()
   }, 5000);
+
+  // statusData 배열을 정의
+  interface StatusItem {
+    label: string;
+    count: number;
+  }
+
+  const statusData: StatusItem[] = [
+    { label: "Task", count: 100 },
+    { label: "완료", count: 4 },
+    { label: "진행중", count: 3 },
+    { label: "미수행", count: 93 }
+  ];
 </script>
+<style>
+  .item {
+    width: 25%;
+    text-align: center;
+    margin-top: -1.25rem; /* mt-5 */
+    border: 1px solid #ccc; /* border 추가 */
+    padding: 0.5rem; /* padding 추가 */
+  }
+
+  .testCol{
+    color: aliceblue;
+  }
   
+</style>
   <canvas bind:this={chartCanvas} id="myChart"></canvas>
+  <div class="flex w-full ">
+    <!-- <span class="w-1/4 text-center -mt-5 item">
+      Task  <br>
+      100  
+    </span>
+    <span class="w-1/4 text-center -mt-5 item">
+      완료  <br>
+      4
+    </span>
+    <span class="w-1/4 text-center -mt-5 item">
+      진행중  <br>
+      3
+    </span>
+    <span class="w-1/4 text-center -mt-5 item">
+      미수행  <br>
+     93
+    </span> -->
+    {#each statusData as { label, count }}
+    <span class="w-1/4 text-center -mt-5 item mb-1 testCol">
+      {label} <br>
+      {count}
+    </span>
+  {/each}
+  </div>
   
 
