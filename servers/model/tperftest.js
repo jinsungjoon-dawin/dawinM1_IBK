@@ -7,22 +7,35 @@ const tperftest = {
      */
     tperftest_find : async () => {
         let rows = await mondb.query(` with t as
-                                        (select sid               as sid
-                                              , avg(svctime)      as svctime
-                                              , avg(svctime_asis) as svctimeasis
-                                         from tperftest
-                                         where tid in (select max(tid) as tid from tperfcode where gb='3')
-                                         group by sid)
-                                        select x.apnm 					as apnm
-                                            , x.tcnt 					as tcnt
-                                            , x.scnt 					as scnt
-                                            , x.nocnt 					as nocnt
-                                            , x.tcnt-(x.nocnt+x.scnt) 	as delay
+                                            (select a.sid               as sid
+                                                , avg(a.svctime)      as svctime
+                                                , avg(a.svctime_asis) as svctimeasis
+                                                , sum(a.sflag)		as sflag
+                                                , max(b.gb)	as gb
+                                            from tperftest a
+                                            join tperfcode b
+                                                on a.tid = b.tid
+                                            where a.tid in (select tid
+                                                                from tperfcode
+                                                                where (lastDt, gb) in (select max(lastDt), min(gb) 
+                                                                                        from tperfcode 
+                                                                                        where lastDt in (select max(lastDt) from tperfcode)
+                                                                                    )
+                                                            )
+                                            group by a.sid)
+                                        select x.apnm 																			as apnm		-- 업무명
+                                            , x.tcnt 																			as tcnt		-- 총건수
+                                            , case x.gb when '3' then x.impr else x.suss end 									as scnt		-- 향상/성공건수
+                                            , x.nocnt 																			as nocnt	-- 미수행건수
+                                            , case x.gb when '3' then x.tcnt-(x.nocnt+x.impr) else x.tcnt-(x.nocnt+x.suss) end	as delay	-- 지연/실패건수
+                                            , NVL(x.gb, lag(x.gb) over (order by x.apnm))										as gb 		-- 구분(3:성능, 그외:테스트)
                                         from (
-                                                select a.apnm 									as apnm
-                                                    , count(1) 								    as tcnt
-                                                    , sum(if(t.sid is null,1,0)) 				as nocnt
-                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) 	as scnt
+                                                select a.apnm 																as apnm
+                                                    , count(1) 															    as tcnt
+                                                    , sum(if(t.sid is null,1,0)) 											as nocnt
+                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) 								as impr
+                                                    , sum(case when t.sid is not null and t.sflag = 0 then 1 else 0 end) 	as suss
+                                                    , t.gb
                                                 from tsid s
                                                 join tapid a
                                                     on s.apid = a.apid
@@ -30,6 +43,7 @@ const tperftest = {
                                                     on s.sid = t.sid
                                                 group by a.apnm
                                             ) x
+                                        order by x.apnm
                                     `) ;
         return(rows) ;
     },
@@ -39,24 +53,39 @@ const tperftest = {
      */
     tperftest_result : async () => {
         let rows = await mondb.query(`  with t as
-                                            (select sid				    as sid
-                                                  , avg(svctime) 	    as svctime
-                                                  , avg(svctime_asis)   as svctimeasis
-                                             from tperftest
-                                             where tid in (select max(tid) as tid from tperfcode where gb='3')
-                                             group by sid)
-                                            select tcnt						as tcnt
-                                                , improve					as scnt
-                                                , notperf					as nocnt
-                                                , tcnt-(notperf+improve) 	as delay
-                                            from (
-                                                    select count(1)                                 as tcnt
-                                                        , sum(if(t.sid is null,1,0))                as notperf
-                                                        , sum(if(t.svctime < t.svctimeasis,1,0))    as improve
-                                                    from tsid s
-                                                    left join t
-                                                        on s.sid = t.sid
-                                                ) x
+                                            (select a.sid               as sid
+                                                , avg(a.svctime)      as svctime
+                                                , avg(a.svctime_asis) as svctimeasis
+                                                , sum(a.sflag)		as sflag
+                                                , max(b.gb)	as gb
+                                            from tperftest a
+                                            join tperfcode b
+                                                on a.tid = b.tid
+                                            where a.tid in (select tid
+                                                                from tperfcode
+                                                                where (lastDt, gb) in (select max(lastDt), min(gb) 
+                                                                                        from tperfcode 
+                                                                                        where lastDt in (select max(lastDt) from tperfcode)
+                                                                                    )
+                                                            )
+                                            group by a.sid)
+                                        select x.tcnt 																			as tcnt		-- 총건수
+                                            , case x.gb when '3' then x.impr else x.suss end 									as scnt		-- 향상/성공건수
+                                            , x.nocnt 																			as nocnt	-- 미수행건수
+                                            , case x.gb when '3' then x.tcnt-(x.nocnt+x.impr) else x.tcnt-(x.nocnt+x.suss) end	as delay	-- 지연/실패건수
+                                            , x.gb																				as gb 		-- 구분(3:성능, 그외:테스트)
+                                        from (
+                                                select count(1) 															as tcnt
+                                                    , sum(if(t.sid is null,1,0)) 											as nocnt
+                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) 								as impr
+                                                    , sum(case when t.sid is not null and t.sflag = 0 then 1 else 0 end) 	as suss
+                                                    , max(nvl(t.gb,''))													as gb
+                                                from tsid s
+                                                join tapid a
+                                                    on s.apid = a.apid
+                                                left join t
+                                                    on s.sid = t.sid
+                                            ) x
                                     `) ;
         return(rows) ;
     },    
