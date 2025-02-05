@@ -1,5 +1,5 @@
 <script>
-  import TestComposit from "./TestComposit.svelte";
+  import PerformComposit from "./PerformComposit.svelte";
   import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
@@ -13,6 +13,7 @@
     tobedt: ""
   };
 
+  let selectedRow = 0;
   let dates = [];
   let datas = [];
   let list = [];
@@ -21,7 +22,6 @@
   async function getPerformcomposit() {
     const res = await fetch($rooturl + "/performcomposit" );
     if (res.ok){
-    
       return await res.json();
     }else
       throw new Error(res.statusText);
@@ -29,7 +29,6 @@
 
 
   async function getPerformcompositList() {
-    
     const res = await fetch($rooturl + "/performdetail/perfde_list?asisdt=" + conds.asisdt + "&tobedt=" + conds.tobedt);
     if (res.ok){
       list = await res.json();
@@ -47,8 +46,8 @@
       conds.asisdt = dates[0].asisdt;
       conds.tobedt = dates[0].tobedt;
       list = await getPerformcompositList();
+      
     }
-    //[{"tname":"성능1차 테스트 결과","tobedt":"2025-01-20"}]
   });
 
   function exportToExcel() {
@@ -81,7 +80,6 @@
     URL.revokeObjectURL(url);
   }
 
-  let selectedRow = 0;
 
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
@@ -122,8 +120,8 @@
       {#each dates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
             <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}">
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}">
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" disabled>
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" disabled>
             <!-- <button class="w-1/6 bx bx-search-alt-2" on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; }}>조회</button> -->
         </div>
       {/each}

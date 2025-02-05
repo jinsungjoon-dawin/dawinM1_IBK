@@ -79,14 +79,21 @@
       },
       
     };
-
+  
+  export  async function parentCall() {  
+      const rdata = await getData() ;
+      chartDraw(rdata);
+  }
   async function getData() {
     
     let service = "";
     if(page === "S")      service = "/dashboard/perftest_list";
     else if(page === "D") service = "/dashboard/datatr_list"; 
     else if(page === "M") service = "/dashboard/datatr_checkres"; 
-    else if(page === "P" || page === "T") service = "/performcomposit/perfcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
+    else if(page === "P") service = "/performcomposit/perfcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
+    else if(page === "T") service = "/testcomposit/testcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
+
+    
     const res = await fetch($rooturl + service);
     if (res.ok)
       return await res.json();
@@ -96,7 +103,7 @@
   
   
   function chartDraw(rdata){
-    if(page === "S" || page === "P" || page === "T"){//성능
+    if(page === "S" || page === "P"){//성능
       let apnms = [];
       let tcnts = [];
       let scnts = [];
@@ -142,7 +149,54 @@
         config.data.datasets[3].data = nocnts;
       
       config.options.plugins.title.text = "주제별 진행 현황";
-    }else if(page === "D"){ //대시보드 데이터 이행 현황
+    }if(page === "T"){//성능
+      let apnms = [];
+      let tcnts = [];
+      let scnts = [];
+      let delays = [];
+      let nocnts = [];
+      let totCnt = 0;
+      
+      rdata.forEach((element) => {
+        apnms.push(element.apnm);
+        tcnts.push(element.tcnt);
+        totCnt += element.tcnt;
+        scnts.push(element.scnt);
+        delays.push(element.delay);
+        nocnts.push(element.nocnt);
+      });
+      config.data.labels = apnms;
+      config.data.datasets[0].data = tcnts ;
+      config.data.datasets[1].data = scnts;
+      
+        config.data.datasets[1].label = "수행";
+          if(config.data.datasets.length==2){
+          config.data.datasets.push({
+            label: '실패',  // 두 번째 데이터셋
+            backgroundColor:['#b604ce'],
+            borderWidth: 1,
+            borderRadius:10
+          });
+          config.data.datasets.push({
+            label: '미수행',  // 두 번째 데이터셋
+            backgroundColor:['#3cba9f'],
+            borderWidth: 1,
+            borderRadius:10
+          });
+        }
+        config.options.scales.x.stacked = true;
+        config.options.scales.y.stacked = true;
+        config.data.datasets[0].stack = 'group1';
+        config.data.datasets[1].stack = 'group2';
+        config.data.datasets[2].stack = 'group2';
+        config.data.datasets[3].stack = 'group2';
+        config.data.datasets[2].data = delays;
+        config.data.datasets[2].color = "black";
+        config.data.datasets[3].data = nocnts;
+      
+      config.options.plugins.title.text = "주제별 진행 현황";
+    }
+    else if(page === "D"){ //대시보드 데이터 이행 현황
       let labels = ["Table", "Index", "Object", "Invalid Object"];
       let asiss = [rdata[0].tblasis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidasis];
       let tobes = [rdata[0].tbltobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidtobe];
@@ -175,8 +229,12 @@
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
     chartx = new Chart(ctx, config);
-    const rdata = await getData() ;
-    chartDraw(rdata);
+    // const rdata = await getData() ;
+    // chartDraw(rdata);
+    setTimeout(async() => {
+      const rdata = await getData() ;
+      chartDraw(rdata);
+    }, 100);
   });
 
   onDestroy(()=> clearInterval(interval));

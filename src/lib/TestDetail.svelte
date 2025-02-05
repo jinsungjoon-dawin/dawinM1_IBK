@@ -7,21 +7,22 @@
   export let selectedValue = '';
   import * as XLSX from 'xlsx';
 
-  let selected = true;
+  let selecetd = true;
   let conds = {
     asisdt: "",
-    tobedt: ""
+    tobedt: "",
+    idx:0
   };
 
   let dates = [];
   let datas = [];
   let list = [];
   
+  let selectedRow = selectedValue.idx;
   //차수, ASIS 일자, TOBE 일자 조회
-  async function getPerformcomposit() {
-    const res = await fetch($rooturl + "/performcomposit" );
+  async function getTestcomposit() {
+    const res = await fetch($rooturl + "/testcomposit");
     if (res.ok){
-    
       return await res.json();
     }else
       throw new Error(res.statusText);
@@ -30,7 +31,7 @@
 
   async function getPerformcompositList() {
     
-    const res = await fetch($rooturl + "/performdetail/perfde_list?asisdt=" + conds.asisdt + "&tobedt=" + conds.tobedt);
+    const res = await fetch($rooturl + "/testdetail/testde_list?asisdt=" + conds.asisdt + "&tobedt=" + conds.tobedt);
     if (res.ok){
       list = await res.json();
       return list;
@@ -40,13 +41,14 @@
   }
 
   onMount(async () => {
-    dates = await getPerformcomposit();
+    dates = await getTestcomposit();
     
     //[{"seq":"1차","asisdt":"2025-01-02","tobedt":"2025-01-20"}]
     if(dates.length > 0){
       conds.asisdt = dates[0].asisdt;
       conds.tobedt = dates[0].tobedt;
       list = await getPerformcompositList();
+      datas = dates[selectedRow];
     }
     //[{"tname":"성능1차 테스트 결과","tobedt":"2025-01-20"}]
   });
@@ -81,7 +83,6 @@
     URL.revokeObjectURL(url);
   }
 
-  let selectedRow = 0;
 
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
@@ -122,8 +123,8 @@
       {#each dates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
             <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}">
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}">
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" disabled>
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" disabled>
             <!-- <button class="w-1/6 bx bx-search-alt-2" on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; }}>조회</button> -->
         </div>
       {/each}
@@ -236,5 +237,5 @@
 </div>
 </div>
 {:else}
-  <PerformComposit></PerformComposit>
+  <TestComposit></TestComposit>
 {/if}

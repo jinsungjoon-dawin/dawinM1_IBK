@@ -13,7 +13,7 @@
 
 export let page;
 export let date;
-
+export let title;
   Chart.register(ChartDataLabels);
    let ctx, chartx;
    let chartCanvas;
@@ -27,13 +27,10 @@ export let date;
         labels: [],
         datasets: [
           {
-            // label: "Population (millions)",
-            // backgroundColor: ["#ff6384", "#3cba9f","#ffee00","#e8c3b9","#c45850"],
             backgroundColor: ["#ff6384", "#3cba9f","#b604ce","#e8c3b9","#c45850"],
-            // circumference: 180, // 도넛 반 자르기
-            //rotation: 270,
-             data: [],
-            // count: datas,
+            data: [],
+            borderColor :  ["#ff6380", "#3cba8f","#b603ce","#e8c3b0","#c45850"],
+            borderWidth: 2
           }
         ]
       },
@@ -66,7 +63,8 @@ export let date;
           font:{size:18},
           formatter: function(v, ctx) {
             if(v === 0)return "";
-              return v.toLocaleString(); 
+              // return v.toLocaleString(); 
+              return v; 
             }
           }
         },
@@ -78,10 +76,16 @@ export let date;
       },
       
   };
+
+  export  async function parentCall() {  
+      const rdata = await getData() ;
+      chartDraw(rdata);
+  }  
 async function getData() {
   let service = '';
   if(page === "S") service = "/dashboard/perftest_checkres";
-  if(page === "P" || page === "T") service = "/performcomposit/perfcomp_checkres?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
+  if(page === "P") service = "/performcomposit/perfcomp_checkres?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
+  if(page === "T") service = "/testcomposit/testcomp_checkres?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
   const res = await fetch($rooturl + service);
   if (res.ok)
     return await res.json();
@@ -90,23 +94,27 @@ async function getData() {
 }   
 
 function chartDraw(rdata){
-  if(page === "S" || page === "P" || page === "T") {
-    let labels = ["향상", "미수행", "지연"]
-    let datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
-    let totCnt = rdata[0].tcnt;
-    config.data.labels = labels;
-    config.data.datasets[0].data = datas ;
-    config.options.plugins.title.text = "변경해야함 대상 합계: " + totCnt + "개";
-    chartx.update();
+  let labels = ["성공", "미수행", "실패"];
+  if(page === "S" || page === "P" ) {
+    labels = ["향상", "미수행", "지연"]
   }
-  
+  let datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
+  let totCnt = rdata[0].tcnt;
+  config.data.labels = labels;
+  config.data.datasets[0].data = datas ;
+  config.options.plugins.title.text = (title === undefined ? "" : title) +" 합계: " + totCnt + "개";
+  chartx.update();
 }
 
 onMount( async () => {
   ctx = chartCanvas.getContext("2d");
   chartx = new Chart(ctx, config);
-  const rdata = await getData() ;
-  chartDraw(rdata);
+  // const rdata = await getData() ;
+  // chartDraw(rdata);
+  setTimeout(async() => {
+    const rdata = await getData() ;
+    chartDraw(rdata);
+  }, 100);
 });
 
 const interval = setInterval(async() => {

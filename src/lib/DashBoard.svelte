@@ -36,7 +36,7 @@
       <div class="flex justify-between w-full p-3">
         <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center ">
           <div>
-            <PieChart page={'S'} date={''}></PieChart>
+            <PieChart page={'S'} date={''} title={rdata[0]?.performnm}></PieChart>
           </div>
         </div>
         <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center ">
