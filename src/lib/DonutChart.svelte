@@ -2,6 +2,7 @@
   import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount } from "svelte";
+  import {rooturl, intlMs } from '../aqtstore';
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
@@ -37,7 +38,7 @@
          circumference: 180, // 도넛 반 자르기
             rotation: 270,
         backgroundColor: [
-          "#ff6384", "#3cba9f","#ffee00","#e8c3b9"
+          "#ff6384", "#3cba9f","#b604ce","#e8c3b9"
         //   'rgba(153, 102, 255, 0.2)',
         //   'rgba(255, 159, 64, 0.2)',
         ],
@@ -86,7 +87,6 @@
     },
   },
   };
-
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
     chartx = new Chart(ctx, config);
@@ -96,6 +96,16 @@
     title: string;
    
   }
+  interface ChartProjet {
+    project: string;
+  }
+
+  // 프로젝트 
+  const chartProjet: ChartProjet[] = [
+    { project: "마이테이타" },
+    { project: "자산관리" },
+
+  ];
   // 박스 데이터 배열
   const chartTitle: ChartTitle[] = [
       // 상단 종합 현황 차트
@@ -130,14 +140,14 @@
   //   console.log(config.data.datasets[0].data);
   //   chartx.update();
   // }, 5000);
-  setInterval(async() => {
-    config.data.datasets[0].data = [Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100), 
-        Math.floor(Math.random() * 100)
-    ];
-    chartx.update()
-  }, 5000);
+  // setInterval(async() => {
+  //   config.data.datasets[0].data = [Math.floor(Math.random() * 100), 
+  //       Math.floor(Math.random() * 100), 
+  //       Math.floor(Math.random() * 100), 
+  //       Math.floor(Math.random() * 100)
+  //   ];
+  //   chartx.update()
+  // }, $intlMs);
 
   // statusData 배열을 정의
   interface StatusItem {
