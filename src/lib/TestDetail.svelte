@@ -7,7 +7,7 @@
   export let selectedValue = '';
   import * as XLSX from 'xlsx';
 
-  let selecetd = true;
+  let selected = true;
   let conds = {
     asisdt: "",
     tobedt: "",
@@ -18,7 +18,7 @@
   let datas = [];
   let list = [];
   
-  let selectedRow = selectedValue.idx;
+  let selectedRow = 0;
   //차수, ASIS 일자, TOBE 일자 조회
   async function getTestcomposit() {
     const res = await fetch($rooturl + "/testcomposit");
@@ -111,20 +111,25 @@
       window.print();
   }
 </script>
+<style>
+  .hover\:bg-orange-100:hover {
+      background-color: darkgrey 
+  }
+</style>
 {#if selected}
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
-    <div class="flex  border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; getPerformcompositList(); handleRowClick(idx);}}>
-      <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">차수 </label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">Asis</label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">Tobe</label>
+    <div class="flex  border border-gray-100 rounded border-gray-100 border-zinc-600 text-zinc-100 ">
+      <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label>
     </div>
     {#if dates.length !== 0}
       {#each dates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
             <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" disabled>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" disabled>
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
+            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
             <!-- <button class="w-1/6 bx bx-search-alt-2" on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; }}>조회</button> -->
         </div>
       {/each}

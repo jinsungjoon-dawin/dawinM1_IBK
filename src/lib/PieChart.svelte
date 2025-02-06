@@ -94,11 +94,25 @@ async function getData() {
 }   
 
 function chartDraw(rdata){
-  let labels = ["성공", "미수행", "실패"];
-  if(page === "S" || page === "P" ) {
+  let labels = [];
+  let datas = [];
+  if(page === "S") {//dashboard
+    if(rdata[0].gb==="3"){
+      labels = ["향상", "미수행", "지연"]
+      datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
+    }
+    else{
+      labels = ["성공", "미수행", "실패"];
+      datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].fcnt];
+    }
+  }else if(page === "P" ) {//성능
     labels = ["향상", "미수행", "지연"]
+    datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
   }
-  let datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
+  else{//테스트
+    labels = ["성공", "미수행", "실패"];
+    datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].fcnt];
+  }
   let totCnt = rdata[0].tcnt;
   config.data.labels = labels;
   config.data.datasets[0].data = datas ;

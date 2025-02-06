@@ -235,8 +235,8 @@
      
       <div class="flex justify-center">
         &nbsp;
-        <img src="assets/src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" />
-         <!-- <img src="../img/DAWINICT_logo.png" alt="Logo" class="w-72 h-72 object-contain" /> -->
+        <!-- <img src="assets/src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" /> -->
+         <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" />
       </div>
       
     </div>

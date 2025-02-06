@@ -103,7 +103,73 @@
   
   
   function chartDraw(rdata){
-    if(page === "S" || page === "P"){//성능
+    if(page === "S"){//성능
+      let apnms = [];
+      let tcnts = [];
+      let scnts = [];
+      let delays = [];
+      let nocnts = [];
+      let totCnt = 0;
+      
+      rdata.forEach((element) => {
+        apnms.push(element.apnm);
+        tcnts.push(element.tcnt);
+        totCnt += element.tcnt;
+        scnts.push(element.scnt);
+        if(element.gb === "3")delays.push(element.delay);
+        else                  delays.push(element.fcnt);
+        nocnts.push(element.nocnt);
+      });
+      config.data.labels = apnms;
+      config.data.datasets[0].data = tcnts ;
+      config.data.datasets[1].data = scnts;
+
+      if(rdata[0].gb === "3")config.data.datasets[1].label = "향상";
+      else                   config.data.datasets[1].label = "성공";
+      if(rdata[0].gb === "3"){    
+        if(config.data.datasets.length==2){
+            config.data.datasets.push({
+              label: '지연',  // 두 번째 데이터셋
+              backgroundColor:['#b604ce'],
+              borderWidth: 1,
+              borderRadius:10
+            });
+            config.data.datasets.push({
+              label: '미수행',  // 두 번째 데이터셋
+              backgroundColor:['#3cba9f'],
+              borderWidth: 1,
+              borderRadius:10
+            });
+          }
+        }
+        else{    
+          if(config.data.datasets.length==2){
+              config.data.datasets.push({
+                label: '실패',  // 두 번째 데이터셋
+                backgroundColor:['#b604ce'],
+                borderWidth: 1,
+                borderRadius:10
+              });
+              config.data.datasets.push({
+                label: '미수행',  // 두 번째 데이터셋
+                backgroundColor:['#3cba9f'],
+                borderWidth: 1,
+                borderRadius:10
+              });
+            }
+        }
+        config.options.scales.x.stacked = true;
+        config.options.scales.y.stacked = true;
+        config.data.datasets[0].stack = 'group1';
+        config.data.datasets[1].stack = 'group2';
+        config.data.datasets[2].stack = 'group2';
+        config.data.datasets[3].stack = 'group2';
+        config.data.datasets[2].data = delays;
+        config.data.datasets[2].color = "black";
+        config.data.datasets[3].data = nocnts;
+      
+      config.options.plugins.title.text = "주제별 진행 현황";
+      }else if(page === "P"){//성능
       let apnms = [];
       let tcnts = [];
       let scnts = [];
@@ -149,7 +215,8 @@
         config.data.datasets[3].data = nocnts;
       
       config.options.plugins.title.text = "주제별 진행 현황";
-    }if(page === "T"){//성능
+      }
+      else if(page === "T"){//테스트
       let apnms = [];
       let tcnts = [];
       let scnts = [];
@@ -162,7 +229,7 @@
         tcnts.push(element.tcnt);
         totCnt += element.tcnt;
         scnts.push(element.scnt);
-        delays.push(element.delay);
+        delays.push(element.fcnt);
         nocnts.push(element.nocnt);
       });
       config.data.labels = apnms;

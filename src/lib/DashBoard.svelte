@@ -28,6 +28,7 @@
  
 </style>
 <div class="flex flex-col  max-h-svh">
+  {#if rdata}
   <div class=" bg-gray-700 rounded-lg">
     <div class="flex w-full border-b-2 border-gray-500 items-center text-yellow-100">
         <h1 class="w-3/5 text-2xl tracking-tight p-3">최신 {rdata[0]?.performnm} </h1>
@@ -58,4 +59,7 @@
         </div>
       </div>
   </div>
+  
+    
+  {/if}
 </div>

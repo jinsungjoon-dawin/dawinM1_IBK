@@ -73,25 +73,21 @@ function getToDate(){
             <ul class="ml-10 flex items-baseline space-x-4">
               {#each menus as item, idx}
                 <li class="py-1">
-                  {#if idx === menuIdx && item.pageNm === "관리자"}
-                    <div class="group relative dropdown px-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">
-                      <a>관리자</a>
+                    {#if item.pageNm === "관리자"}
+                    <div class="group relative dropdown px-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300 ">
+                      <a class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}">관리자</a>
                       <div class="group-hover:block dropdown-menu absolute hidden h-auto">
                         <ul class="top-0 w-48 bg-gray-900 shadow px-6 py-1">
-                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=BulkRegistrationOfUsers;pageNm = "사용자 관리"}}>사용자 관리</a></li>
-                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=DeleteUsersInBulk;pageNm = "성능 Data 관리"}}>성능 Data 관리</a></li>
-                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=IndividualUserManagement;pageNm = "Data 검증 관리"}}>Data 검증 관리</a></li>
-                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=UploadManagement;pageNm = "시나리오 관리"}}>시나리오 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=BulkRegistrationOfUsers;pageNm = "사용자 관리";menuIdx = idx}}>사용자 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=DeleteUsersInBulk;pageNm = "성능 Data 관리";menuIdx = idx}}>성능 Data 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=IndividualUserManagement;pageNm = "Data 검증 관리";menuIdx = idx}}>Data 검증 관리</a></li>
+                          <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=UploadManagement;pageNm = "시나리오 관리";menuIdx = idx}}>시나리오 관리</a></li>
                         </ul>
                       </div>
                     </div>
-                  {:else}
-                    {#if item.pageNm === "관리자"}
-                    <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:click={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
                     {:else}
                     <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
                     {/if}
-                  {/if}
                 </li>
               {/each}
             </ul>
