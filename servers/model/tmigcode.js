@@ -13,15 +13,15 @@ const tmigcode = {
                                           , x.endDt 			as enddt
                                           , x.scenario 		as scenario 
                                         from (
-                                            select a.mid 							              as mid
-                                              , a.desc							as midnm
-                                              , a.mgb 							as mgb
+                                            select a.mid 						                as mid
+                                              , a.desc							                as midnm
+                                              , a.mgb 							                as mgb
                                               , case a.mgb when 1 then '이행리허설'
                                                       when 2 then '본이행'
-                                                      else '기타' end 		as mgbnm
-                                              , a.startDt 						as startdt
-                                              , a.endDt 							as enddt
-                                              , a.scenario 						as scenario 
+                                                      else '기타' end 		          as mgbnm
+                                              , a.startDt 						              as startdt
+                                              , a.endDt 							              as enddt
+                                              , a.scenario 						              as scenario 
                                             from tmigcode a
                                           ) x
                                         order by x.mgb desc, x.startDt desc, x.mid
