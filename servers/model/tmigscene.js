@@ -1,4 +1,4 @@
-import mondb from '../db/dbconn.js' ;
+import mondb from '../db/dbconn.js';
 
 const tmigscene = {
     /**
