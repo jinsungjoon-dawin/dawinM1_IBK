@@ -2,39 +2,44 @@ import mondb from '../db/dbconn.js' ;
 
 const tmigcode = {
     /**
-     * 
+     * 시스템이행 기준정보
      */
     ttranslist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')				     as seq
-                                          , asisDt						           as asisdt
-                                          , lastDt 						           as tobedt
-                                          , concat(tname, ' 테스트 결과')	as tname
-                                      from tperfcode
-                                      where gb = '3'
-                                      order by lastDt desc
+      let rows = await mondb.query(` select x.mid 			  as mid
+                                          , x.midnm			  as midnm
+                                          , x.mgb 			  as mgb
+                                          , x.mgbnm			  as mgbnm
+                                          , x.startDt 		as startdt
+                                          , x.endDt 			as enddt
+                                          , x.scenario 		as scenario 
+                                        from (
+                                            select 0 								                as mid
+                                              , '제목'								              as midnm
+                                              , a.mgb 							                as mgb
+                                              , case a.mgb when 1 then '이행리허설'
+                                                      when 2 then '본이행'
+                                                      else '기타' end 		          as mgbnm
+                                              , '9999-12-31'						            as startdt
+                                              , '9999-12-31'						            as enddt
+                                              , 0		 						                    as scenario 
+                                            from tmigcode a
+                                            group by a.mgb
+                                            union all
+                                            select a.mid 							              as mid
+                                              , a.desc							as midnm
+                                              , a.mgb 							as mgb
+                                              , case a.mgb when 1 then '이행리허설'
+                                                      when 2 then '본이행'
+                                                      else '기타' end 		as mgbnm
+                                              , a.startDt 						as startdt
+                                              , a.endDt 							as enddt
+                                              , a.scenario 						as scenario 
+                                            from tmigcode a
+                                          ) x
+                                        order by x.mgb, x.startDt desc, x.mid
                                   ` ) ;                                               
       return(rows) ;
     },    
-    /**
-     * 
-     */
-    save : async (args) => {
-        try {
-            let results = await mondb.query(`update tperfcode
-                                                SET tname=?
-                                                  , gb=?
-                                                  ,	startDt=?
-                                                  ,	lastDt=?
-                                                WHERE TID=?
-                                                and SEQ=?
-                                            `, [args.tname, args.gb, args.startdt, args.lastdt, args.tid, args.seq] ) ;
-
-          return 1;
-        } catch (e) {
-          console.error(e) ;
-          return 0;
-        }
-    },
 }
  
 export default tmigcode ;

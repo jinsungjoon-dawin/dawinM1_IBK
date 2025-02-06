@@ -8,9 +8,9 @@ const tperftest = {
     tperftest_find : async () => {
         let rows = await mondb.query(` with t as
                                             (select a.sid               as sid
-                                                , avg(a.svctime)      as svctime
-                                                , avg(a.svctime_asis) as svctimeasis
-                                                , sum(a.sflag)		as sflag
+                                                , avg(a.svctime)        as svctime
+                                                , avg(a.svctime_asis)   as svctimeasis
+                                                , sum(a.sflag)		    as sflag
                                                 , max(b.gb)	as gb
                                             from tperftest a
                                             join tperfcode b
@@ -54,9 +54,9 @@ const tperftest = {
     tperftest_result : async () => {
         let rows = await mondb.query(`  with t as
                                             (select a.sid               as sid
-                                                , avg(a.svctime)      as svctime
-                                                , avg(a.svctime_asis) as svctimeasis
-                                                , sum(a.sflag)		as sflag
+                                                , avg(a.svctime)        as svctime
+                                                , avg(a.svctime_asis)   as svctimeasis
+                                                , sum(a.sflag)		    as sflag
                                                 , max(b.gb)	as gb
                                             from tperftest a
                                             join tperfcode b

@@ -67,10 +67,10 @@ const tperfcode = {
      * 차수, ASIS 년월일, TOBE 년월일, 제목
      */
     tperflist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')				     as seq
-                                          , asisDt						           as asisdt
-                                          , lastDt 						           as tobedt
-                                          , concat(tname, ' 테스트 결과')	as tname
+      let rows = await mondb.query(` select concat(seq,'차')    as seq
+                                          , asisDt						  as asisdt
+                                          , lastDt 						  as tobedt
+                                          , trim(tname)         as tname
                                       from tperfcode
                                       where gb = '3'
                                       order by gb asc, seq desc, lastDt desc
@@ -85,8 +85,8 @@ const tperfcode = {
       // console.log("args.query.asisdt : " + args.query.asisdt);
       // console.log("args.query.tobedt : " + args.query.tobedt);
 
-      let rows = await mondb.query(` select concat(tname, ' 테스트 결과')	as tname
-                                          , lastDt 						           as tobedt
+      let rows = await mondb.query(` select tname       as tname
+                                          , lastDt 			as tobedt
                                         from tperfcode
                                         where gb = '3'
                                         and lastDt = ?
@@ -100,10 +100,10 @@ const tperfcode = {
      * 차수, ASIS 년월일, TOBE 년월일, 제목
      */
     ttestlist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')				     as seq
-                                          , asisDt						           as asisdt
-                                          , lastDt 						           as tobedt
-                                          , concat(tname, ' 테스트 결과')	as tname
+      let rows = await mondb.query(` select concat(seq,'차')			as seq
+                                          , asisDt						    as asisdt
+                                          , lastDt 						    as tobedt
+                                          , trim(tname)           as tname
                                       from tperfcode
                                       where gb <> '3'
                                       order by gb asc, seq desc, lastDt desc
@@ -118,8 +118,8 @@ const tperfcode = {
       // console.log("args.query.asisdt : " + args.query.asisdt);
       // console.log("args.query.tobedt : " + args.query.tobedt);
 
-      let rows = await mondb.query(` select concat(tname, ' 테스트 결과')	as tname
-                                          , lastDt 						           as tobedt
+      let rows = await mondb.query(` select trim(tname)   as tname
+                                          , lastDt 				as tobedt
                                         from tperfcode
                                         where gb <> '3'
                                         and lastDt = ?
