@@ -14,10 +14,8 @@
     idx:0
   };
 
-  let dates = [];
-  let datas = [];
+  let leftDates = [];
   let list = [];
-  
   let selectedRow = 0;
   //차수, ASIS 일자, TOBE 일자 조회
   async function getTestcomposit() {
@@ -41,14 +39,13 @@
   }
 
   onMount(async () => {
-    dates = await getTestcomposit();
+    leftDates = await getTestcomposit();
     
     //[{"seq":"1차","asisdt":"2025-01-02","tobedt":"2025-01-20"}]
-    if(dates.length > 0){
-      conds.asisdt = dates[0].asisdt;
-      conds.tobedt = dates[0].tobedt;
+    if(leftDates.length > 0){
+      conds.asisdt = leftDates[0].asisdt;
+      conds.tobedt = leftDates[0].tobedt;
       list = await getPerformcompositList();
-      datas = dates[selectedRow];
     }
     //[{"tname":"성능1차 테스트 결과","tobedt":"2025-01-20"}]
   });
@@ -57,15 +54,16 @@
     // JSON 데이터를 Worksheet로 변환
     // const worksheet = XLSX.utils.json_to_sheet(list);
     // 기본 데이터를 엑셀 시트로 변환 (헤더 없음)
-    const worksheet = XLSX.utils.json_to_sheet(list, { skipHeader: true });
+    // const worksheet = XLSX.utils.json_to_sheet(list, { skipHeader: true });
+    const worksheet = XLSX.utils.json_to_sheet(list.map(({ regdt, ...rest }) => rest), { skipHeader: true });
     // ✅ 사용자 정의 헤더 추가 (A1 행에 직접 추가)
-    XLSX.utils.sheet_add_aoa(worksheet, [["업무명", "구분", "테스트일시","시작시간","종료시간","소요시간","ASIS시작시간","ASIS종료시간","ASIS소요시간","등록시간"]], { origin: "A1" });
+    XLSX.utils.sheet_add_aoa(worksheet, [["주재", "구분", "테스트일시","시작시간","종료시간","수행시간","ASIS시작시간","ASIS종료시간","소요시간"]], { origin: "A1" });
 
     const workbook = XLSX.utils.book_new();
     
     XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
 
-    // 엑셀 파일 생성
+    // 엑셀 파일 생성ㄴ
     const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
     
     // Blob을 사용하여 파일 다운로드
@@ -74,7 +72,7 @@
     
     const a = document.createElement("a");
     a.href = url;
-    a.download = "테스트결과.xlsx";
+    a.download = leftDates[selectedRow].tname +"_테스트결과.xlsx";
     document.body.appendChild(a);
     a.click();
     
@@ -91,15 +89,17 @@
   
   
 
+  let selectedStatus = "ALL";
   let currentPage = 1;
   let itemsPerPage = 10;
 
-  $: paginatedlist = list.slice(
-      (currentPage - 1) * itemsPerPage,
-      currentPage * itemsPerPage
-  );
 
-  $: totalPages = Math.ceil(list.length / itemsPerPage);
+
+  $: paginatedlist = selectedStatus === "ALL" ? 
+      list.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
+    : list.filter(list => list.gubun === selectedStatus).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); 
+  
+  $: totalPages = Math.ceil((selectedStatus === "ALL" ? list.length : list.filter(item => item.gubun === selectedStatus).length) / itemsPerPage);
 
   function goToPage(page) {
       if (page > 0 && page <= totalPages) {
@@ -120,51 +120,60 @@
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-gray-100 border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
+      <!-- <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label> -->
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label>
     </div>
-    {#if dates.length !== 0}
-      {#each dates as item, idx}
+    {#if leftDates.length !== 0}
+      {#each leftDates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
-            <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
-            <!-- <button class="w-1/6 bx bx-search-alt-2" on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; }}>조회</button> -->
+            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
+            <!-- <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly> -->
+            <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
         </div>
       {/each}
     {/if}
   </div>
     
   <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
-    {#if dates.length !== 0}
+    {#if leftDates.length !== 0}
         <!-- {#each datas as item, idx} -->
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{dates[selectedRow].tname}</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = dates[selectedRow]}}>수행 일자: {dates[selectedRow].tobedt}</h1>
-          </div>
-            <div class="text-end w-full ">
-              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mt-3 mr-3" on:click={exportToExcel}>엑셀 다운로드</button>
-              
-            </div>    
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} 테스트</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = leftDates[selectedRow]}}>수행 일자: {leftDates[selectedRow].tobedt}</h1>
+              <div class="w-36 px-4 text-end">
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>이전보기</button>
+              </div>  
+            </div>
+           
+            <div class="flex justify-end items-center w-full mt-3">
+              <label class="text-gray-300">조회조건 상태:</label>
+              <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10">
+                <option value="ALL">전체</option>
+                <option value="대상">대상</option>
+                <!-- <option value="수행">수행</option> -->
+                <option value="성공">성공</option>
+                <option value="실패">실패</option>
+                <option value="미수행">미수행</option>
+              </select>
+              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={exportToExcel}>엑셀 다운로드</button>
+            </div>
             <div class="flex flex-wrap w-full p-3 justify-center">
-              <!-- <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center overflow-auto"> -->
                 <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
-                
-                <table class="w-max text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
                     <thead>
                         <tr class="border-b">
-                            <th class="text-left p-3 px-5 ">업무명</th>
+                            <th class="text-left p-3 px-5 ">주제</th>
                             <th class="text-left p-3 px-5 ">구분</th>
                             <th class="text-left p-3 px-5 ">테스트일시</th>
                             <th class="text-left p-3 px-5 ">시작시간</th>
                             <th class="text-left p-3 px-5 ">종료시간</th>
-                            <th class="text-left p-3 px-5 ">소요시간</th>
+                            <th class="text-left p-3 px-5 ">수행시간</th>
                             <th class="text-left p-3 px-5 ">ASIS시작시간</th>
                             <th class="text-left p-3 px-5 ">ASIS종료시간</th>
-                            <th class="text-left p-3 px-5 ">ASIS소요시간</th>
-                            <th class="text-left p-3 px-5 ">등록시간</th>
+                            <th class="text-left p-3 px-5 ">ASIS수행시간</th>
+                            <!-- <th class="text-left p-3 px-5 ">등록시간</th> -->
                             
                         </tr>
                     </thead>
@@ -174,48 +183,36 @@
                             {#each paginatedlist as item, index}
                                 <tr class="border-b hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
                                     <td class="p-3 px-5 ">
-                                        <!-- <input type="text" bind:value={item.apnm} class="bg-transparent" /> -->
                                         {item.apnm} 
                                     </td>
                                     <td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.gubun} class="bg-transparent" /> -->
                                       {item.gubun}
                                   </td>
                                    
                                     <td class="p-3 px-5  ">
-                                        <!-- <input type="text" bind:value={item.tstime} class="bg-transparent" /> -->
                                         {item.tstime}
                                     </td>
                                     <td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.stime} class="bg-transparent" /> -->
                                       {item.stime}
                                     </td>
 
                                     <td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.etime} class="bg-transparent" /> -->
                                       {item.etime}
                                     </td>
                                     <td class="p-3 px-5 ">
-                                      <!-- <input type="text" bind:value={item.svctime} class="bg-transparent" /> -->
                                       {item.svctime}
                                     </td><td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.stimeasis} class="bg-transparent" /> -->
                                       {item.stimeasis}
                                     </td><td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.etimeasis} class="bg-transparent" /> -->
                                       {item.etimeasis}
                                     </td><td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.svctimeasis} class="bg-transparent" /> -->
                                       {item.svctimeasis}
-                                    </td><td class="p-3 px-5  ">
-                                      <!-- <input type="text" bind:value={item.regdt} class="bg-transparent" /> -->
-                                      {item.regdt}
                                     </td>
                                 </tr>
                             {/each}
                         {:else}
                             <tr>
-                                <td colspan="7" class="p-3 px-5 text-center text-yellow-100">사용자가 없습니다.</td>
+                                <td colspan="9" class="p-3 px-5 text-center text-yellow-100">조회된 데이터가 없습니다.</td>
                             </tr>
                         {/if}
                     </tbody>

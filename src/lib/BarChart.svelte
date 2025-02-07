@@ -1,4 +1,4 @@
-<script lang="ts">
+<script>
   import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount, onDestroy } from "svelte";
@@ -6,10 +6,11 @@
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   
-  export let page;
-  export let date;
-  let ctx, chartx;
-  let chartCanvas;
+  // export let page;
+  // export let date;
+  let { page } = $props();
+  let ctx, chartx, chartCanvas;
+  
   let config =  {
       type: 'bar',
       data: {
@@ -90,8 +91,6 @@
     if(page === "S")      service = "/dashboard/perftest_list";
     else if(page === "D") service = "/dashboard/datatr_list"; 
     else if(page === "M") service = "/dashboard/datatr_checkres"; 
-    else if(page === "P") service = "/performcomposit/perfcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
-    else if(page === "T") service = "/testcomposit/testcomp_list?asisdt="+date.asisdt +"&tobedt="+date.tobedt;
 
     
     const res = await fetch($rooturl + service);
@@ -124,12 +123,13 @@
       config.data.datasets[0].data = tcnts ;
       config.data.datasets[1].data = scnts;
 
-      if(rdata[0].gb === "3")config.data.datasets[1].label = "향상";
+      if(rdata[0].gb === "3")config.data.datasets[1].label = "목표달성";
       else                   config.data.datasets[1].label = "성공";
       if(rdata[0].gb === "3"){    
         if(config.data.datasets.length==2){
             config.data.datasets.push({
-              label: '지연',  // 두 번째 데이터셋
+              // label: '지연',  // 두 번째 데이터셋
+              label: '미달성',  // 두 번째 데이터셋
               backgroundColor:['#b604ce'],
               borderWidth: 1,
               borderRadius:10
@@ -169,101 +169,8 @@
         config.data.datasets[3].data = nocnts;
       
       config.options.plugins.title.text = "주제별 진행 현황";
-      }else if(page === "P"){//성능
-      let apnms = [];
-      let tcnts = [];
-      let scnts = [];
-      let delays = [];
-      let nocnts = [];
-      let totCnt = 0;
-      
-      rdata.forEach((element) => {
-        apnms.push(element.apnm);
-        tcnts.push(element.tcnt);
-        totCnt += element.tcnt;
-        scnts.push(element.scnt);
-        delays.push(element.delay);
-        nocnts.push(element.nocnt);
-      });
-      config.data.labels = apnms;
-      config.data.datasets[0].data = tcnts ;
-      config.data.datasets[1].data = scnts;
-      
-        config.data.datasets[1].label = "향상";
-          if(config.data.datasets.length==2){
-          config.data.datasets.push({
-            label: '지연',  // 두 번째 데이터셋
-            backgroundColor:['#b604ce'],
-            borderWidth: 1,
-            borderRadius:10
-          });
-          config.data.datasets.push({
-            label: '미수행',  // 두 번째 데이터셋
-            backgroundColor:['#3cba9f'],
-            borderWidth: 1,
-            borderRadius:10
-          });
-        }
-        config.options.scales.x.stacked = true;
-        config.options.scales.y.stacked = true;
-        config.data.datasets[0].stack = 'group1';
-        config.data.datasets[1].stack = 'group2';
-        config.data.datasets[2].stack = 'group2';
-        config.data.datasets[3].stack = 'group2';
-        config.data.datasets[2].data = delays;
-        config.data.datasets[2].color = "black";
-        config.data.datasets[3].data = nocnts;
-      
-      config.options.plugins.title.text = "주제별 진행 현황";
       }
-      else if(page === "T"){//테스트
-      let apnms = [];
-      let tcnts = [];
-      let scnts = [];
-      let delays = [];
-      let nocnts = [];
-      let totCnt = 0;
-      
-      rdata.forEach((element) => {
-        apnms.push(element.apnm);
-        tcnts.push(element.tcnt);
-        totCnt += element.tcnt;
-        scnts.push(element.scnt);
-        delays.push(element.fcnt);
-        nocnts.push(element.nocnt);
-      });
-      config.data.labels = apnms;
-      config.data.datasets[0].data = tcnts ;
-      config.data.datasets[1].data = scnts;
-      
-        config.data.datasets[1].label = "수행";
-          if(config.data.datasets.length==2){
-          config.data.datasets.push({
-            label: '실패',  // 두 번째 데이터셋
-            backgroundColor:['#b604ce'],
-            borderWidth: 1,
-            borderRadius:10
-          });
-          config.data.datasets.push({
-            label: '미수행',  // 두 번째 데이터셋
-            backgroundColor:['#3cba9f'],
-            borderWidth: 1,
-            borderRadius:10
-          });
-        }
-        config.options.scales.x.stacked = true;
-        config.options.scales.y.stacked = true;
-        config.data.datasets[0].stack = 'group1';
-        config.data.datasets[1].stack = 'group2';
-        config.data.datasets[2].stack = 'group2';
-        config.data.datasets[3].stack = 'group2';
-        config.data.datasets[2].data = delays;
-        config.data.datasets[2].color = "black";
-        config.data.datasets[3].data = nocnts;
-      
-      config.options.plugins.title.text = "주제별 진행 현황";
-    }
-    else if(page === "D"){ //대시보드 데이터 이행 현황
+    else if(page === "D"){ //대시보드 데이터 이행 결과
       let labels = ["Table", "Index", "Object", "Invalid Object"];
       let asiss = [rdata[0].tblasis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidasis];
       let tobes = [rdata[0].tbltobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidtobe];
@@ -272,7 +179,10 @@
       config.data.datasets[0].data = asiss;
       config.data.datasets[1].data = tobes;
       // config.options.plugins.title.text = "전체 수량: " + totCnt +"개";
-      config.options.plugins.title.text = "데이터 이행 현황";
+      // config.options.plugins.title.text = "데이터 이행 결과";
+      config.options.plugins.title.text = "DB 리소스 이행 결과";
+
+      
       // config.options.plugins.title.display = false;
     }else if(page === "M"){ //대시보드 데이터 Value 검증
       config.data.labels = ["Table", "불일치 건수"];
@@ -280,7 +190,8 @@
       config.data.datasets[1].label = "불일치 건수";
       config.data.datasets[0].data = [rdata[0].tbltobe,0];
       config.data.datasets[1].data = [0,rdata[0].tblasistobesum];
-      config.options.plugins.title.text = "데이터 Value 검증";
+      // config.options.plugins.title.text = "데이터 Value 검증";
+      config.options.plugins.title.text = "데이터 Value 검증 결과";
       config.data.datasets[0].barThickness= 50; // 바의 고정 넓이 (픽셀)
       config.data.datasets[1].barThickness= 50; // 바의 고정 넓이 (픽셀)
     }
@@ -296,12 +207,9 @@
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
     chartx = new Chart(ctx, config);
-    // const rdata = await getData() ;
-    // chartDraw(rdata);
-    setTimeout(async() => {
-      const rdata = await getData() ;
-      chartDraw(rdata);
-    }, 100);
+    const rdata = await getData() ;
+    chartDraw(rdata);
+    
   });
 
   onDestroy(()=> clearInterval(interval));

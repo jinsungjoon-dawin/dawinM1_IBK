@@ -1,20 +1,14 @@
 <script>
   import TestDetail from "./TestDetail.svelte";
-  import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
+  import StackedBar from "./StackedBar.svelte";
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
   let selectedValue = '';
-
   let selected = true;
-  let conds = {
-    asisdt: "",
-    lastDt: "",
-    idx:0
-  };
-
-  let dates = [];
-  let datas = [];
+  
+  let leftDates = [];
+  let selData;
   let childBarRef;
   let childPieRef;
   
@@ -28,55 +22,55 @@
   }
 
   onMount(async () => {
-    dates = await getTestcomposit();
-    if(dates.length > 0){
-      conds.asisdt = dates[0].asisdt;
-      conds.lastDt = dates[0].tobedt;
-      datas = dates[selectedRow];
-      console.log(datas);
+    leftDates = await getTestcomposit();
+    if(leftDates.length > 0){
+      selData = leftDates[selectedRow];
     }
   });
+  
   let selectedRow = 0;
-
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
-    datas = dates[idx];
+    selData = leftDates[idx];
+    if(childBarRef) childBarRef.parentCall();
+    if(childPieRef) childPieRef.parentCall();
   };
 </script>
 {#if selected}
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-zinc-600  text-zinc-100 ">
-      <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label>
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label> 
     </div>
-    {#if dates.length !== 0}
-      {#each dates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.lastDt=item.tobedt; conds.idx=idx; handleRowClick(idx);}}>
-            <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
-            <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
+    {#if leftDates.length !== 0}
+      {#each leftDates as item, idx}
+          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => handleRowClick(idx)}>
+            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
+            <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly> 
           </div>
       {/each}
     {/if}
   </div>
     <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
-        {#if datas}
+        {#if selData}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{datas?.tname}</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; }}>수행 일자: {datas.tobedt}</h1>
-          </div>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData?.tname} 테스트</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">수행 일자: {selData.tobedt}</h1>
+              <div class="w-36 px-4 text-end">
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>상세보기</button>
+              </div>  
+            </div>
             <div class="flex flex-wrap w-full p-3 justify-center">
               <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center">
                 <div class="flex w-2/6  justify-center items-center">
-                  <PieChart page={'T'} date={datas} bind:this={childPieRef} title={datas.tname} ></PieChart>
+                  <PieChart page={'T'} selData={selData} bind:this={childPieRef} title={selData.tname} ></PieChart>
                 </div>
               </div>
               <div class="flex justify-center bg-gray-800 p-3 rounded-lg w-11/12 ">
                 <div class="w-9/12">
-                  <BarChart page={'T'} date={datas} bind:this={childBarRef} ></BarChart>
+                  <StackedBar page={'T'} selData={selData} bind:this={childBarRef} ></StackedBar>
                 </div>
               </div>
               
