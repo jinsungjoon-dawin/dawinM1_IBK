@@ -60,9 +60,10 @@
             font:{size:18},
             // formatter: function(v, ctx) {return v.toLocaleString() }
             formatter: function(v, ctx) {
-              if(v === 0)return "";
-              // return v.toLocaleString(); 
-              return v;
+              let num = parseFloat(v); // 안전하게 숫자로 변환
+              if (!isNaN(num) && num !== 0) { 
+                return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
+              }
             }
           },
           title: {

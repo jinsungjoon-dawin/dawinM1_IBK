@@ -1,6 +1,5 @@
 <script>
   import PerformDetail from "./PerformDetail.svelte";
-  import BarChart from "./BarChart.svelte";
   import StackedBar from "./StackedBar.svelte";
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
@@ -95,5 +94,5 @@
   </div>
 </div>
 {:else}
-  <PerformDetail {selectedValue}></PerformDetail>
+  <PerformDetail selData={selData} selectedRow={selectedRow}></PerformDetail>
 {/if}

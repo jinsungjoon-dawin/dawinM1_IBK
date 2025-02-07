@@ -10,6 +10,17 @@ Chart.register(ChartDataLabels);
 let {page, selData, title} = $props();
 let ctx, chartx, chartCanvas;
  
+let marginLegend = {
+    id: 'marginLegend',
+    beforeInit(chart, legend, options){
+      console.log(chart.legend.fit);
+      const fitValue = chart.legend.fit;
+      chart.legend.fit = function fit(){
+        fitValue.bind(chart.legend)();
+        // return this.width +=50;
+      }
+    }
+  }
    let config = {
     
       type: 'pie',
@@ -52,9 +63,9 @@ let ctx, chartx, chartCanvas;
           color: 'white', // 텍스트 색상
           font:{size:25},
           formatter: function(v, ctx) {
-            if(v === 0)return "";
-              // return v.toLocaleString(); 
-              return v; 
+            let num = parseFloat(v); // 안전하게 숫자로 변환
+            if (!isNaN(num) && num !== 0) { 
+              return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
             }
           }
         },
@@ -64,9 +75,9 @@ let ctx, chartx, chartCanvas;
             }
         }  
       },
+      // plugins:[marginLegend],
       
   };
-
   export  async function parentCall() {  
       const rdata = await getData() ;
       chartDraw(rdata);

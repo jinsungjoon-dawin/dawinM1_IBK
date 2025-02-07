@@ -4,9 +4,8 @@
   import StackedBar from "./StackedBar.svelte";
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
-  let selectedValue = '';
   let selected = true;
-  
+  let selectedRow = 0;
   let leftDates = [];
   let selData;
   let childBarRef;
@@ -28,7 +27,6 @@
     }
   });
   
-  let selectedRow = 0;
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
     selData = leftDates[idx];
@@ -80,5 +78,5 @@
   </div>
 </div>
 {:else}
-  <TestDetail {selectedValue}></TestDetail>
+  <TestDetail selData={selData} selectedRow={selectedRow}></TestDetail>
 {/if}

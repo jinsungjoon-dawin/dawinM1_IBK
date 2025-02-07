@@ -4,19 +4,15 @@
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
-  export let selectedValue = '';
   import * as XLSX from 'xlsx';
-
+  export let selData;
+  export let selectedRow;
+  // let { selData,  selectedRow} = $props();
   let selected = true;
-  let conds = {
-    asisdt: "",
-    tobedt: "",
-    idx:0
-  };
+  
 
   let leftDates = [];
   let list = [];
-  let selectedRow = 0;
   //차수, ASIS 일자, TOBE 일자 조회
   async function getTestcomposit() {
     const res = await fetch($rooturl + "/testcomposit");
@@ -29,7 +25,7 @@
 
   async function getPerformcompositList() {
     
-    const res = await fetch($rooturl + "/testdetail/testde_list?asisdt=" + conds.asisdt + "&tobedt=" + conds.tobedt);
+    const res = await fetch($rooturl + "/testdetail/testde_list?tid=" + leftDates[selectedRow].tid);
     if (res.ok){
       list = await res.json();
       return list;
@@ -43,8 +39,6 @@
     
     //[{"seq":"1차","asisdt":"2025-01-02","tobedt":"2025-01-20"}]
     if(leftDates.length > 0){
-      conds.asisdt = leftDates[0].asisdt;
-      conds.tobedt = leftDates[0].tobedt;
       list = await getPerformcompositList();
     }
     //[{"tname":"성능1차 테스트 결과","tobedt":"2025-01-20"}]
@@ -84,10 +78,9 @@
 
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
+    currentPage = 1;
   };
 
-  
-  
 
   let selectedStatus = "ALL";
   let currentPage = 1;
@@ -126,7 +119,7 @@
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
+          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getPerformcompositList();}}>
             <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
             <!-- <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly> -->
             <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
@@ -173,8 +166,6 @@
                             <th class="text-left p-3 px-5 ">ASIS시작시간</th>
                             <th class="text-left p-3 px-5 ">ASIS종료시간</th>
                             <th class="text-left p-3 px-5 ">ASIS수행시간</th>
-                            <!-- <th class="text-left p-3 px-5 ">등록시간</th> -->
-                            
                         </tr>
                     </thead>
                     <tbody>
@@ -234,7 +225,6 @@
               
             </div>
         </div>
-    <!-- {/each} -->
   {/if}
 </div>
 </div>

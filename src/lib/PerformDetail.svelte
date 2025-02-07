@@ -4,18 +4,17 @@
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
-  export let selectedValue = '';
   import * as XLSX from 'xlsx';
 
+  export let selData;
+  export let selectedRow;
   let selected = true;
   let conds = {
     asisdt: "",
     tobedt: ""
   };
 
-  let selectedRow = 0;
   let leftDates = [];
-  let datas = [];
   let list = [];
   
   //차수, ASIS 일자, TOBE 일자 조회
@@ -29,7 +28,7 @@
 
 
   async function getPerformcompositList() {
-    const res = await fetch($rooturl + "/performdetail/perfde_list?asisdt=" + conds.asisdt + "&tobedt=" + conds.tobedt);
+    const res = await fetch($rooturl + "/performdetail/perfde_list?tid=" + leftDates[selectedRow].tid);
     if (res.ok){
       list = await res.json();
       return list;
@@ -82,6 +81,7 @@
 
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
+    currentPage = 1;
   };
 
   
@@ -134,7 +134,6 @@
     
   <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
     {#if leftDates.length !== 0}
-        <!-- {#each datas as item, idx} -->
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
               <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} 테스트</h1>
