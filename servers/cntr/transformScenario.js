@@ -11,6 +11,7 @@ router.get('/', async function (req, res, next) {
 
 router.get('/transsc_list', async function (req, res, next) {
     // console.log("req.query.mid : " + req.query.mid);
+    // console.log("req.query.wstat : " + req.query.wstat);
 
     const rdata = await tmigscene.ttranssclist(req) ;
     res.json(rdata) ;
