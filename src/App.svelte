@@ -105,7 +105,7 @@
     </nav>
     <main class="bg-gray-800">
       <!-- <div class="mx-auto max-w-7xl p-3 "> -->
-      <div class="mx-auto p-3 w-10/12 h-5/6">
+      <div class="mx-auto p-3 w-12/12 h-5/6">
         <svelte:component this={cnm}></svelte:component>
       </div>
     </main>

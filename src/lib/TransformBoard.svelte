@@ -3,6 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
   let rdata;
+  let chardata;
   let selectedValues;
 
 //         "mid": 3,
@@ -22,6 +23,17 @@
       return await transformboard.json();
     else
       throw new Error(transformboard.statusText);    
+  }
+  async function getDataList() {
+    let transformboardlist="/transformboard/transbo_list?mid="+rdata[0].mid
+    const transformboardList = await fetch($rooturl+transformboardlist);
+    console.log(transformboardList);
+    
+    
+    if (transformboardList.ok)
+      return await transformboardList.json();
+    else
+      throw new Error(transformboardList.statusText);    
   }
 
   
@@ -62,12 +74,19 @@ let count=0;
   clearInterval(currentTime);
   onMount(async () =>  {
      rdata = await getData() ;
-     selectedValues = rdata[1];
-     count=rdata.length;
+     selectedValues = rdata[0];
+     console.log(selectedValues)
+    //  count=rdata.length;
 
-    if(rdata.length > 0){
-      console.log(rdata);
-    }
+    // if(rdata.length > 0){
+    //   console.log(rdata);
+    // }
+    chardata =await getDataList();
+    console.log(chardata);
+    // if(chardata.length > 0){
+    //   console.log("chatr==="+chardata[1]);
+    // }
+
     setInterval(() => {
       currentTime = new Date().toLocaleString('en-GB', { 
         hour: '2-digit', 
@@ -77,6 +96,10 @@ let count=0;
     }, $intlMs) // 5초마다 시간 갱신
   });
  
+  //시나리오 버튼 클릭 
+  const aaaa  = (date: string) => {
+  alert("시나리오")
+  }
   // Handle the click event on the date inputs
   const handleDateClick = (date: string) => {
     selectedDate = date;
@@ -85,7 +108,15 @@ let count=0;
   const handleTextClick = (text: string,text2:string) => {
     clickedText = text; // 클릭한 텍스트를 clickedText에 저장
     PageTitle=text2;
+    // selectedValues.midnm="";
+    // selectedValues.enddt="";
     selectedValues.midnm=PageTitle;
+    selectedValues.enddt=clickedText;
+
+     //alert("clickedText="+clickedText+"PageTitle="+PageTitle+"selectedValues.midnm="+selectedValues.midnm+"====="+rdata[0].midnm  )
+     
+
+    //clickedText=PageTitle
     // alert(PageTitle);
   };
 </script>
@@ -94,64 +125,126 @@ let count=0;
  
 </style>
 <div class="flex justify-between h-screen">
-  <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3 h-max" >
+  <!-- <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3 h-max" > -->
+    <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3 h-max" >
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " >
             <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">차수별 이행 상황판</label>
         </div>
 
         {#each rdata as item, index }
         {#if index == 0 || (rdata[index].mgb != rdata[index-1].mgb && index != 0) }
-        <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " >
+        {#if index == 0}
+        <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 bg-lime-600" >
           <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 " >{item.mgbnm} </label>
+        </div> 
+        {:else} 
+        <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " style="margin-top: 260px;" >
+          <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-slate-700 border-zinc-600 " >과거이력 </label>
         </div>
         {/if}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 "on:click={() => handleTextClick(item.enddt,item.midnm)} >
+        {/if}
+        <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 "on:click={() => handleTextClick(item.enddt,item.midnm)} >
             <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">{item.midnm}</label>
             <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 " readonly value={item.enddt}>
-          </div>
+          </div> 
         {/each}   
    </div>
 
-   <div class="w-11/12 bg-gray-700 rounded-lg flex-wrap h-max p-3 mx-2" >
-    {#if selectedValues}
-      <label class="px-3  py-2 font-bold mx-3 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 text-white">{selectedValues.midnm} 전광판</label>  
-      <input type="text" class=" pl-3 mx-14  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{selectedValues.enddt}">
-    {/if}
+   <div class="w-11/12 bg-gray-700 rounded-lg flex-wrap h-max p-3 mx-1 text-center" >
+      {#if selectedValues}
+        <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">단계:</label>
+        <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{selectedValues.midnm} 전광판">
+
+        <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">차수:</label>
+        <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{selectedValues.midnm}">
+        
+        <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">수행일자:</label>
+        <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{selectedValues.enddt}">
+      {:else}
+
+        {/if}
+      <!-- {#each rdata as item, index }
+      {#if index == 0 || (rdata[index].mgb != rdata[index-1].mgb && index != 0) }
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">차수:</label>
+      <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{item.midnm}">
+      
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">수행일자:</label>
+      <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{item.enddt}">
+      {/if}
+      {/each} -->
+      
 
     <!-- 동기화 시간 표시 -->
+    <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">시간:</label>
     {#if newtime == true}
-    <input type="text" class=" pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100 " disabled value={chartSyncTime}>
+    <input type="text" class=" pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100 mr-10" disabled value={chartSyncTime}>
     {:else}
-    <input type="text" class=" pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100 " disabled value={currentTime}>
+    <input type="text" class=" pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100 mr-10" disabled value={currentTime}>
     {/if} 
      
     <!-- 동기화 버튼과 시간 표시 -->
-    <button
-      class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline" on:click={handleSyncClick}>동기화 </button>
+    <!-- <button
+      class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline" on:click={handleSyncClick}>동기화 </button> -->
+      
+      <button
+      class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-17" on:click={aaaa}>전체시나리오 </button> 
     <!-- 첫 번째 줄: 하나의 차트 -->
-    <div class="flex bg-gray-800 px-12 rounded-lg mx-1 justify-center my-2 ">
+    {#each chardata as item,idx }
+    {#if idx == 0}
+    <div class="flex bg-gray-800 px-12 rounded-lg mx-1 w-3/3 justify-center my-2 ">
       <div>
-        <DonutChart/>
+        <DonutChart item={chardata[0]}/>
         </div>
     </div>
+    {/if}
+    {/each}
     <!--마이데이타-->
     <!-- 두 번째 줄: 두 개의 차트 -->
-    <div class="w-full flex justify-center space-x-4">
-      <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
-        <div>
-          <DonutChart/>
+     
+    <div class="w-full flex justify-start mx-1  flex-wrap">
+    {#each chardata as item,idx }
+    
+    {#if idx != 0}
+        <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2" style="width: 33%">
+          <div>
+            <DonutChart item={item}/>
+          </div>
         </div>
-      </div>
-      <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
-        <div>
-          <DonutChart/>
-        </div>
-      </div>
+      {/if}
+    {/each}
+      
     </div>
+    <!-- <div class="w-full flex justify-start mx-1  flex-wrap">
+      <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2" style="width: 33%">
+        <div>
+          <DonutChart/>
+        </div>
+      </div>
+      <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2"style="width: 33%">
+        <div>
+          <DonutChart/>
+        </div>
+      </div>
+      <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2"style="width: 33%">
+        <div>
+          <DonutChart/>
+        </div>
+      </div>
+      <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2"style="width: 33%">
+        <div>
+          <DonutChart/>
+        </div>
+      </div>
+    </div> -->
 
      <!-- 세 번째 줄: 두 개의 차트 -->
-     <div class="w-full flex justify-center space-x-4">
-      <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
+     <!-- <div class="w-full flex justify-start space-x-4">
+      <div class="flex bg-gray-800 px-12 rounded-lg w-1/3 mx-1 justify-center my-2">
+        <div>
+          <DonutChart/>
+        </div>
+      </div> -->
+      <!-- <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
         <div>
           <DonutChart/>
         </div>
@@ -160,8 +253,8 @@ let count=0;
         <div>
           <DonutChart/>
         </div>
-      </div>
-    </div>
+      </div> -->
+    <!-- </div> -->
     <!-- 네 번째 줄: 두 개의 차트 -->
     <!-- <div class="w-full flex justify-center space-x-4">
       <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
@@ -178,7 +271,7 @@ let count=0;
     
     <!--자산관리-->
     <!-- 두 번째 줄: 두 개의 차트 -->
-    <div class="w-full flex justify-center space-x-4">
+    <!-- <div class="w-full flex justify-center space-x-4">
       <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
         <div>
           <DonutChart/>
@@ -189,10 +282,10 @@ let count=0;
           <DonutChart/>
         </div>
       </div>
-    </div>
+    </div> -->
 
      <!-- 세 번째 줄: 두 개의 차트 -->
-     <div class="w-full flex justify-center space-x-4">
+     <!-- <div class="w-full flex justify-center space-x-4">
       <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">
         <div>
           <DonutChart/>
@@ -203,7 +296,7 @@ let count=0;
           <DonutChart/>
         </div>
       </div>
-    </div>
+    </div> -->
     <!-- 네 번째 줄: 두 개의 차트 -->
     <!-- <div class="w-full flex justify-center space-x-4">
       <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center my-2">

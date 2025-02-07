@@ -3,6 +3,12 @@
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
+    import { get } from 'svelte/store';
+  // export let item;
+  let { item ,itemname} = $props();
+  // console.log(item);
+
+  
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
@@ -80,16 +86,42 @@
       title: {
         display: true,
         // text: '타이틀 임시',
-        text:"선행 차수 종합 현황",  // 동적으로 생성된 제목 사용
+        text:"",  // 동적으로 생성된 제목 사용
         font:{size:20},
         color:'white'
       },
     },
   },
   };
+//   mid		-- 이행코드
+// scgrp
+// plancnt	-- 수행시나리오계획건수
+// ingcnt		-- 수행시나리오진행중건수
+// comcnt		-- 수행시나리오작업완료건수
+// errcnt		-- 수행시나리오작업오류건수
+// totcnt		-- 수행시나리오건수
+// totrate	-- 비율(수행시나리오건수/총시나리오건수)
+// ['TASK', '완료', '지연', '진행중'],
+  function chartDraw(){
+    console.log(item);
+    config.data.datasets[0].data = [item.plancnt,item.comcnt,item.errcnt,item.ingcnt];
+    console.log(item.scgrp)
+//    config.options.plugins.title.text = [item.scgrp];  
+    //0.전체 타이틀
+    //config.options.plugins.title.text = [item.scgrp];
+    //1~타이틀
+    config.options.plugins.title.text = [item.scgrp];
+    
+    
+    
+    chartx.update();
+  }
+
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
     chartx = new Chart(ctx, config);
+    chartDraw();
+   
   });
   // 박스 데이터 타입 정의
   interface ChartTitle {
@@ -106,24 +138,24 @@
     { project: "자산관리" },
 
   ];
-  // 박스 데이터 배열
-  const chartTitle: ChartTitle[] = [
-      // 상단 종합 현황 차트
-      { title: "선행 차수 종합 현황" },
-      // 첫번 째 프로젝트 
-      { title: "1.사전작업" },
-      { title: "2.사전이행" },
-      { title: "3.본 이행" },
-      { title: "4.사후 작업" },
+  // 박스 데이터 배열( 테스트 데이타)
+  // const chartTitle: ChartTitle[] = [
+  //     // 상단 종합 현황 차트
+  //     { title: "선행 차수 종합 현황" },
+  //     // 첫번 째 프로젝트 
+  //     { title: "1.사전작업" },
+  //     { title: "2.사전이행" },
+  //     { title: "3.본 이행" },
+  //     { title: "4.사후 작업" },
       
-      { title: "Box 2" },
-      { title: "Box 3" },
-      { title: "Box 4" }
-  ];
+  //     { title: "Box 2" },
+  //     { title: "Box 3" },
+  //     { title: "Box 4" }
+  // ];
   // 차트 제목을 chartTitle 배열을 기반으로 동적으로 생성하는 함수
-  const generateTitle = () => {
-    return chartTitle.map(item => `${item.title}`).join(' | ');
-  };
+  // const generateTitle = () => {
+  //   return chartTitle.map(item => `${item.title}`).join(' | ');
+  // };
   // async function getData() {
   //   const res = await fetch("/barChart");
   //   if (res.ok)
@@ -156,10 +188,17 @@
   }
 
   const statusData: StatusItem[] = [
-    { label: "Task", count: 100 },
-    { label: "완료", count: 4 },
-    { label: "진행중", count: 3 },
-    { label: "미수행", count: 93 }
+    { label: "Task", count: item.totcnt },
+    { label: "완료", count: item.comcnt },
+    { label: "진행중", count: item.ingcnt },
+    //{ label: "계획", count: item.plancnt },
+    { label: "미수행", count: item.errcnt }
+    
+    // { label: "Task", count: 100 },
+    // { label: "완료", count: 4 },
+    // { label: "진행중", count: 3 },
+    // { label: "계획", count: 3 },
+    // { label: "미수행", count: 93 }
   ];
 </script>
 <style>
@@ -194,8 +233,19 @@
       미수행  <br>
      93
     </span> -->
-    {#each statusData as { label, count }}
-    <span class="w-1/4 text-center -mt-5 item mb-1 testCol">
+
+    {#each statusData as { label, count}}
+
+    <!-- {#each item as item }
+
+    <span class="w-1/3 text-center -mt-5 item mb-1 testCol">
+        
+      {item.config.ChartDataLabels} <br>
+      {config.chartx.getData}
+    </span>
+    {/each} -->
+    <span class="w-1/3 text-center -mt-5 item mb-1 testCol">
+        
       {label} <br>
       {count}
     </span>
