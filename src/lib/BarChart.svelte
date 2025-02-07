@@ -64,6 +64,7 @@
               if (!isNaN(num) && num !== 0) { 
                 return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
               }
+              return "";
             }
           },
           title: {

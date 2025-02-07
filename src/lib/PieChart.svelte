@@ -67,6 +67,7 @@ let marginLegend = {
             if (!isNaN(num) && num !== 0) { 
               return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
             }
+            return "";
           }
         },
         layout: {
@@ -76,7 +77,7 @@ let marginLegend = {
         }  
       },
       // plugins:[marginLegend],
-      
+    }
   };
   export  async function parentCall() {  
       const rdata = await getData() ;
