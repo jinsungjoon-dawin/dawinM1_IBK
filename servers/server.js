@@ -11,6 +11,7 @@ import testcomposit  from './cntr/testComposit.js' ;
 import testdetail  from './cntr/testDetail.js' ;
 import transformboard  from './cntr/transformBoard.js' ;
 import transformscenario  from './cntr/transformScenario.js' ;
+import loaddataverifyresult  from './cntr/loadDataVerifyResult.js' ;
 
 const app  = express();
 const port = process.argv[2] ?? process.env.DMONPORT ?? 5880;
@@ -44,6 +45,7 @@ app.use('/testcomposit', testcomposit) ;
 app.use('/testdetail', testdetail) ;
 app.use('/transformboard', transformboard) ;
 app.use('/transformscenario', transformscenario) ;
+app.use('/loaddataverifyresult', loaddataverifyresult) ;
 
 app.listen(port,'0.0.0.0', () => {
    console.log(`Server is up at port ${port}`);

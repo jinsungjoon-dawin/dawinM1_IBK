@@ -23,23 +23,20 @@ const tdatacode = {
         return(rows) ;
     },
     /**
-     * save
+     *  데이타이관 적제 Data 검증 좌측
+     * 차수, 년월일
      */
-    save : async (args) => {
-        try {
-          let results = await mondb.query(`update tdatacode
-                                            SET dname = ?
-                                              , wdate = ?
-                                              ,	sf = ?
-                                            WHERE did = ?
-                                            and seq = ?
-                                          `, [args.dname, args.wdate, args.sf, args.did, args.seq] ) ;
-          return 1;
-        } catch (e) {
-          console.error(e) ;
-          return 0;
-        }
-      },
+    tdatalist : async () => {
+      let rows = await mondb.query(` select did		as did		-- 데이터이관ID
+                                          , seq		as seq		-- 차수
+                                          , dname	as dname	-- 이관차수명
+                                          , wdate	as wdate	-- 작업일
+                                          , sf 		as sf 		-- 특이사항
+                                      from tdatacode
+                                      order by wdate desc, did desc
+                                  ` ) ;                                               
+      return(rows) ;
+    },    
 }
  
 export default tdatacode ;
