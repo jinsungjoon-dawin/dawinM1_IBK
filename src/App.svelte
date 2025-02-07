@@ -105,7 +105,7 @@ function getToDate(){
   </nav>
   <main class="bg-gray-800">
     <!-- <div class="mx-auto max-w-7xl p-3 "> -->
-    <div class="mx-auto p-3 w-10/12 h-5/6">
+    <div class="mx-auto p-3 w-11/12 h-5/6 px-4 sm:px-6 lg:px-8">
       <svelte:component this={cnm}></svelte:component>
     </div>
   </main>
