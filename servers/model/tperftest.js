@@ -94,37 +94,37 @@ const tperftest = {
      * BarChart
      */
     tperfchklist : async (args) => {
-      // console.log("args.query.asisdt : " + args.query.asisdt);
-      // console.log("args.query.tobedt : " + args.query.tobedt);
+      // console.log("args.query.tid : " + args.query.tid);
+
       let rows = await mondb.query(` with t as
-                                            (select sid                 as sid
-                                                  , avg(svctime)        as svctime
-                                                  , avg(svctime_asis)   as svctimeasis
-                                            from tperftest
-                                            where tid in (select max(tid) as tid
-                                                            from tperfcode
-                                                            where gb='3'
-                                                            and lastDt = ?
-                                                            and asisDt = ? )
-                                            group by sid)
-                                        select x.apnm                   as apnm
-                                            , x.tcnt                    as tcnt
-                                            , x.scnt                    as scnt
-                                            , x.nocnt                   as nocnt
-                                            , x.tcnt-(x.nocnt+x.scnt)   as delay
-                                        from (
-                                                select a.apnm                                as apnm
-                                                    , count(1)                               as tcnt
-                                                    , sum(if(t.sid is null,1,0))             as nocnt
-                                                    , sum(if(t.svctime < t.svctimeasis,1,0)) as scnt
-                                                from tsid s
-                                                join tapid a
-                                                    on s.apid = a.apid
-                                                left join t
-                                                    on s.sid = t.sid
-                                                group by a.apnm
-                                            ) x
-                                    `, [args.query.tobedt,args.query.asisdt] ) ;
+                                        (select sid                 as sid
+                                            , avg(svctime)        as svctime
+                                            , avg(svctime_asis)   as svctimeasis
+                                        from tperftest
+                                        where tid in (select max(tid) as tid
+                                                        from tperfcode
+                                                        where gb = '3'
+                                                        and tid = ?
+                                                     )
+                                        group by sid)
+                                    select x.apnm                   as apnm
+                                        , x.tcnt                    as tcnt
+                                        , x.scnt                    as scnt
+                                        , x.nocnt                   as nocnt
+                                        , x.tcnt-(x.nocnt+x.scnt)   as delay
+                                    from (
+                                            select a.apnm                                as apnm
+                                                , count(1)                               as tcnt
+                                                , sum(if(t.sid is null,1,0))             as nocnt
+                                                , sum(if(t.svctime < t.svctimeasis,1,0)) as scnt
+                                            from tsid s
+                                            join tapid a
+                                                on s.apid = a.apid
+                                            left join t
+                                                on s.sid = t.sid
+                                            group by a.apnm
+                                        ) x
+                                    `, [args.query.tid] ) ;
         return(rows) ;
       },    
     /**
@@ -132,8 +132,8 @@ const tperftest = {
      * PieChart
      */
     tperfchkresult : async (args) => {
-      // console.log("args.query.asisdt : " + args.query.asisdt);
-      // console.log("args.query.tobedt : " + args.query.tobedt);
+      // console.log("args.query.tid : " + args.query.tid);
+
       let rows = await mondb.query(` with t as
                                             (select sid				    as sid
                                                   , avg(svctime) 	    as svctime
@@ -142,8 +142,8 @@ const tperftest = {
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
                                                             where gb='3'
-                                                            and lastDt = ?
-                                                            and asisDt = ? )
+                                                            and tid = ?
+                                                         )
                                             group by sid)
                                             select tcnt						as tcnt
                                                 , improve					as scnt
@@ -158,7 +158,7 @@ const tperftest = {
                                                         on s.sid = t.sid
                                                 ) x
                                             limit 1
-                                    `, [args.query.tobedt,args.query.asisdt] ) ;
+                                    `, [args.query.tid] ) ;
         return(rows) ;
       },     
     /**
@@ -166,8 +166,8 @@ const tperftest = {
      * 수행차수, 테스트일시, 시작시간, 종료시간, 소요시간, ASIS시작시간, ASIS종료시간, ASIS소요시간, 등록시간
      */
     tperfdelist : async (args) => {
-      // console.log("args.query.asisdt : " + args.query.asisdt);
-      // console.log("args.query.tobedt : " + args.query.tobedt);
+      // console.log("args.query.tid : " + args.query.tid);
+
       let rows = await mondb.query(` with t as
                                             (select sid			as sid
                                                 , tstime		as tstime
@@ -182,8 +182,7 @@ const tperftest = {
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
                                                             where gb='3'
-                                                            and lastDt = ?
-                                                            and asisDt = ?
+                                                            and tid = ?
                                                         )
                                             group by sid)
                                         select x.apnm                   					as apnm			-- 업무명
@@ -217,7 +216,7 @@ const tperftest = {
                                                 left join t
                                                     on s.sid = t.sid
                                             ) x
-                                    `, [args.query.tobedt,args.query.asisdt] ) ;
+                                    `, [args.query.tid] ) ;
         return(rows) ;
       },  
     /**
@@ -225,8 +224,8 @@ const tperftest = {
      * BarChart
      */
     ttestchklist : async (args) => {
-        // console.log("args.query.asisdt : " + args.query.asisdt);
-        // console.log("args.query.tobedt : " + args.query.tobedt);
+        // console.log("args.query.tid : " + args.query.tid);
+
         let rows = await mondb.query(` with t as
                                         (select sid                 as sid				
                                               , avg(svctime)        as svctime			 
@@ -236,8 +235,7 @@ const tperftest = {
                                         where tid in (select max(tid) as tid
                                                         from tperfcode
                                                         where gb <> '3'
-                                                        and lastDt = ?
-                                                        and asisDt = ?
+                                                        and tid = ?
                                                       )
                                             group by sid)
                                         select x.apnm					as apnm		-- 업무명
@@ -257,7 +255,7 @@ const tperftest = {
                                                     on s.sid = t.sid
                                                 group by a.apnm
                                             ) x
-                                      `, [args.query.tobedt,args.query.asisdt] ) ;
+                                      `, [args.query.tid] ) ;
           return(rows) ;
         },    
       /**
@@ -265,8 +263,8 @@ const tperftest = {
        * PieChart
        */
       ttestchkresult : async (args) => {
-        // console.log("args.query.asisdt : " + args.query.asisdt);
-        // console.log("args.query.tobedt : " + args.query.tobedt);
+        // console.log("args.query.tid : " + args.query.tid);
+
         let rows = await mondb.query(` with t as
                                         (select sid                 as sid				
                                                 , avg(svctime)      as svctime			 
@@ -276,8 +274,7 @@ const tperftest = {
                                         where tid in (select max(tid) as tid
                                                         from tperfcode
                                                         where gb <> '3'
-                                                        and lastDt = ?
-                                                        and asisDt = ?
+                                                        and tid = ?
                                                     )
                                             group by sid)
                                         select x.tcnt					as tcnt		-- 총건수
@@ -293,7 +290,7 @@ const tperftest = {
                                                     on s.sid = t.sid
                                             ) x
                                         limit 1
-                                      `, [args.query.tobedt,args.query.asisdt] ) ;
+                                      `, [args.query.tid] ) ;
           return(rows) ;
         },     
       /**
@@ -301,8 +298,8 @@ const tperftest = {
        * 수행차수, 테스트일시, 시작시간, 종료시간, 소요시간, ASIS시작시간, ASIS종료시간, ASIS소요시간, 등록시간
        */
       ttestdelist : async (args) => {
-        // console.log("args.query.asisdt : " + args.query.asisdt);
-        // console.log("args.query.tobedt : " + args.query.tobedt);
+        // console.log("args.query.tid : " + args.query.tid);
+
           let rows = await mondb.query(` with t as
                                             (select sid			    as sid		
                                                   , tstime		    as tstime
@@ -318,8 +315,7 @@ const tperftest = {
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
                                                             where gb<>'3'
-                                                            and lastDt = ?
-                                                            and asisDt = ?
+                                                            and tid = ?
                                                         )
                                             group by sid)
                                         select x.apnm                   					    as apnm			-- 업무명
@@ -354,7 +350,7 @@ const tperftest = {
                                                 left join t
                                                     on s.sid = t.sid
                                             ) x
-                                      `, [args.query.tobedt,args.query.asisdt] ) ;
+                                      `, [args.query.tid] ) ;
           return(rows) ;
         },          
 }

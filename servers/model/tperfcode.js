@@ -67,10 +67,13 @@ const tperfcode = {
      * 차수, ASIS 년월일, TOBE 년월일, 제목
      */
     tperflist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')    as seq
-                                          , asisDt						  as asisdt
-                                          , lastDt 						  as tobedt
-                                          , trim(tname)         as tname
+      let rows = await mondb.query(` select tid					      as tid			-- 테스트코드
+                                          , concat(seq,'차')  as seq			-- 수행차수
+                                          , trim(tname)       as tname		-- 특이사항
+                                          , gb					      as gb			  -- 테스트구분(3:성능테스트, 그외:주제테스트(통테, 단테등))
+                                          , startdt				    as startdt	-- 시작일
+                                          , asisDt				    as asisdt		-- asis수행일
+                                          , lastDt 				    as tobedt		-- 종료일
                                       from tperfcode
                                       where gb = '3'
                                       order by gb asc, seq desc, lastDt desc
@@ -82,17 +85,15 @@ const tperfcode = {
      * 제목, 년월일
      */
     tperftitle : async (args) => {
-      // console.log("args.query.asisdt : " + args.query.asisdt);
-      // console.log("args.query.tobedt : " + args.query.tobedt);
+      // console.log("args.query.tid : " + args.query.tid);
 
       let rows = await mondb.query(` select tname       as tname
                                           , lastDt 			as tobedt
                                         from tperfcode
                                         where gb = '3'
-                                        and lastDt = ?
-                                        and asisDt = ?
+                                        and tid = ?
                                         limit 1
-                                    `, [args.query.tobedt,args.query.asisdt] ) ;
+                                    `, [args.query.tid] ) ;
       return(rows) ;
     },    
     /**
@@ -100,10 +101,13 @@ const tperfcode = {
      * 차수, ASIS 년월일, TOBE 년월일, 제목
      */
     ttestlist : async () => {
-      let rows = await mondb.query(` select concat(seq,'차')			as seq
-                                          , asisDt						    as asisdt
-                                          , lastDt 						    as tobedt
-                                          , trim(tname)           as tname
+      let rows = await mondb.query(`select tid					      as tid			-- 테스트코드
+                                          , concat(seq,'차')  as seq			-- 수행차수
+                                          , trim(tname)       as tname		-- 특이사항
+                                          , gb					      as gb			  -- 테스트구분(3:성능테스트, 그외:주제테스트(통테, 단테등))
+                                          , startdt				    as startdt	-- 시작일
+                                          , asisDt				    as asisdt		-- asis수행일
+                                          , lastDt 				    as tobedt		-- 종료일
                                       from tperfcode
                                       where gb <> '3'
                                       order by gb asc, seq desc, lastDt desc
@@ -115,39 +119,17 @@ const tperfcode = {
      * 제목, 년월일
      */
     ttesttitle : async (args) => {
-      // console.log("args.query.asisdt : " + args.query.asisdt);
-      // console.log("args.query.tobedt : " + args.query.tobedt);
+      // console.log("args.query.tid : " + args.query.tid);
 
       let rows = await mondb.query(` select trim(tname)   as tname
                                           , lastDt 				as tobedt
                                         from tperfcode
                                         where gb <> '3'
-                                        and lastDt = ?
-                                        and asisDt = ?
+                                        and tid = ?
                                         limit 1
-                                    `, [args.query.tobedt,args.query.asisdt] ) ;
+                                    `, [args.query.tid] ) ;
       return(rows) ;
     },       
-    /**
-     * Save
-     */
-    save : async (args) => {
-        try {
-            let results = await mondb.query(`update tperfcode
-                                                SET tname=?
-                                                  , gb=?
-                                                  ,	startDt=?
-                                                  ,	lastDt=?
-                                                WHERE TID=?
-                                                and SEQ=?
-                                            `, [args.tname, args.gb, args.startdt, args.lastdt, args.tid, args.seq] ) ;
-
-          return 1;
-        } catch (e) {
-          console.error(e) ;
-          return 0;
-        }
-    },
 }
  
 export default tperfcode ;

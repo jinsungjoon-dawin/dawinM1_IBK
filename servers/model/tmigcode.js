@@ -1,5 +1,5 @@
 import mondb from '../db/dbconn.js';
-
+ 
 const tmigcode = {
     /**
      * 시스템이행 기준정보

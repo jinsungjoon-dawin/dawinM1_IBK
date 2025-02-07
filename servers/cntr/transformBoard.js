@@ -10,7 +10,8 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/transbo_list', async function (req, res, next) {
-    // console.log("req.query.asisdt : " + req.query.mid);
+    // console.log("req.query.mid : " + req.query.mid);
+
     const rdata = await tmigscene.ttransbolist(req) ;
     res.json(rdata) ;
 });

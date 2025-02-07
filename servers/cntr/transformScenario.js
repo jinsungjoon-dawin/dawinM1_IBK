@@ -10,8 +10,7 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/transsc_list', async function (req, res, next) {
-    // console.log("req.query.asisdt : " + req.query.asisdt);
-    // console.log("req.query.tobedt : " + req.query.tobedt);
+    // console.log("req.query.mid : " + req.query.mid);
 
     const rdata = await tmigscene.ttranssclist(req) ;
     res.json(rdata) ;

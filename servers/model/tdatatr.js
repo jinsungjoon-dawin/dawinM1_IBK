@@ -7,19 +7,21 @@ const tdatatr = {
      */
     tdatatr_find : async () => {
         let rows = await mondb.query(`	select sum(b.tblAsis)       as tblasis
-                                    	     , sum(b.tblTobe)       as tbltobe
-	                                         , sum(b.idxAsis)       as idxasis
-	                                         , sum(b.idxTobe)       as idxtobe
-	                                         , sum(b.objAsis)       as objasis
-	                                         , sum(b.objTobe)       as objtobe
-	                                         , sum(b.invalidAsis)   as invalidasis
-	                                         , sum(b.invalidTobe)   as invalidtobe
+                                             , sum(b.tblTobe)       as tbltobe
+                                             , sum(b.idxAsis)       as idxasis
+                                             , sum(b.idxTobe)       as idxtobe
+                                             , sum(b.objAsis)       as objasis
+                                             , sum(b.objTobe)       as objtobe
+                                             , sum(b.invalidAsis)   as invalidasis
+                                             , sum(b.invalidTobe)   as invalidtobe
                                         from (select did    as did
-		                                        from tdatacode
-		                                        where wdate in (select max(wdate) from tdatacode)
-	                                         ) A
+                                                from tdatacode
+                                                where (wdate, did) in (select substr(max(concat(wdate,did)), 1, 10)
+                                                                            , substr(max(concat(wdate,did)), 11, 10) 
+                                                                        from tdatacode)
+                                            ) A
                                         join tdatatr B
-	                                        on a.did = b.did
+                                            on a.did = b.did
                                     `) ;
         return(rows) ;
     },
@@ -32,7 +34,9 @@ const tdatatr = {
 	                                         , sum(b.tblAsis)-sum(b.tblTobe)    as tblasistobesum
                                         from (select did    as did
 		                                        from tdatacode
-		                                        where wdate in (select max(wdate) from tdatacode)
+                                                where (wdate, did) in (select substr(max(concat(wdate,did)), 1, 10)
+                                                                            , substr(max(concat(wdate,did)), 11, 10) 
+                                                                        from tdatacode)
 	                                         ) A
                                         join tdatatr B
 	                                        on a.did = b.did

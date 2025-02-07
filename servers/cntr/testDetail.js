@@ -10,8 +10,7 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/testde_list', async function (req, res, next) {
-    // console.log("req.query.asisdt : " + req.query.asisdt);
-    // console.log("req.query.tobedt : " + req.query.tobedt);
+    // console.log("req.query.tid : " + req.query.tid);
 
     const rdata = await tperftest.ttestdelist(req) ;
     res.json(rdata) ;
