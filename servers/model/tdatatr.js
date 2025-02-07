@@ -50,7 +50,7 @@ const tdatatr = {
      * , ASIS Object수량, TOBE Object수량, ASIS Invalid Object수량, TOBE Invalid Object수량
      */
     tdatachklist : async (args) => {
-        console.log("args.query.did : " + args.query.did);      
+        // console.log("args.query.did : " + args.query.did);      
   
         let rows = await mondb.query(` select a.pkey			as pkey			-- pkey
                                             , a.did			    as did			-- 데이터이관ID
@@ -83,7 +83,7 @@ const tdatatr = {
      * 구분, Table 수량, ASIS SUM - TOBE SUM
      */
     tdatachkresult : async (args) => {
-        console.log("args.query.did : " + args.query.did);      
+        // console.log("args.query.did : " + args.query.did);      
   
         let rows = await mondb.query(` select a.did			as did			-- 데이터이관ID
                                             , b.seq			as seq			-- 차수

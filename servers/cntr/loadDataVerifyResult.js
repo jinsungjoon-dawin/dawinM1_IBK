@@ -10,14 +10,14 @@ router.get('/', async function (req, res, next) {
 });
 
 router.get('/loaddata_list', async function (req, res, next) {
-    console.log("req.query.did : " + req.query.did);
+    // console.log("req.query.did : " + req.query.did);
 
     const rdata = await tdatatr.tdatachklist(req) ;
     res.json(rdata) ;
 });
 
 router.get('/loaddata_checkres', async function (req, res, next) {
-    console.log("req.query.did : " + req.query.did);
+    // console.log("req.query.did : " + req.query.did);
 
     const rdata = await tdatatr.tdatachkresult(req) ;
     res.json(rdata) ;
