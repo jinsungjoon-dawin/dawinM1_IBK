@@ -3,7 +3,7 @@
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
-    import { get } from 'svelte/store';
+  import { get } from 'svelte/store';
   // export let item;
   let { item } = $props();
   // console.log(item);
@@ -35,7 +35,8 @@
   let config = {
     type: "doughnut",
     data: {
-    labels: ['TASK', '완료', '지연', '진행중'],
+      // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
+    labels: ['TASK', '계획', '진행중', '완료','미수행행'],
     datasets: [
       {
         label: '',
@@ -101,10 +102,10 @@
 // errcnt		-- 수행시나리오작업오류건수
 // totcnt		-- 수행시나리오건수
 // totrate	-- 비율(수행시나리오건수/총시나리오건수)
-// ['TASK', '완료', '지연', '진행중'],
+// "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
   function chartDraw(){
     console.log(item);
-    config.data.datasets[0].data = [item.plancnt,item.comcnt,item.errcnt,item.ingcnt];
+    config.data.datasets[0].data = [item.totcnt,item.plancnt,item.ingcnt,item.comcnt,item.errcnt];
     console.log(item.scgrp)
 
     //1~타이틀
@@ -124,16 +125,16 @@
     title: string;
    
   }
-  interface ChartProjet {
-    project: string;
-  }
+  // interface ChartProjet {
+  //   project: string;
+  // }
 
-  // 프로젝트 
-  const chartProjet: ChartProjet[] = [
-    { project: "마이테이타" },
-    { project: "자산관리" },
+  // // 프로젝트 
+  // const chartProjet: ChartProjet[] = [
+  //   { project: "마이테이타" },
+  //   { project: "자산관리" },
 
-  ];
+  // ];
   // 박스 데이터 배열( 테스트 데이타)
   // const chartTitle: ChartTitle[] = [
   //     // 상단 종합 현황 차트
@@ -182,12 +183,13 @@
     label: string;
     count: number;
   }
-
+// "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
+// item.totcnt,item.plancnt,item.ingcnt,item.comcnt,item.errcnt
   const statusData: StatusItem[] = [
     { label: "Task", count: item.totcnt },
-    { label: "완료", count: item.comcnt },
+    { label: "계획", count: item.plancnt },
     { label: "진행중", count: item.ingcnt },
-    //{ label: "계획", count: item.plancnt },
+    { label: "완료", count: item.comcnt },
     { label: "미수행", count: item.errcnt }
     
     // { label: "Task", count: 100 },
@@ -240,7 +242,7 @@
       {config.chartx.getData}
     </span>
     {/each} -->
-    <span class="w-1/3 text-center -mt-5 item mb-1 testCol">
+    <span class="w-1/3 text-center -mt-5 item mb-1 testCol text-xs">
         
       {label} <br>
       {count}
