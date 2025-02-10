@@ -5,7 +5,7 @@
   import {rooturl, intlMs } from '../aqtstore';
     import { get } from 'svelte/store';
   // export let item;
-  let { item ,itemname} = $props();
+  let { item } = $props();
   // console.log(item);
 
   
@@ -14,7 +14,7 @@
   let ctx, chartx;
   let chartCanvas;
 
-  let totalSum = 999;
+  let totalSum = item.totrate;
   // 플러그인 정의
   const centerTextPlugin = {
   id: "centerText",
@@ -106,13 +106,9 @@
     console.log(item);
     config.data.datasets[0].data = [item.plancnt,item.comcnt,item.errcnt,item.ingcnt];
     console.log(item.scgrp)
-//    config.options.plugins.title.text = [item.scgrp];  
-    //0.전체 타이틀
-    //config.options.plugins.title.text = [item.scgrp];
+
     //1~타이틀
     config.options.plugins.title.text = [item.scgrp];
-    
-    
     
     chartx.update();
   }

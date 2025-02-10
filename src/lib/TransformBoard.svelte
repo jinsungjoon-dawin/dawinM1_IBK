@@ -150,7 +150,7 @@ let count=0;
         {/each}   
    </div>
 
-   <div class="w-11/12 bg-gray-700 rounded-lg flex-wrap h-max p-3 mx-1 text-center" >
+   <div class="w-12/12 bg-gray-700 rounded-lg flex-wrap h-max p-3 mx-1 text-center" >
       {#if selectedValues}
         <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600 ">단계:</label>
         <input type="text" class=" pl-3 mx-2  border-gray-100 border-r  bg-zinc-700 border-zinc-600 text-zinc-100" disabled value="{selectedValues.midnm} 전광판">
