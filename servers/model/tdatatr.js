@@ -77,34 +77,6 @@ const tdatatr = {
                                       `, [args.query.did] ) ;
           return(rows) ;
         },    
-    /**
-     * 데이타이관 적제 Data 검증 우측 하단
-     * Data 검증 결과
-     * 구분, Table 수량, ASIS SUM - TOBE SUM
-     */
-    tdatachkresult : async (args) => {
-        // console.log("args.query.did : " + args.query.did);      
-  
-        let rows = await mondb.query(` select a.did			as did			-- 데이터이관ID
-                                            , b.seq			as seq			-- 차수
-                                            , b.dname		as dname		-- 이관차수명
-                                            , b.wdate		as wdate		-- 작업일
-                                            , b.sf 			as sf 			-- 특이사항 
-                                            , a.checkTbl	as checktbl		-- 값검증 대상 테이블
-                                            , a.checkErr	as checkerr		-- 값검증 오류건수
-                                        from (
-                                                select did				as did
-                                                    , sum(checkTbl)	as checktbl
-                                                    , sum(checkErr)	as checkerr
-                                                from tdatatr
-                                                where did = 2
-                                                group by did
-                                            ) a
-                                        join tdatacode b
-                                            on a.did = b.did                    
-                                      `, [args.query.did] ) ;
-          return(rows) ;
-        },    
 }
  
 export default tdatatr ;
