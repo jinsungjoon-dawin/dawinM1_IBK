@@ -43,19 +43,21 @@ const tdatasql = {
                                             , b.seq		    as seq			-- 차수
                                             , b.dname		as dname		-- 이관차수명
                                             , b.wdate		as wdate		-- 작업일
+                                            , a.sqlno       as sqlno        -- 검증SQLNO
                                             , a.sqlnm		as sqlnm		-- 검증SQL명
                                             , a.sumasis	    as sumasis		-- asissum
                                             , a.sumtobe	    as sumtobe		-- tobesum
                                             , a.sumresult	as sumresult	-- sum비교결과
                                             , b.sfdata		as sfdata		-- 특이사항 
                                         from (
-                                                select did			                        as did
-                                                    , sqlnm			                        as sqlnm
-                                                    , sumasis		                        as sumasis
-                                                    , sumtobe		                        as sumtobe
-                                                    , case sumresult when 'Y' then '일치' 
-                                                                     when 'N' then '불일치' 
-                                                                     else '미수행' end		as sumresult
+                                                select pkey                                 as sqlno
+                                                     , did			                        as did
+                                                     , sqlnm			                    as sqlnm
+                                                     , sumasis		                        as sumasis
+                                                     , sumtobe		                        as sumtobe
+                                                     , case sumresult when 'Y' then '일치' 
+                                                                      when 'N' then '불일치' 
+                                                                      else '미수행' end		as sumresult
                                                 from tdatasql
                                                 where did = ?
                                                 and sumresult = 'N'
