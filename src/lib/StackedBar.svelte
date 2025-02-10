@@ -3,6 +3,8 @@
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount, onDestroy } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
+  import { t, locale } from "svelte-i18n";
+  import { changeLanguage } from "../i18n";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   // 부모페이지에서 전달 받은 파라미터
@@ -14,14 +16,14 @@
       type: 'bar',
       data: {
         datasets: [{
-          label: '대상',  // 첫 번째 데이터셋
+          label: $t("stacked.label1"),  // 첫 번째 데이터셋
           // backgroundColor: ['#5156be'],  // 색상
           backgroundColor: ['#4427ee'],  // 색상
           borderWidth: 1,
           borderRadius:10,
           
         }, {
-          label: '이행',  // 두 번째 데이터셋
+          label: $t("stacked.label2"),  // 두 번째 데이터셋
           // data: [7, 11, 5, 8, 3],
           backgroundColor:['#ff6384'],
           // borderColor: 'rgba(54, 162, 235, 1)',
@@ -122,17 +124,17 @@
       config.data.datasets[0].data = tcnts ;
       config.data.datasets[1].data = scnts;
       
-        config.data.datasets[1].label = "목표달성";
+        config.data.datasets[1].label = $t("stacked.label3");
           if(config.data.datasets.length==2){
           config.data.datasets.push({
             // label: '지연',  // 두 번째 데이터셋
-            label: '미달성',  // 두 번째 데이터셋
+            label: $t("stacked.label4"),  // 두 번째 데이터셋
             backgroundColor:['#b604ce'],
             borderWidth: 1,
             borderRadius:10
           });
           config.data.datasets.push({
-            label: '미수행',  // 두 번째 데이터셋
+            label: $t("stacked.label6"),  // 두 번째 데이터셋
             backgroundColor:['#3cba9f'],
             borderWidth: 1,
             borderRadius:10
@@ -148,7 +150,7 @@
         config.data.datasets[2].color = "black";
         config.data.datasets[3].data = nocnts;
       
-      config.options.plugins.title.text = "주제별 진행 현황";
+      config.options.plugins.title.text = $t("stacked.title1");
       }
       else if(page === "T"){//테스트
       let apnms = [];
@@ -170,16 +172,16 @@
       config.data.datasets[0].data = tcnts ;
       config.data.datasets[1].data = scnts;
       
-        config.data.datasets[1].label = "수행";
+        config.data.datasets[1].label = $t("stacked.label5");
           if(config.data.datasets.length==2){
           config.data.datasets.push({
-            label: '실패',  // 두 번째 데이터셋
+            label: $t("stacked.label7"),  // 두 번째 데이터셋
             backgroundColor:['#b604ce'],
             borderWidth: 1,
             borderRadius:10
           });
           config.data.datasets.push({
-            label: '미수행',  // 두 번째 데이터셋
+            label: $t("stacked.label6"),  // 두 번째 데이터셋
             backgroundColor:['#3cba9f'],
             borderWidth: 1,
             borderRadius:10
@@ -195,7 +197,7 @@
         config.data.datasets[2].color = "black";
         config.data.datasets[3].data = nocnts;
       
-      config.options.plugins.title.text = "주제별 진행 현황";
+      config.options.plugins.title.text = $t("stacked.title1");
     }
     
     chartx.update();

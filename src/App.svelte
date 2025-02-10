@@ -15,7 +15,8 @@
   import TestComposit from "./lib/TestComposit.svelte";
   import { isLogged, userid } from "./aqtstore";
   import { onMount } from "svelte";
-  
+  import { t, locale } from "svelte-i18n";
+  import { changeLanguage } from "./i18n";
   let cnm = DashBoard ;
   let pageNm = "모니터링 종합";
   let menuIdx = 0;
@@ -94,7 +95,7 @@
               
             </div>
           </div>
-          <span class="text-yellow-100 text-lg">현재 일자: {today}</span>
+          <span class="text-yellow-100 text-lg">{$t("com.nowDate")} {today}</span>
         </div>
       </div>
   
@@ -104,10 +105,9 @@
   
     </nav>
     <main class="bg-gray-800">
-      <!-- <div class="mx-auto max-w-7xl p-3 "> -->
-      <div class="mx-auto p-3 w-12/12 h-5/6">
+      <!-- <div class="mx-auto p-3 w-10/12 h-5/6"> -->
         <svelte:component this={cnm}></svelte:component>
-      </div>
+      <!-- </div> -->
     </main>
   </div>
   {/if}

@@ -19,3 +19,5 @@ npm install chartjs-plugin-datalabels --save
 npm install buffer
 엑셀업로드
 npm install xlsx
+다국어 (lable 텍스트 일괄관리)
+npm install svelte-i18n

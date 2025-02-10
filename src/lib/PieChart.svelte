@@ -1,9 +1,11 @@
 <script lang='ts'>
-
 import Chart, { Legend } from 'chart.js/auto';
 import { onMount, onDestroy } from 'svelte';
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {rooturl, intlMs} from '../aqtstore';
+import { t, locale } from "svelte-i18n";
+import { changeLanguage } from "../i18n";
+
 // 플러그인 등록
 Chart.register(ChartDataLabels);
 
@@ -101,26 +103,27 @@ function chartDraw(rdata){
   if(page === "S") {//dashboard
     if(rdata[0].gb==="3"){
       // labels = ["향상", "미수행", "지연"];
-      labels = ["목표달성", "미수행", "미달성"];
+      // labels = ["목표달성", "미수행", "미달성"];
+      labels = $t("pie.pLabels");
       datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
     }
     else{
-      labels = ["성공", "미수행", "실패"];
+      labels = $t("pie.tLabels");
       datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].fcnt];
     }
   }else if(page === "P" ) {//성능
     // labels = ["향상", "미수행", "지연"];
-    labels = ["목표달성", "미수행", "미달성"];
+    labels = $t("pie.pLabels");
     datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].delay];
   }
   else{//테스트
-    labels = ["성공", "미수행", "실패"];
+    labels =  $t("pie.tLabels");
     datas = [rdata[0].scnt, rdata[0].nocnt, rdata[0].fcnt];
   }
   let totCnt = rdata[0].tcnt;
   config.data.labels = labels;
   config.data.datasets[0].data = datas ;
-  config.options.plugins.title.text = (title === undefined ? "" : title) +" 대상: " + totCnt + "개";
+  config.options.plugins.title.text = (title === undefined ? "" : title) + $t("pie.target") + totCnt + $t("pie.cnt") ;
   chartx.update();
 }
 

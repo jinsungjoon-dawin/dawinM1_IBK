@@ -29,6 +29,8 @@
     "cors": "^2.8.5",
     "express": "^4.21.2",
     "http": "^0.0.1-security",
-    "mariadb": "^3.4.0"
+    "mariadb": "^3.4.0",
+    "svelte-i18n": "^4.0.1",
+    "xlsx": "^0.18.5"
   }
 }

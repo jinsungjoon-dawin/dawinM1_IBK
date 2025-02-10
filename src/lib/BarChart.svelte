@@ -3,6 +3,8 @@
   import ChartDataLabels from 'chartjs-plugin-datalabels';
   import { onMount, onDestroy } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
+  import { t, locale } from "svelte-i18n";
+  import { changeLanguage } from "../i18n";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   
@@ -15,14 +17,14 @@
       type: 'bar',
       data: {
         datasets: [{
-          label: '대상',  // 첫 번째 데이터셋
+          label: $t("bar.label1"),  // 첫 번째 데이터셋
           // backgroundColor: ['#5156be'],  // 색상
           backgroundColor: ['#4427ee'],  // 색상
           borderWidth: 1,
           borderRadius:10,
           
         }, {
-          label: '이행',  // 두 번째 데이터셋
+          label: $t("bar.label2"),  // 두 번째 데이터셋
           // data: [7, 11, 5, 8, 3],
           backgroundColor:['#ff6384'],
           // borderColor: 'rgba(54, 162, 235, 1)',
@@ -125,19 +127,19 @@
       config.data.datasets[0].data = tcnts ;
       config.data.datasets[1].data = scnts;
 
-      if(rdata[0].gb === "3")config.data.datasets[1].label = "목표달성";
-      else                   config.data.datasets[1].label = "성공";
+      if(rdata[0].gb === "3")config.data.datasets[1].label = $t("bar.label3");
+      else                   config.data.datasets[1].label = $t("bar.label4");
       if(rdata[0].gb === "3"){    
         if(config.data.datasets.length==2){
             config.data.datasets.push({
               // label: '지연',  // 두 번째 데이터셋
-              label: '미달성',  // 두 번째 데이터셋
+              label: $t("bar.label5"),  // 두 번째 데이터셋
               backgroundColor:['#b604ce'],
               borderWidth: 1,
               borderRadius:10
             });
             config.data.datasets.push({
-              label: '미수행',  // 두 번째 데이터셋
+              label: $t("bar.label6"),  // 두 번째 데이터셋
               backgroundColor:['#3cba9f'],
               borderWidth: 1,
               borderRadius:10
@@ -147,13 +149,13 @@
         else{    
           if(config.data.datasets.length==2){
               config.data.datasets.push({
-                label: '실패',  // 두 번째 데이터셋
+                label: $t("bar.label7"),  // 두 번째 데이터셋
                 backgroundColor:['#b604ce'],
                 borderWidth: 1,
                 borderRadius:10
               });
               config.data.datasets.push({
-                label: '미수행',  // 두 번째 데이터셋
+                label: $t("bar.label6"),  // 두 번째 데이터셋
                 backgroundColor:['#3cba9f'],
                 borderWidth: 1,
                 borderRadius:10
@@ -170,10 +172,10 @@
         config.data.datasets[2].color = "black";
         config.data.datasets[3].data = nocnts;
       
-      config.options.plugins.title.text = "주제별 진행 현황";
+      config.options.plugins.title.text = $t("bar.title1");
       }
     else if(page === "D"){ //대시보드 데이터 이행 결과
-      let labels = ["Table", "Index", "Object", "Invalid Object"];
+      let labels = $t("bar.dataLabels1");
       let asiss = [rdata[0].tblasis, rdata[0].idxasis, rdata[0].objasis, rdata[0].invalidasis];
       let tobes = [rdata[0].tbltobe, rdata[0].idxTobe, rdata[0].objTobe, rdata[0].invalidtobe];
       let totCnt = rdata[0].tblasis + rdata[0].idxasis + rdata[0].objasis + rdata[0].invalidasis;
@@ -182,14 +184,14 @@
       config.data.datasets[1].data = tobes;
       // config.options.plugins.title.text = "전체 수량: " + totCnt +"개";
       // config.options.plugins.title.text = "데이터 이행 결과";
-      config.options.plugins.title.text = "DB 리소스 이행 결과";
+      config.options.plugins.title.text = $t("bar.title2");
 
       
       // config.options.plugins.title.display = false;
     }else if(page === "M"){ //대시보드 데이터 Value 검증
-      config.data.labels = ["Table", "불일치 건수"];
-      config.data.datasets[0].label = "Table";
-      config.data.datasets[1].label = "불일치 건수";
+      config.data.labels = $t("bar.dataLabels2");
+      config.data.datasets[0].label = $t("bar.label8");
+      config.data.datasets[1].label = $t("bar.label9");
       config.data.datasets[0].data = [rdata[0].tbltobe,0];
       config.data.datasets[1].data = [0,rdata[0].tblasistobesum];
       // config.options.plugins.title.text = "데이터 Value 검증";

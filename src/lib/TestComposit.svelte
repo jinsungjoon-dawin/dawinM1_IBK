@@ -4,6 +4,8 @@
   import StackedBar from "./StackedBar.svelte";
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
+  import { t, locale } from "svelte-i18n";
+  import { changeLanguage } from "../i18n";
   let selected = true;
   let selectedRow = 0;
   let leftDates = [];
@@ -35,11 +37,13 @@
   };
 </script>
 {#if selected}
+
+<div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-zinc-600  text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label> 
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("test.leftTitle")}  </label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("test.leftDate")}</label> 
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
@@ -54,10 +58,10 @@
         {#if selData}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData?.tname} 테스트</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">수행 일자: {selData.tobedt}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData?.tname} {$t("test.title")}</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">{$t("test.date")} {selData.tobedt}</h1>
               <div class="w-36 px-4 text-end">
-                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>상세보기</button>
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t("com.btn.detail")}</button>
               </div>  
             </div>
             <div class="flex flex-wrap w-full p-3 justify-center">
@@ -76,6 +80,7 @@
         </div>
         {/if}
   </div>
+</div>
 </div>
 {:else}
   <TestDetail selData={selData} selectedRow={selectedRow}></TestDetail>

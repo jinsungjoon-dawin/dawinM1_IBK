@@ -5,6 +5,8 @@
   import { onMount } from "svelte";
   import {rooturl} from '../aqtstore';
   import * as XLSX from 'xlsx';
+  import { t, locale } from "svelte-i18n";
+  import { changeLanguage } from "../i18n";
   export let selData;
   export let selectedRow;
   // let { selData,  selectedRow} = $props();
@@ -51,7 +53,7 @@
     // const worksheet = XLSX.utils.json_to_sheet(list, { skipHeader: true });
     const worksheet = XLSX.utils.json_to_sheet(list.map(({ regdt, ...rest }) => rest), { skipHeader: true });
     // ✅ 사용자 정의 헤더 추가 (A1 행에 직접 추가)
-    XLSX.utils.sheet_add_aoa(worksheet, [["주재", "구분", "테스트일시","시작시간","종료시간","수행시간","ASIS시작시간","ASIS종료시간","소요시간"]], { origin: "A1" });
+    XLSX.utils.sheet_add_aoa(worksheet, [$t("testDetail.excelTitles")], { origin: "A1" });
 
     const workbook = XLSX.utils.book_new();
     
@@ -66,7 +68,7 @@
     
     const a = document.createElement("a");
     a.href = url;
-    a.download = leftDates[selectedRow].tname +"_테스트결과.xlsx";
+    a.download = leftDates[selectedRow].tname + $t("testDetail.excelFileName");
     document.body.appendChild(a);
     a.click();
     
@@ -110,12 +112,14 @@
   }
 </style>
 {#if selected}
+
+<div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-gray-100 border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">차수 </label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("testDetail.leftTitle")}</label>
       <!-- <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label> -->
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Tobe</label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("testDetail.leftDate")}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
@@ -133,39 +137,30 @@
         <!-- {#each datas as item, idx} -->
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} 테스트</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = leftDates[selectedRow]}}>수행 일자: {leftDates[selectedRow].tobedt}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} {$t("testDetail.title")} </h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = leftDates[selectedRow]}}>{$t("testDetail.date")} {leftDates[selectedRow].tobedt}</h1>
               <div class="w-36 px-4 text-end">
-                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>이전보기</button>
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t("com.btn.prePage")}</button>
               </div>  
             </div>
            
             <div class="flex justify-end items-center w-full mt-3">
-              <label class="text-gray-300">조회조건 상태:</label>
+              <label class="text-gray-300">{$t("testDetail.search1")}</label>
               <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10">
-                <option value="ALL">전체</option>
-                <option value="대상">대상</option>
-                <!-- <option value="수행">수행</option> -->
-                <option value="성공">성공</option>
-                <option value="실패">실패</option>
-                <option value="미수행">미수행</option>
+                {#each $t("com.sel.status") as item}
+                  <option value={item.key}>{item.value}</option>
+                {/each}
               </select>
-              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={exportToExcel}>엑셀 다운로드</button>
+              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={exportToExcel}>{$t("com.btn.excelDown")}</button>
             </div>
             <div class="flex flex-wrap w-full p-3 justify-center">
                 <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
                 <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
                     <thead>
                         <tr class="border-b">
-                            <th class="text-left p-3 px-5 ">주제</th>
-                            <th class="text-left p-3 px-5 ">구분</th>
-                            <th class="text-left p-3 px-5 ">테스트일시</th>
-                            <th class="text-left p-3 px-5 ">시작시간</th>
-                            <th class="text-left p-3 px-5 ">종료시간</th>
-                            <th class="text-left p-3 px-5 ">수행시간</th>
-                            <th class="text-left p-3 px-5 ">ASIS시작시간</th>
-                            <th class="text-left p-3 px-5 ">ASIS종료시간</th>
-                            <th class="text-left p-3 px-5 ">ASIS수행시간</th>
+                          {#each $t("testDetail.tableHeader") as item}
+                            <th class="text-left p-3 px-5 ">{item}</th>
+                          {/each}  
                         </tr>
                     </thead>
                     <tbody>
@@ -179,7 +174,6 @@
                                     <td class="p-3 px-5  ">
                                       {item.gubun}
                                   </td>
-                                   
                                     <td class="p-3 px-5  ">
                                         {item.tstime}
                                     </td>
@@ -203,7 +197,7 @@
                             {/each}
                         {:else}
                             <tr>
-                                <td colspan="9" class="p-3 px-5 text-center text-yellow-100">조회된 데이터가 없습니다.</td>
+                                <td colspan="9" class="p-3 px-5 text-center text-yellow-100">{$t("com.paging.noData")}</td>
                             </tr>
                         {/if}
                     </tbody>
@@ -211,7 +205,7 @@
                 </div>
                 <div class="flex w-full justify-center mt-4">
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-                      Previous
+                    {$t("com.paging.previous")}
                   </button>
                   {#each Array(totalPages).fill() as _, pageIndex}
                       <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={pageIndex + 1 === currentPage} on:click={() => goToPage(pageIndex + 1)}>
@@ -219,13 +213,14 @@
                       </button>
                   {/each}
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                      Next
+                    {$t("com.paging.next")}
                   </button>
               </div>
               
             </div>
         </div>
   {/if}
+</div>
 </div>
 </div>
 {:else}
