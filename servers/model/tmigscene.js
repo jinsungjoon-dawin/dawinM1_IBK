@@ -108,10 +108,10 @@ const tmigscene = {
                                             , x.scgrp							    as scgrp        -- 시나리오그룹
                                             , x.midnm							    as midnm        -- 작업설명
                                             , x.worknm							    as worknm       -- 세부작업내용
-                                            , x.planStdt						    as planStdt     -- 계획(시작일시)
-                                            , x.planEndt						    as planEndt     -- 계획(종료일시)
-                                            , x.ActStdt							    as ActStdt      -- 시작일시
-                                            , x.ActEndt							    as ActEndt      -- 종료일시
+                                            , x.planStdt						    as planstdt     -- 계획(시작일시)
+                                            , x.planEndt						    as planendt     -- 계획(종료일시)
+                                            , x.ActStdt							    as actstdt      -- 시작일시
+                                            , x.ActEndt							    as actendt      -- 종료일시
                                             , x.esttime							    as esttime      -- 예상소요시간
                                             , x.acttime							    as acttime      -- 실소요시간
                                             , x.wstat							    as wstat        -- 상태(0:계획,1:진행중,2:작업완료,3:작업오류,99:전체)
@@ -154,7 +154,38 @@ const tmigscene = {
                                         order by x.mid, x.scgrp, x.wstat	
                                     `, [args.query.mid, args.query.wstat, args.query.wstat, args.query.wstat, args.query.wstat] ) ;
         return(rows) ;
-      },     
+      },   
+    /**
+     * 이행 우측 세부 이행 시나리오 update
+     * 
+     */
+    ttransscsave : async (args) => {
+        // console.log("args.query.actstdt : " + args.query.actstdt);      
+        // console.log("args.query.actendt : " + args.query.actendt);      
+        // console.log("args.query.pkey : " + args.query.pkey);      
+        // console.log("args.query.mid : " + args.query.mid);      
+
+        let msg = { message: 'post :' };
+        let qstr = `UPDATE tmigscene 
+                        SET ActStdt=?
+                        , ActEndt=?
+                    WHERE pkey = ? 
+                    and mid = ? ` ;
+
+        try {
+            if (args.query.mid.length > 0) {
+                const r = await aqtdb.batch(qstr, [args.query.actstdt, args.query.actendt, args.query.pkey, args.query.mid]);
+
+                // return(r) ;
+    
+                msg.message += r.affectedRows + " 건 수정되었습니다.\r";
+            }
+
+            res.status(201).send(msg);
+        } catch (e) {
+                console.log(e.message);
+        }  
+    },        
 }
  
 export default tmigscene ;
