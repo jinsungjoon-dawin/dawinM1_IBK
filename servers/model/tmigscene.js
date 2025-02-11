@@ -96,7 +96,7 @@ const tmigscene = {
       },    
     /**
      * 이행 우측 세부 이행 시나리오
-     * 테이블 List
+     * 테이블 List   
      */
     ttranssclist : async (args) => {
       // console.log("args.query.mid : " + args.query.mid);      
