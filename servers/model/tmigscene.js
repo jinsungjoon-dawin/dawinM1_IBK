@@ -65,23 +65,14 @@ const tmigscene = {
                                             ) xx
                                     group by xx.mid 
                                     union all
-                                    select mid																				  as mid		-- 이행코드
-                                        , '0.전체'																			  as scgrp      -- 시나리오그룹
-                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
-                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
-                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
-                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
-                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
-                                        , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
-
                                     select xx.mid																			  as mid		-- 이행코드
-                                        , xx.scgrp																			  as scgrp      -- 시나리오그룹
-                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
-                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
-                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
-                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
-                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
-                                        , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
+                                         , xx.scgrp																			  as scgrp      -- 시나리오그룹
+                                         , sum(xx.cnt1) 																	  as plancnt	-- 미수행
+                                         , sum(xx.cnt2) 																	  as ingcnt		-- 수행중
+                                         , sum(xx.cnt3) 																	  as comcnt		-- 완료
+                                         , sum(xx.cnt4) 																	  as errcnt		-- 지연
+                                         , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
+                                         , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)  as totrate	-- 비율(수행시나리오건수/총시나리오건수)
                                     from (
                                             select aa.mid												as mid
                                                 , aa.scgrp 											    as scgrp
