@@ -189,9 +189,14 @@
   <style>
     /* 추가적인 커스터마이징이 필요하면 여기 추가 */
   </style>
-    <div class="min-h-screen bg-gray-100 flex items-center flex-start  justify-center" >
-    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
-      <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h2>
+    <div class="min-h-screen bg-gray-100 flex items-center flex-start  justify-center " >
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md bg-gray-800">
+      <!-- <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">T&T Board 이미지 예정</h2> -->
+      <div class="flex justify-center">
+        <img src="src/img/TTBoard.png" alt="Logo" class="w-64 h-64 object-contain" />
+      </div>
+      <h3 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h3>
+      <!-- <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h2> -->
       
       <!-- 로그인 폼 -->
       <form on:submit|preventDefault={() => {}} >
