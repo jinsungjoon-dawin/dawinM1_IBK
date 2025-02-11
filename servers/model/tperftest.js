@@ -189,16 +189,18 @@ const tperftest = {
                                             , case when x.scnt=1 and x.nocnt=0 then '향상' 
                                                 when x.scnt=0 and x.nocnt=1 then '미수행'
                                                 else '지연' end 							as gubun		-- 구분
-                                            , NVL(tstime,'')							    as tstime		-- 테스트일시
-                                            , NVL(stime,'')								    as stime		-- 시작시간 
-                                            , NVL(etime,'')								    as etime		-- 종료시간
-                                            , NVL(svctime,'')								as svctime		-- 소요시간
-                                            , NVL(stimeasis,'')							    as stimeasis	-- ASIS시작시간
-                                            , NVL(etimeasis,'')							    as etimeasis	-- ASIS종료시간
-                                            , NVL(svctimeasis,'')							as svctimeasis	-- ASIS소요시간
-                                            , NVL(regdt,'')  								as regdt        -- 등록시간
+                                            , NVL(x.svcnm,'')								as svcnm		-- 서비스명
+                                            , NVL(x.tstime,'')							    as tstime		-- 테스트일시
+                                            , NVL(x.stime,'')							    as stime		-- 시작시간 
+                                            , NVL(x.etime,'')							    as etime		-- 종료시간
+                                            , NVL(x.svctime,'')								as svctime		-- 소요시간
+                                            , NVL(x.stimeasis,'')						    as stimeasis	-- ASIS시작시간
+                                            , NVL(x.etimeasis,'')						    as etimeasis	-- ASIS종료시간
+                                            , NVL(x.svctimeasis,'')							as svctimeasis	-- ASIS소요시간
+                                            , NVL(x.regdt,'')  								as regdt        -- 등록시간
                                         from (
                                                 select a.apnm                           as apnm
+                                                	, s.svcnm							as svcnm
                                                     , 1									as tcnt
                                                     , if(t.svctime < t.svctimeasis,1,0)	as scnt
                                                     , if(t.sid is null,1,0)		        as nocnt
@@ -323,16 +325,18 @@ const tperftest = {
                                                     when x.sflag=0 and x.nocnt=1 then '미수행'
                                                     when x.sflag=1 and x.nocnt=1 then '미수행'
                                                     else '실패' end 							as gubun		-- 구분
-                                             , NVL(tstime,'')							        as tstime		-- 테스트일시
-                                             , NVL(stime,'')								    as stime		-- 시작시간 
-                                             , NVL(etime,'')								    as etime		-- 종료시간
-                                             , NVL(svctime,'')								    as svctime		-- 소요시간
-                                             , NVL(stimeasis,'')							    as stimeasis	-- ASIS시작시간
-                                             , NVL(etimeasis,'')							    as etimeasis	-- ASIS종료시간
-                                             , NVL(svctimeasis,'')							    as svctimeasis	-- ASIS소요시간
-                                             , NVL(regdt,'')  								    as regdt        -- 등록시간
+                                             , NVL(x.svcnm,'')								    as svcnm		-- 서비스명
+                                             , NVL(x.tstime,'')							        as tstime		-- 테스트일시
+                                             , NVL(x.stime,'')								    as stime		-- 시작시간 
+                                             , NVL(x.etime,'')								    as etime		-- 종료시간
+                                             , NVL(x.svctime,'')							    as svctime		-- 소요시간
+                                             , NVL(x.stimeasis,'')							    as stimeasis	-- ASIS시작시간
+                                             , NVL(x.etimeasis,'')							    as etimeasis	-- ASIS종료시간
+                                             , NVL(x.svctimeasis,'')						    as svctimeasis	-- ASIS소요시간
+                                             , NVL(x.regdt,'')  							    as regdt        -- 등록시간
                                         from (
                                                 select a.apnm                           							as apnm
+                                                	, s.svcnm							                            as svcnm
                                                     , 1																as tcnt
                                                     , case when t.sid is not null and t.sflag = 0 then 0 else 1 end	as sflag
                                                     , if(t.sid is null,1,0)		        							as nocnt

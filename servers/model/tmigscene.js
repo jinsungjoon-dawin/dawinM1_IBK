@@ -40,12 +40,12 @@ const tmigscene = {
                                             on x.mid = y.mid
                                         order by x.mid, x.scgrp, x.wstat)
                                     select mid																				  as mid		-- 이행코드
-                                        , '0.전체'																			  as scgrp
-                                        , sum(xx.cnt1) 																		  as plancnt	-- 수행시나리오계획건수
-                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행시나리오진행중건수
-                                        , sum(xx.cnt3) 																		  as comcnt		-- 수행시나리오작업완료건수
-                                        , sum(xx.cnt4) 																		  as errcnt		-- 수행시나리오작업오류건수
-                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- 수행시나리오건수
+                                        , '0.전체'																			  as scgrp      -- 시나리오그룹
+                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
+                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
+                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
+                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
+                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
                                         , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
                                     from (
                                             select aa.mid
@@ -65,13 +65,22 @@ const tmigscene = {
                                             ) xx
                                     group by xx.mid 
                                     union all
+                                    select mid																				  as mid		-- 이행코드
+                                        , '0.전체'																			  as scgrp      -- 시나리오그룹
+                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
+                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
+                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
+                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
+                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
+                                        , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
+
                                     select xx.mid																			  as mid		-- 이행코드
-                                        , xx.scgrp																			  as scgrp
-                                        , sum(xx.cnt1) 																		  as plancnt	-- 수행시나리오계획건수
-                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행시나리오진행중건수
-                                        , sum(xx.cnt3) 																		  as comcnt		-- 수행시나리오작업완료건수
-                                        , sum(xx.cnt4) 																		  as errcnt		-- 수행시나리오작업오류건수
-                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- 수행시나리오건수
+                                        , xx.scgrp																			  as scgrp      -- 시나리오그룹
+                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
+                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
+                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
+                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
+                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
                                         , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
                                     from (
                                             select aa.mid												as mid
@@ -160,31 +169,65 @@ const tmigscene = {
      * 
      */
     ttransscsave : async (args) => {
-        // console.log("args.query.actstdt : " + args.query.actstdt);      
-        // console.log("args.query.actendt : " + args.query.actendt);      
-        // console.log("args.query.pkey : " + args.query.pkey);      
-        // console.log("args.query.mid : " + args.query.mid);      
+        console.log("args : " + args);
+
+        var contact  = JSON.parse(args);
+
+        for (var k = 0; k < contact.length; k++) { 	
+            // console.log(contact[i]); 		
+            console.log(contact[k].mid); 		
+            console.log(contact[k].pkey); 		
+            console.log(contact[k].actstst); 		
+            console.log(contact[k].actendt); 		
+        } 
 
         let msg = { message: 'post :' };
-        let qstr = `UPDATE tmigscene 
-                        SET ActStdt=?
-                        , ActEndt=?
-                    WHERE pkey = ? 
-                    and mid = ? ` ;
+        let qstr = '';
+        let r = '1';
 
         try {
-            if (args.query.mid.length > 0) {
-                const r = await aqtdb.batch(qstr, [args.query.actstdt, args.query.actendt, args.query.pkey, args.query.mid]);
+            let mid;
+            let pkey;
+            let actstst;
+            let actendt;
 
-                // return(r) ;
-    
-                msg.message += r.affectedRows + " 건 수정되었습니다.\r";
-            }
+            for (var i = 0; i < contact.length; i++) { 	
+               console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                console.log('contact mid : ' + contact[i].mid); 		
+                console.log('contact pkey : ' + contact[i].pkey); 		
+                console.log('contact actstst : ' + contact[i].actstst); 		
+                console.log('contact actendt : ' + contact[i].actendt); 		
+                 
+                mid = contact[i].mid;
+                pkey = contact[i].pkey;
+                actstst = contact[i].actstst;
+                actendt = contact[i].actendt;
 
-            res.status(201).send(msg);
+                console.log('mid : ' + mid); 		
+                console.log('pkey : ' + pkey); 		
+                console.log('actstst : ' + actstst); 		
+                console.log('actendt : ' + actendt); 		
+
+                qstr = `update tmigscene 
+                        set ActStdt=?
+                            , ActEndt=?
+                        where pkey = ? 
+                        and mid = ? ` ;
+
+        
+                console.log('qstr : ' + qstr);
+
+                r = mondb.batch(qstr, [actstst, actendt, pkey, mid]);
+
+                console.log("##########################################################");
+            } 
         } catch (e) {
-                console.log(e.message);
-        }  
+            console.log(e.message);
+            return(0) ;
+        } 
+
+        return(1) ;
+
     },        
 }
  
