@@ -169,21 +169,22 @@ const tmigscene = {
      * 
      */
     ttransscsave : async (args) => {
-        console.log("args : " + args);
+        // console.log("Model args : " + args);
 
         var contact  = JSON.parse(args);
-
+/*
         for (var k = 0; k < contact.length; k++) { 	
-            // console.log(contact[i]); 		
+            console.log(contact[i]); 		
+
             console.log(contact[k].mid); 		
             console.log(contact[k].pkey); 		
             console.log(contact[k].actstst); 		
             console.log(contact[k].actendt); 		
         } 
-
+*/
         let msg = { message: 'post :' };
         let qstr = '';
-        let r = '1';
+        let r = 1;
 
         try {
             let mid;
@@ -192,34 +193,26 @@ const tmigscene = {
             let actendt;
 
             for (var i = 0; i < contact.length; i++) { 	
-               console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                console.log('contact mid : ' + contact[i].mid); 		
-                console.log('contact pkey : ' + contact[i].pkey); 		
-                console.log('contact actstst : ' + contact[i].actstst); 		
-                console.log('contact actendt : ' + contact[i].actendt); 		
+               // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
                  
                 mid = contact[i].mid;
                 pkey = contact[i].pkey;
                 actstst = contact[i].actstst;
                 actendt = contact[i].actendt;
-
-                console.log('mid : ' + mid); 		
-                console.log('pkey : ' + pkey); 		
-                console.log('actstst : ' + actstst); 		
-                console.log('actendt : ' + actendt); 		
+                // console.log('mid : ' + mid); 		
+                // console.log('pkey : ' + pkey); 		
+                // console.log('actstst : ' + actstst); 		
+                // console.log('actendt : ' + actendt); 		
 
                 qstr = `update tmigscene 
                         set ActStdt=?
                             , ActEndt=?
                         where pkey = ? 
                         and mid = ? ` ;
-
         
-                console.log('qstr : ' + qstr);
+                // console.log('qstr : ' + qstr);
 
-                r = mondb.batch(qstr, [actstst, actendt, pkey, mid]);
-
-                console.log("##########################################################");
+                r = mondb.query(qstr, [actstst, actendt, pkey, mid]);
             } 
         } catch (e) {
             console.log(e.message);
