@@ -4,7 +4,6 @@
   import BarChart from "./lib/BarChart.svelte";
   import PerformComposit from "./lib/PerformComposit.svelte";
   import LoadDataVerifyResult from "./lib/LoadDataVerifyResult.svelte";
-  import LoadDataVerifyResultPage from "./lib/LoadDataVerifyResultPage.svelte";
   import Login from "./lib/Login.svelte";
   import HelpManagement from "./lib/HelpManagement.svelte";
   import BulkRegistrationOfUsers from "./lib/BulkRegistrationOfUsers.svelte";
@@ -23,7 +22,7 @@
   let menus = [{pageNm:"홈",cnm:DashBoard},
                {pageNm:"테스트",cnm:TestComposit},
                {pageNm:"성능",cnm:PerformComposit},
-               {pageNm:"데이터",cnm:LoadDataVerifyResultPage},
+               {pageNm:"데이터",cnm:LoadDataVerifyResult},
                {pageNm:"이행",cnm:TransformBoard},
                {pageNm:"관리자",cnm:UserUploadManagement},
                {pageNm:"도움말",cnm:HelpManagement}
@@ -66,7 +65,7 @@
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
             <div class="shrink-0 text-white font-bold">
-              <img src="/src/img/logo.png">
+              <img src="/src/img/top.png" class="w-56 h-56 object-contain">
               <!-- <img class="size-8" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"> -->
                <!-- DAWIN -->
             </div>

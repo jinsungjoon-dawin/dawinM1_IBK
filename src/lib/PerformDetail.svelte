@@ -11,11 +11,7 @@
   export let selData;
   export let selectedRow;
   let selected = true;
-  let conds = {
-    asisdt: "",
-    tobedt: ""
-  };
-
+  
   let leftDates = [];
   let list = [];
   
@@ -44,43 +40,32 @@
     
     //[{"seq":"1차","asisdt":"2025-01-02","tobedt":"2025-01-20"}]
     if(leftDates.length > 0){
-      conds.asisdt = leftDates[0].asisdt;
-      conds.tobedt = leftDates[0].tobedt;
       list = await getPerformcompositList();
     }
   });
+  function excelDown(){
+    // 🔹 헤더 추가
+    let header = $t("performDetail.excelTitles");
+    
+    // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
+    let worksheetData = [header, ...list.map(obj => [obj.apnm, obj.gubun, 
+                                                     obj.tstime, obj.stime, 
+                                                     obj.etime, obj.svctime, 
+                                                     obj.stimeasis, obj.etimeasis, 
+                                                     obj.svctimeasis
+                        ])];
 
-  function exportToExcel() {
-    // JSON 데이터를 Worksheet로 변환
-    // const worksheet = XLSX.utils.json_to_sheet(list);
-    // 기본 데이터를 엑셀 시트로 변환 (헤더 없음)
-    const worksheet = XLSX.utils.json_to_sheet(list.map(({ regdt, ...rest }) => rest), { skipHeader: true });
-    // ✅ 사용자 정의 헤더 추가 (A1 행에 직접 추가)
-    XLSX.utils.sheet_add_aoa(worksheet, [$t("performDetail.excelTitles")], { origin: "A1" });
+    // 🔹 워크시트 생성
+    let ws = XLSX.utils.aoa_to_sheet(worksheetData);
 
-    const workbook = XLSX.utils.book_new();
-    
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Sheet1");
+    // 🔹 워크북 생성 및 워크시트 추가
+    let wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
-    // 엑셀 파일 생성
-    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
-    
-    // Blob을 사용하여 파일 다운로드
-    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8" });
-    const url = URL.createObjectURL(blob);
-    
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = leftDates[selectedRow].tname + $t("performDetail.excelFileName");
-    document.body.appendChild(a);
-    a.click();
-    
-    // 정리
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    // 🔹 엑셀 파일 생성 및 다운로드
+    XLSX.writeFile(wb, leftDates[selectedRow].tname + $t("performDetail.excelFileName"));
   }
-
-
+  
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
     currentPage = 1;
@@ -119,18 +104,17 @@
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
-    <div class="flex  border  border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; getPerformcompositList(); handleRowClick(idx);}}>
+    <div class="flex  border  border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { handleRowClick(idx); getPerformcompositList(); }}>
       <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("performDetail.leftTitle")}</label>
       <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("performDetail.leftDate1")}</label>
       <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("performDetail.leftDate2")}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; ; getPerformcompositList(); handleRowClick(idx);}}>
+          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { handleRowClick(idx); getPerformcompositList(); }}>
             <label class="px-3 w-1/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
             <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
             <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
-            <!-- <button class="w-1/6 bx bx-search-alt-2" on:click={() => { conds.asisdt=item.asisdt; conds.tobedt=item.tobedt; }}>조회</button> -->
         </div>
       {/each}
     {/if}
@@ -149,11 +133,11 @@
             <div class="flex justify-end items-center w-full mt-3">
               <label class="text-gray-300">{$t("performDetail.search1")}</label>
               <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10">
-                {#each $t("com.sel.status") as item}
+                {#each $t("com.sel.status.perform") as item}
                  <option value={item.key}>{item.value}</option>
                 {/each}
               </select>
-              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={exportToExcel}>{$t("com.btn.excelDown")}</button>
+              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={excelDown}>{$t("com.btn.excelDown")}</button>
             </div>
             
             <div class="flex flex-wrap w-full p-3 justify-center">
@@ -163,8 +147,8 @@
                     <thead>
                         <tr class="border-b">
                           {#each $t("performDetail.tableHeader") as item}
-                          <th class="text-left p-3 px-5 ">{item}</th>
-                         {/each}  
+                            <th class="text-left p-3 px-5 border border-zinc-700 bg-zinc-600">{item}</th>
+                          {/each}  
                         </tr>
                     </thead>
                     <tbody>
@@ -172,29 +156,29 @@
                         {#if paginatedlist.length > 0}
                             {#each paginatedlist as item, index}
                                 <tr class="border-b hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
-                                    <td class="p-3 px-5 ">
+                                    <td class="p-3 px-5 border border-zinc-600">
                                         {item.apnm} 
                                     </td>
-                                    <td class="p-3 px-5  ">
+                                    <td class="p-3 px-5  border border-zinc-600">
                                       {item.gubun}
                                   </td>
                                    
-                                    <td class="p-3 px-5  ">
+                                    <td class="p-3 px-5  border border-zinc-600">
                                         {item.tstime}
                                     </td>
-                                    <td class="p-3 px-5  ">
+                                    <td class="p-3 px-5  border border-zinc-600">
                                       {item.stime}
                                     </td>
-                                    <td class="p-3 px-5  ">
+                                    <td class="p-3 px-5  border border-zinc-600">
                                       {item.etime}
                                     </td>
-                                    <td class="p-3 px-5 ">
+                                    <td class="p-3 px-5 border border-zinc-600">
                                       {item.svctime}
-                                    </td><td class="p-3 px-5  ">
+                                    </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.stimeasis}
-                                    </td><td class="p-3 px-5  ">
+                                    </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.etimeasis}
-                                    </td><td class="p-3 px-5  ">
+                                    </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.svctimeasis}
                                     <!-- </td><td class="p-3 px-5  ">
                                       {item.regdt}
@@ -203,7 +187,7 @@
                             {/each}
                         {:else}
                             <tr>
-                                <td colspan="7" class="p-3 px-5 text-center text-yellow-100">{$t("com.paging.noData")}</td>
+                                <td colspan="7" class="p-3 px-5 p-3 px-5 text-center text-yellow-100">{$t("com.paging.noData")}</td>
                             </tr>
                         {/if}
                     </tbody>

@@ -36,7 +36,7 @@
     type: "doughnut",
     data: {
       // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
-    labels: ['TASK', '계획', '진행중', '완료','미수행행'],
+    labels: [ '계획', '진행중', '완료','미수행행'],
     datasets: [
       {
         label: '',
@@ -57,9 +57,10 @@
         //   'rgba(153, 102, 255, 1)',
         //   'rgba(255, 159, 64, 1)',
         // ],
-        borderWidth: 1,
+        borderWidth: 0,
       },
     ],
+    
   },
   plugins:[centerTextPlugin],
 
@@ -74,9 +75,15 @@
         anchor: 'center', // 라벨 위치 조정
         align: 'center', // 라벨 정렬
         font: {
-          size: 12, // 폰트 크기
+          size: 25, // 폰트 크기
         },
-        formatter: (value) => value, // 표시할 값 (기본은 데이터 값)
+        formatter: function (v, ctx) {
+            let num = parseFloat(v); // 안전하게 숫자로 변환
+            if (!isNaN(num) && num !== 0) {
+              return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
+            }
+            return "";
+          },
       },
       legend: {
         display: true, // 범례 표시 여부
@@ -105,7 +112,7 @@
 // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
   function chartDraw(){
     console.log(item);
-    config.data.datasets[0].data = [item.totcnt,item.plancnt,item.ingcnt,item.comcnt,item.errcnt];
+    config.data.datasets[0].data = [item.plancnt,item.ingcnt,item.comcnt,item.errcnt];
     console.log(item.scgrp)
 
     //1~타이틀
