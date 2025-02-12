@@ -78,7 +78,13 @@
         font: {
           size: 25, // 폰트 크기
         },
-        formatter: (value) => value, // 표시할 값 (기본은 데이터 값)
+        formatter: function (v, ctx) {
+            let num = parseFloat(v); // 안전하게 숫자로 변환
+            if (!isNaN(num) && num !== 0) {
+              return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
+            }
+            return "";
+          }, // 표시할 값 (기본은 데이터 값)
       },
       legend: {
         display: true, // 범례 표시 여부
