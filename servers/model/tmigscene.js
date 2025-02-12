@@ -219,7 +219,7 @@ const tmigscene = {
                                  else 2 end
                         where pkey = ? 
                         and mid = ?
-                    ` ;
+                        ` ;
 
                 r = mondb.query(qstr, [actstst, actendt, pkey, mid]);
             } 
