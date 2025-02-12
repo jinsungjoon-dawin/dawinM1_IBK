@@ -57,6 +57,7 @@
 
     // 🔹 워크시트 생성
     let ws = XLSX.utils.aoa_to_sheet(worksheetData);
+    ws["!cols"] = header.map(h => ({ wch: h.length + 5 })); // +5s는 여유 공간
 
     // 🔹 워크북 생성 및 워크시트 추가
     let wb = XLSX.utils.book_new();
@@ -132,12 +133,12 @@
             </div>
             <div class="flex justify-end items-center w-full mt-3">
               <label class="text-gray-300">{$t("performDetail.search1")}</label>
-              <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10">
+              <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
                 {#each $t("com.sel.status.perform") as item}
                  <option value={item.key}>{item.value}</option>
                 {/each}
               </select>
-              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  ml-10" on:click={excelDown}>{$t("com.btn.excelDown")}</button>
+              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  " on:click={excelDown}>{$t("com.btn.excelDown")}</button>
             </div>
             
             <div class="flex flex-wrap w-full p-3 justify-center">
@@ -156,7 +157,7 @@
 
                         {#if paginatedlist.length > 0}
                             {#each paginatedlist as item, index}
-                                <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
+                                <tr class="border-b hover:bg-sky-500">
                                     <td class="p-3 px-5 border border-zinc-600">
                                         {item.apnm} 
                                     </td>

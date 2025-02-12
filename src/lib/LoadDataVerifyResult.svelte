@@ -110,7 +110,7 @@ function getSum(column) {
 
     // 🔹 워크시트 생성
     let ws = XLSX.utils.aoa_to_sheet(worksheetData);
-
+    ws["!cols"] = header.map(h => ({ wch: h.length + 5 })); // +5s는 여유 공간
     // 🔹 워크북 생성 및 워크시트 추가
     let wb = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
@@ -120,11 +120,7 @@ function getSum(column) {
   }
   
 </script>
-<style>
-  .hover\:bg-orange-100:hover {
-      background-color: darkgrey 
-  }
-</style>
+
 
 {#if selected}
 <div class="mx-auto p-3 w-10/12 h-5/6">
@@ -190,7 +186,7 @@ function getSum(column) {
                     <tbody>
                         {#if paginatedList.length > 0}
                             {#each paginatedList as item, index}
-                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
+                               <tr class="border-b hover:bg-sky-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbname} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbuser} </td>
                                     <td class="text-right  border border-zinc-700 p-3 px-5"> {formatNumber(item.tblasis)} </td>
@@ -266,7 +262,7 @@ function getSum(column) {
                     <tbody>
                         {#if chkList.length > 0}
                             {#each chkList as item, index}
-                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
+                               <tr class="border-b hover:bg-sky-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlcnt)} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlnocnt)} </td>
                                 </tr>
