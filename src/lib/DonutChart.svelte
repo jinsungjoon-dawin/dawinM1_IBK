@@ -58,7 +58,7 @@
         //   'rgba(153, 102, 255, 1)',
         //   'rgba(255, 159, 64, 1)',
         // ],
-        borderWidth: 1,
+        borderWidth: 0,
       },
     ],
   },
@@ -76,7 +76,7 @@
         anchor: 'center', // 라벨 위치 조정
         align: 'center', // 라벨 정렬
         font: {
-          size: 12, // 폰트 크기
+          size: 25, // 폰트 크기
         },
         formatter: (value) => value, // 표시할 값 (기본은 데이터 값)
       },

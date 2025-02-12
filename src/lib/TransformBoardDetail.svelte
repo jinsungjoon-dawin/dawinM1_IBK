@@ -145,7 +145,7 @@ tr:hover {
               
               <div class="flex flex-wrap w-full p-3 justify-center " >
                 <!-- <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center overflow-auto"> -->
-                  <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg h-svh"  >
+                  <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg "  >
                   <table class="w-full text-md bg-gray-800 text-white text-nowrap shadow-md rounded mb-4" style="border: 1px solid #ccc">
                     <thead>
                     <tr class="border-b text-sm w-full">
