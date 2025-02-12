@@ -144,7 +144,7 @@
     let totCnt = rdata[0].tcnt;
     
     config.data.datasets[0].data = datas;
-    config.options.plugins.title.text = (title === undefined ? "" : title) + $t("pie.target") + totCnt + $t("pie.cnt");
+    config.options.plugins.title.text = (title === undefined ? "" : title) + " " + $t("pie.target") + totCnt + $t("pie.cnt");
     chartx.update();
   }
 
