@@ -204,19 +204,19 @@ function getSum(column) {
                                 </tr>
                             {/each}
                             <tr>
-                              <td class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tblasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tbltobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxtobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objtobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</td>
+                              <th class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tblasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tbltobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxtobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objtobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</th>
                             </tr>
                             <tr>
-                              <td class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</td>
-                              <td class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html paginatedList[0].sf.replace(/\r\n|\n/g, "<br>")}</td>
+                              <th class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html paginatedList[0].sf.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}
@@ -249,9 +249,9 @@ function getSum(column) {
             <!-- 하단-->
             <div class="flex flex-wrap w-full p-3 justify-center">
               <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
-                <div class="w-full border-gray-500  py-3 text-end">
+                <!-- <div class="w-full border-gray-500  py-3 text-end">
                   <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => {getDetail(chkList[0]?.sqlnocnt); }}>{$t("loadData.btn.diff")}</button>
-                </div>
+                </div> -->
                 <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
@@ -273,9 +273,8 @@ function getSum(column) {
                             {/each}
                            
                             <tr>
-                              <td class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</td>
-                              
-                              <td class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html chkList[0].sfdata.replace(/\r\n|\n/g, "<br>")}</td>
+                              <th class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html chkList[0].sfdata.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}
