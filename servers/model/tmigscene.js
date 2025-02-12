@@ -187,6 +187,7 @@ const tmigscene = {
             let pkey;
             let actstst;
             let actendt;
+            let wstat;
 
             for (var i = 0; i < contact.length; i++) { 	
                 // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
@@ -195,27 +196,30 @@ const tmigscene = {
                 // console.log(contact[k].pkey); 		
                 // console.log(contact[k].actstst); 		
                 // console.log(contact[k].actendt); 		
+                // console.log(contact[k].wstat); 		
                     
                 mid = contact[i].mid;
                 pkey = contact[i].pkey;
                 actstst = contact[i].actstst;
                 actendt = contact[i].actendt;
+                wstat = contact[i].wstat;
                 // console.log('mid : ' + mid); 		
                 // console.log('pkey : ' + pkey); 		
                 // console.log('actstst : ' + actstst); 		
                 // console.log('actendt : ' + actendt); 		
+                // console.log('actendt : ' + wstat); 		
 
                 qstr = `update tmigscene 
                         set ActStdt=?
                           , ActEndt=?
-                          , case when a.ActStdt = '1900-01-01' and a.ActEndt = '1900-01-01' then 0
-                                 when a.ActStdt <> '1900-01-01' and a.ActEndt = '1900-01-01' then 1
-                                 when a.ActStdt <> '1900-01-01' and a.ActEndt <> '1900-01-01' and datediff(a.planEndt, a.ActEndt) <= 0 then 2
-                                 when a.ActStdt <> '1900-01-01' and a.ActEndt <> '1900-01-01' and datediff(a.planEndt, a.ActEndt) > 0 then 3
+                          , wstat = case when ActStdt = '1900-01-01' and ActEndt = '1900-01-01' then 0
+                                 when ActStdt <> '1900-01-01' and ActEndt = '1900-01-01' then 1
+                                 when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) <= 0 then 2
+                                 when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) > 0 then 3
                                  else 2 end
                         where pkey = ? 
                         and mid = ?
-                        ` ;
+                    ` ;
 
                 r = mondb.query(qstr, [actstst, actendt, pkey, mid]);
             } 
