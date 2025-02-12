@@ -95,23 +95,6 @@ function getSum(column) {
       }
   }
 
-  function handleFileUpload(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const parsedData = XLSX.utils.sheet_to_json(sheet);
-
-          list = [...list, ...parsedData];
-          currentPage = 1;
-      };
-
-      reader.readAsArrayBuffer(file);
-  }
 
   function excelDown(){
     // 🔹 헤더 추가
@@ -178,7 +161,7 @@ function getSum(column) {
                 <div class="w-full border-gray-500  py-3 text-end">
                   <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => excelDown()}>{$t("com.btn.excelDown")}</button>
                 </div>
-                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
                       <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="10">{$t("loadData.schemaTitle")}</th>
@@ -269,7 +252,7 @@ function getSum(column) {
                 <div class="w-full border-gray-500  py-3 text-end">
                   <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => {getDetail(chkList[0]?.sqlnocnt); }}>{$t("loadData.btn.diff")}</button>
                 </div>
-                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
                       <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="2">{$t("loadData.dataCheckTitle")}</th>

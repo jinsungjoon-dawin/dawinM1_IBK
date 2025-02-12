@@ -1,13 +1,12 @@
-<script>
+<script lang="ts">
   import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
   import { rooturl } from '../aqtstore';
   import { t, locale } from "svelte-i18n";
   import { changeLanguage } from "../i18n";
-  let isLoading = true;
-  let rdata;
-
+  let isLoading: boolean = true;
+  let rdata: null = null;
   async function getData() {
     try{
     const res = await fetch($rooturl + "/dashboard");

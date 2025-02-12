@@ -49,10 +49,10 @@
     
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
     let worksheetData = [header, ...list.map(obj => [obj.apnm, obj.gubun, 
-                                                     obj.tstime, obj.stime, 
+                                                     obj.svcnm,obj.tstime, obj.stime, 
                                                      obj.etime, obj.svctime, 
                                                      obj.stimeasis, obj.etimeasis, 
-                                                     obj.svctimeasis
+                                                     obj.svctimeasis,"결과"
                         ])];
 
     // 🔹 워크시트 생성
@@ -143,11 +143,11 @@
             <div class="flex flex-wrap w-full p-3 justify-center">
               <!-- <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center overflow-auto"> -->
                 <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
-                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                <table class="w-full text-md bg-gray-800 text-white text-nowrap shadow-md rounded mb-4">
                     <thead>
                         <tr class="border-b">
                           {#each $t("performDetail.tableHeader") as item}
-                            <th class="text-left p-3 px-5 border border-zinc-700 bg-zinc-600">{item}</th>
+                            <th class="text-left p-3 px-10 border border-zinc-700 bg-zinc-600">{item}</th>
                           {/each}  
                         </tr>
                     </thead>
@@ -162,7 +162,9 @@
                                     <td class="p-3 px-5  border border-zinc-600">
                                       {item.gubun}
                                   </td>
-                                   
+                                  <td class="p-3 px-5 border border-zinc-600 ">
+                                    {item.svcnm}
+                                  </td>
                                     <td class="p-3 px-5  border border-zinc-600">
                                         {item.tstime}
                                     </td>
@@ -178,11 +180,13 @@
                                       {item.stimeasis}
                                     </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.etimeasis}
-                                    </td><td class="p-3 px-5  border border-zinc-600">
+                                    </td>
+                                    <td class="p-3 px-5  border border-zinc-600">
                                       {item.svctimeasis}
-                                    <!-- </td><td class="p-3 px-5  ">
-                                      {item.regdt}
-                                    </td> -->
+                                    </td>
+                                    <td class="p-3 px-5  border border-zinc-600">
+                                      결과
+                                    </td>
                                 </tr>
                             {/each}
                         {:else}

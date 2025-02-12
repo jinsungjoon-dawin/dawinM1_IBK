@@ -16,6 +16,7 @@
   import { onMount } from "svelte";
   import { t, locale } from "svelte-i18n";
   import { changeLanguage } from "./i18n";
+  import Parent from "./lib/Parent.svelte";
   let cnm = DashBoard ;
   let pageNm = "모니터링 종합";
   let menuIdx = 0;
@@ -26,6 +27,7 @@
                {pageNm:"이행",cnm:TransformBoard},
                {pageNm:"관리자",cnm:UserUploadManagement},
                {pageNm:"도움말",cnm:HelpManagement}
+              //  ,{pageNm:"임시",cnm:Parent}
   ]
   
   
@@ -65,8 +67,7 @@
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
             <div class="shrink-0 text-white font-bold">
-              <img src="/src/img/top.png" class="w-56 h-56 object-contain">
-              <!-- <img class="size-8" src="https://tailwindui.com/plus/img/logos/mark.svg?color=indigo&shade=500" alt="Your Company"> -->
+              <img src="/src/img/top3.png" class="object-contain">
                <!-- DAWIN -->
             </div>
             <div class="hidden md:block">
