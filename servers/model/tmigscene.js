@@ -166,6 +166,7 @@ const tmigscene = {
                                             on x.mid = y.mid
                                         join tmigsgrp z
                                             on x.scgrp = z.scgrp
+                                        where z.show = 0
                                         order by x.mid, x.scgrp, x.wstat	
                                     `, [args.query.mid, args.query.wstat, args.query.wstat, args.query.wstat, args.query.wstat] ) ;
         return(rows) ;
