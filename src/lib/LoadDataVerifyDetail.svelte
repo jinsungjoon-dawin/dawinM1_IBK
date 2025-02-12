@@ -121,7 +121,7 @@
               <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => excelDown()}>{$t("com.btn.excelDown")}</button>
               <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t("com.btn.prePage")}</button>
           </div>
-        <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+        <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
         <thead>
           <tr class="">
             {#each tableHeader as item, idx}
@@ -132,7 +132,7 @@
         <tbody>
           {#if paginatedList.length > 0}
               {#each paginatedList as item, index}
-                 <tr class="hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                 <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                       <td class="text-center  border border-zinc-700 p-3 px-5">{item.sqlno}</td>
                       <td class="text-center  border border-zinc-700 p-3 px-5"> {item.sqlnm} </td>
                       <td class="text-right  border border-zinc-700 p-3 px-5"> {formatNumber(item.sumasis)} </td>

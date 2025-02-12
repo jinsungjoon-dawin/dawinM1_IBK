@@ -190,13 +190,27 @@
     /* 추가적인 커스터마이징이 필요하면 여기 추가 */
   </style>
     <div class="min-h-screen bg-gray-100 flex items-center flex-start  justify-center " >
-    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md bg-gray-800">
-      <!-- <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">T&T Board 이미지 예정</h2> -->
-      <div class="flex justify-center">
-        <img src="src/img/TTBoard.png" alt="Logo" class="w-64 h-64 object-contain" />
+    <div class="w-full max-w-md p-8 bg-white rounded-lg shadow-md ">
+      <!-- <div class="flex justify-center">
+        <img src="src/img/logo4.png" alt="Logo" class="p-5 object-contain" />
       </div>
-      <h3 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h3>
-      <!-- <h2 class="text-3xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</h2> -->
+      <div class="flex justify-center">
+        <img src="src/img/logo5.png" alt="Logo" class="p-5 object-contain" />
+      </div> -->
+      <!-- <div class="flex justify-center">
+        <img src="src/img/logo6.png" alt="Logo" class="p-5 object-contain" />
+      </div>
+      <div class="flex justify-center">
+        <img src="src/img/logo7.png" alt="Logo" class="p-5 object-contain" />
+      </div>
+      <div class="flex justify-center">
+        <img src="src/img/logo8.png" alt="Logo" class="p-5 object-contain" />
+      </div> -->
+      
+      <div class="flex justify-center">
+        <img src="src/img/logo9.png" alt="Logo" class="p-5 object-contain" />
+      </div>
+      <div class="w-full text-xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</div>
       
       <!-- 로그인 폼 -->
       <form on:submit|preventDefault={() => {}} >
@@ -238,10 +252,9 @@
       </div>
   
      
-      <div class="flex justify-center">
+      <div class="flex justify-center h-24">
         &nbsp;
-        <!-- <img src="assets/src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" /> -->
-         <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" />
+         <!-- <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" /> -->
       </div>
       
     </div>
@@ -285,10 +298,7 @@
           bind:this={npass2Input}/>
       </div>
       <div class="mt-4 flex justify-between">
-        <button
-          on:click={toggleModal}
-          class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md"
-        >
+        <button on:click={toggleModal} class="px-4 py-2 bg-gray-300 text-gray-700 rounded-md">
           취소
         </button>
         <button class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600" on:click={changepass}>

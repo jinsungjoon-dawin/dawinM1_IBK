@@ -174,7 +174,6 @@
     chartx.update();
   }
 
-  const interval = setInterval(parentCall, $intlMs);
 
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
@@ -182,7 +181,8 @@
     await parentCall();
   });
 
-  onDestroy(() => clearInterval(interval));
+  // const interval = setInterval(parentCall, $intlMs);
+  // onDestroy(() => clearInterval(interval));
 </script>
 
 <canvas bind:this={chartCanvas} id="myChart" class="flex"></canvas>

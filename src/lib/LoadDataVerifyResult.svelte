@@ -95,23 +95,6 @@ function getSum(column) {
       }
   }
 
-  function handleFileUpload(event) {
-      const file = event.target.files[0];
-      const reader = new FileReader();
-
-      reader.onload = (e) => {
-          const data = new Uint8Array(e.target.result);
-          const workbook = XLSX.read(data, { type: "array" });
-          const sheetName = workbook.SheetNames[0];
-          const sheet = workbook.Sheets[sheetName];
-          const parsedData = XLSX.utils.sheet_to_json(sheet);
-
-          list = [...list, ...parsedData];
-          currentPage = 1;
-      };
-
-      reader.readAsArrayBuffer(file);
-  }
 
   function excelDown(){
     // 🔹 헤더 추가
@@ -178,7 +161,7 @@ function getSum(column) {
                 <div class="w-full border-gray-500  py-3 text-end">
                   <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => excelDown()}>{$t("com.btn.excelDown")}</button>
                 </div>
-                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
                       <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="10">{$t("loadData.schemaTitle")}</th>
@@ -207,7 +190,7 @@ function getSum(column) {
                     <tbody>
                         {#if paginatedList.length > 0}
                             {#each paginatedList as item, index}
-                               <tr class="hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbname} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbuser} </td>
                                     <td class="text-right  border border-zinc-700 p-3 px-5"> {formatNumber(item.tblasis)} </td>
@@ -221,19 +204,19 @@ function getSum(column) {
                                 </tr>
                             {/each}
                             <tr>
-                              <td class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tblasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tbltobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxtobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objtobe").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</td>
-                              <td class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</td>
+                              <th class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tblasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("tbltobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("idxtobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("objtobe").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</th>
+                              <th class="text-right bg-zinc-600 border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</th>
                             </tr>
                             <tr>
-                              <td class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</td>
-                              <td class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html paginatedList[0].sf.replace(/\r\n|\n/g, "<br>")}</td>
+                              <th class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html paginatedList[0].sf.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}
@@ -266,10 +249,10 @@ function getSum(column) {
             <!-- 하단-->
             <div class="flex flex-wrap w-full p-3 justify-center">
               <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
-                <div class="w-full border-gray-500  py-3 text-end">
+                <!-- <div class="w-full border-gray-500  py-3 text-end">
                   <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => {getDetail(chkList[0]?.sqlnocnt); }}>{$t("loadData.btn.diff")}</button>
-                </div>
-                <table class="w-full text-md bg-gray-800 text-yellow-100  shadow-md rounded mb-4">
+                </div> -->
+                <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
                       <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="2">{$t("loadData.dataCheckTitle")}</th>
@@ -283,16 +266,15 @@ function getSum(column) {
                     <tbody>
                         {#if chkList.length > 0}
                             {#each chkList as item, index}
-                               <tr class="hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlcnt)} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlnocnt)} </td>
                                 </tr>
                             {/each}
                            
                             <tr>
-                              <td class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</td>
-                              
-                              <td class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html chkList[0].sfdata.replace(/\r\n|\n/g, "<br>")}</td>
+                              <th class="text-center  border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html chkList[0].sfdata.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}

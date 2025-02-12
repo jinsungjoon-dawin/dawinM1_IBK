@@ -37,11 +37,11 @@
             "#b604ce",
             "#e8c3b9",
             "#c45850",
-            // "#ff6384a3",
-            // "#3cba9fa3",
-            // "#b604cea3",
-            // "#e8c3b9a3",
-            // "#c45850a3",
+            // "rgba(255, 99, 132, 0.9)",   // 빨강 (선명한 대비)
+            // "rgba(54, 162, 235, 0.9)",   // 파랑 (밝고 시원한 느낌)
+            // "rgba(75, 192, 192, 0.9)",   // 청록색 (세련된 분위기)
+            // "rgba(153, 102, 255, 0.9)",   // 보라 (차분하면서 대비)
+            // "rgba(255, 206, 86, 0.9)"   // 노랑 (밝고 가시성 높음)
           ],
           data: [],
           // borderColor: ["#ff6380", "#3cba8f", "#b603ce", "#e8c3b0", "#c45850"],
@@ -144,7 +144,7 @@
     let totCnt = rdata[0].tcnt;
     
     config.data.datasets[0].data = datas;
-    config.options.plugins.title.text = (title === undefined ? "" : title) + $t("pie.target") + totCnt + $t("pie.cnt");
+    config.options.plugins.title.text = (title === undefined ? "" : title) + " " + $t("pie.target") + totCnt + $t("pie.cnt");
     chartx.update();
   }
 
@@ -156,6 +156,7 @@
 
   const interval = setInterval(parentCall, $intlMs);
 
+  if(page !== "S")clearInterval(interval);
   onDestroy(() => clearInterval(interval));
 </script>
 
