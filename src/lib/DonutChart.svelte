@@ -1,14 +1,15 @@
 <script lang="ts">
   import Chart from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { onMount } from "svelte";
+  import { onMount, createEventDispatcher } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
   import { get } from 'svelte/store';
   // export let item;
-  let { item } = $props();
+  let { item,getscenariodetaildata, sts } = $props();
   // console.log(item);
-
-  
+  let selflag;
+  let mid;
+  let childMessage = "";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
@@ -36,14 +37,14 @@
     type: "doughnut",
     data: {
       // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
-    labels: [ '계획', '진행중', '완료','미수행행'],
+    labels: [ '계획', '진행중', '완료','미수행'],
     datasets: [
       {
         label: '',
         data: [100, 19, 3, 5],
         backgroundColor:['#34c38f'],
-         circumference: 180, // 도넛 반 자르기
-            rotation: 270,
+        circumference: 180, // 도넛 반 자르기
+        rotation: 270,
         backgroundColor: [
           "#ff6384", "#3cba9f","#b604ce","#e8c3b9"
         //   'rgba(153, 102, 255, 0.2)',
@@ -60,7 +61,6 @@
         borderWidth: 0,
       },
     ],
-    
   },
   plugins:[centerTextPlugin],
 
@@ -68,6 +68,7 @@
    
     responsive: true,
     maintainAspectRatio: true,
+    
     // aspectRatio: 1, // 차트를 정사각형으로 유지
     plugins: {
       datalabels: {
@@ -83,7 +84,7 @@
               return num.toLocaleString(); // 숫자인 경우, 천 단위 콤마 추가
             }
             return "";
-          },
+          }, // 표시할 값 (기본은 데이터 값)
       },
       legend: {
         display: true, // 범례 표시 여부
@@ -120,7 +121,18 @@
     
     chartx.update();
   }
-
+// 시나리오 상세내용 조회  sts:9 전체 시나리오 조회회
+async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
+    alert("mid="+mid);
+    let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+    const transformboardScenario = await fetch($rooturl+transformboardlist);
+    console.log("transformboardScenario=="+transformboardScenario);
+    
+    if (transformboardScenario.ok)
+      return await transformboardScenario.json();
+    else
+      throw new Error(transformboardScenario.statusText);    
+  }
   onMount(async () => {
     ctx = chartCanvas.getContext("2d");
     chartx = new Chart(ctx, config);
@@ -193,11 +205,11 @@
 // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
 // item.totcnt,item.plancnt,item.ingcnt,item.comcnt,item.errcnt
   const statusData: StatusItem[] = [
-    { label: "Task", count: item.totcnt },
-    { label: "계획", count: item.plancnt },
-    { label: "진행중", count: item.ingcnt },
-    { label: "완료", count: item.comcnt },
-    { label: "미수행", count: item.errcnt }
+    { label: "Task", count: item.totcnt   ,flag: 99,mid:item.mid},
+    { label: "계획", count: item.plancnt  ,flag: 0,mid:item.mid},
+    { label: "진행중", count: item.ingcnt ,flag: 1,mid:item.mid},
+    { label: "완료", count: item.comcnt   ,flag: 2,mid:item.mid},
+    { label: "미수행", count: item.errcnt ,flag: 3,mid:item.mid}
     
     // { label: "Task", count: 100 },
     // { label: "완료", count: 4 },
@@ -205,6 +217,12 @@
     // { label: "계획", count: 3 },
     // { label: "미수행", count: 93 }
   ];
+  const dispatch = createEventDispatcher();
+  function call(flag,mid){
+    alert(flag,mid)
+    childMessage=flag;
+    dispatch("message",{"flag":flag, "mid":mid});
+    }
 </script>
 <style>
   .item {
@@ -239,20 +257,13 @@
      93
     </span> -->
 
-    {#each statusData as { label, count}}
-
-    <!-- {#each item as item }
-
-    <span class="w-1/3 text-center -mt-5 item mb-1 testCol">
-        
-      {item.config.ChartDataLabels} <br>
-      {config.chartx.getData}
-    </span>
-    {/each} -->
+    {#each statusData as { label, count,flag,mid}}
     <span class="w-1/3 text-center -mt-5 item mb-1 testCol text-xs">
-        
+     <div on:click={() => {call(flag,mid)}}>
       {label} <br>
-      {count}
+      {count}<br>
+      {selflag}
+    </div>
     </span>
   {/each}
   </div>

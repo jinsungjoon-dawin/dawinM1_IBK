@@ -6,10 +6,10 @@
       childMessage = event.detail; // 자식에서 전달된 값 저장
     }
   </script>
-  
+<!--   
   <Child on:message={handleChildEvent} />
-  
   <p>자식이 보낸 메시지: {childMessage}</p>
-
-
-  <Child on:message={handleChildEvent} ></Child>
+  <Child on:message={handleChildEvent} ></Child> -->
+  <header class="h-[calc(100vh-70px)] flex items-center justify-center bg-gray-800 text-white">
+    <h1 class="text-4xl">Full Screen Header</h1>
+  </header>

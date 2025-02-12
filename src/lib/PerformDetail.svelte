@@ -147,6 +147,7 @@
                     <thead>
                         <tr class="border-b">
                           {#each $t("performDetail.tableHeader") as item}
+                            <!-- <th class="text-left p-3 px-10 border border-zinc-700 bg-zinc-600">{item}</th> -->
                             <th class="text-left p-3 px-10 border border-zinc-700 bg-zinc-600">{item}</th>
                           {/each}  
                         </tr>

@@ -8,6 +8,9 @@
   let chardata;
   let selectedValues;
   let getscenariodetaildata;
+  let childMessage = "";
+  let gsts;
+  //let ScenarioAll=98;
   let selected = true;
 
 //         "mid": 3,
@@ -39,17 +42,41 @@
     else
       throw new Error(transformboardList.statusText);    
   }
+  
+  // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
+  async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
+   // alert("mid="+mid+"scenarioAll="+"sts="+sts);
+    if (sts  != 5) {
+     // alert("5가 아님");
+      let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+      const transformboardScenario = await fetch($rooturl+transformboardlist);
+      console.log("transformboardScenario==0,1,2,3,99"+transformboardScenario);
+      if (transformboardScenario.ok){
+        getscenariodetaildata= await transformboardScenario.json();
+         selected=false;
+         mid=mid;
+         gsts=sts;
+        return getscenariodetaildata;
+        }else{
+          throw new Error(transformboardScenario.statusText);    
+        }
 
-  // 시나리오 상세내용 조회
-  async function getScenarioDetail() {
-    let transformboardlist="/transformscenario/transsc_list?mid="+99
-    const transformboardScenario = await fetch($rooturl+transformboardlist);
-    console.log(+transformboardScenario);
-    
-    if (transformboardScenario.ok)
-      return await transformboardScenario.json();
-    else
-      throw new Error(transformboardScenario.statusText);    
+    }else{
+      //alert("5 입니다");
+        let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+        const transformboardScenario = await fetch($rooturl+transformboardlist);
+        console.log("transformboardScenario==5"+transformboardScenario);
+        
+        if (transformboardScenario.ok){
+        getscenariodetaildata= await transformboardScenario.json();
+         selected=false;
+         mid=mid;
+         gsts=sts;
+        return getscenariodetaildata;
+        }else{
+          throw new Error(transformboardScenario.statusText);    
+        }
+    }
   }
 
   const handleRowClick = (idx) => {
@@ -97,13 +124,13 @@
      rdata = await getData() ;
      selectedValues = rdata[0];
      
-     //시나리오 상세 
-     getscenariodetaildata= await getScenarioDetail();
-
-     if (getscenariodetaildata.length != 0) {
-        console.log(getscenariodetaildata);
-     }
-
+     //시나리오 상세 조회
+    //  getscenariodetaildata= await getScenarioDetail(selectedValues.mid,99);
+    // if (sts !=5) {
+    //   getscenariodetaildata= await getScenarioDetail(selectedValues.mid,99);
+    //   selected=false;
+    // } else {
+      
      selectedValues.midnm=selectedValues.midnm;
      chardata =await getDataList();
 
@@ -116,11 +143,7 @@
     }, $intlMs) // 5초마다 시간 갱신
   });
  
-  //시나리오 버튼 클릭 
-  const 
-  ScenarioDetails  = (mid: string) => {
   
-  }
   // Handle the click event on the date inputs
   const handleDateClick = (date: string) => {
     selectedDate = date;
@@ -149,6 +172,12 @@
       throw new Error(result.statusText);    
       
   }
+  function handleChildEvent(event) {
+      childMessage = event.detail; // 자식에서 전달된 값 저장
+      //alert("childMessage="+childMessage.flag +" " +childMessage.mid);
+    
+      getScenarioDetail(childMessage.mid,childMessage.flag);
+    }
 </script>
 
 <style>
@@ -212,14 +241,14 @@
         on:click|preventDefault={ _=> {cnm=BulkRegistrationOfUsers;pageNm = "사용자 관리";menuIdx = idx}}>사용자 관리
         -->
         
-        <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-17" on:click={() => { selected = false; }}>전체시나리오 </button> 
+        <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-17" on:click={() => { getScenarioDetail(selectedValues.mid,99,5); }}>전체시나리오 </button> 
      <!-- 첫 번째 줄: 하나의 차트 -->
       {#if chardata}
       {#each chardata as item,idx }
       {#if idx == 0}
       <div class="flex bg-gray-800 px-12 rounded-lg mx-1 w-3/3 justify-center my-2 ">
         <div>
-          <DonutChart item={chardata[0]}/>
+          <DonutChart item={chardata[0]} on:message={handleChildEvent}  />
           </div>
       </div>
       {/if}
@@ -234,7 +263,7 @@
       {#if idx != 0}
           <div class="flex bg-gray-800  rounded-lg w-1/3 mr-1 justify-center my-2" style="width: 33%">
             <div>
-              <DonutChart item={item}/>
+              <DonutChart item={item} on:message={handleChildEvent} />
             </div>
           </div>
         {/if}
@@ -244,5 +273,6 @@
   </div>
 </div>
 {:else}
-<TransformBoardDetail></TransformBoardDetail>
+
+<TransformBoardDetail  getscenariodetaildata={getscenariodetaildata} sts={gsts} ></TransformBoardDetail>
 {/if}
