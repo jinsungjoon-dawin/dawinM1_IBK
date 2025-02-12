@@ -1,5 +1,5 @@
 import mondb from '../db/dbconn.js';
-
+ 
 const tmigscene = {
     /**
      * 이행 우측 이행 전광판
