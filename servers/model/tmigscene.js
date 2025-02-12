@@ -102,10 +102,25 @@ const tmigscene = {
       // console.log("args.query.mid : " + args.query.mid);      
       // console.log("args.query.wstat : " + args.query.wstat);      
 
-      let rows = await mondb.query(`   select x.pkey							    as pkey         -- pkey
-                                            , x.mid								    as mid          -- 이행코드
-                                            , x.scno							    as scno         -- 시나리오코드
+      let rows = await mondb.query(`   select x.mid								    as mid          -- 이행코드
+                                            , y.desc							    as tmignm       -- 이행설명
+                                            , y.startDt							    as startdt      -- 이행시작일
+                                            , y.endDt							    as endDt        -- 이행종료일
+                                            , y.scenario 						    as scenario     -- 시나리오건수
+                                            , y.mgb								    as mgb          -- 이행구분(1:리허설,2:본이행)
+                                            , case y.mgb when 1 then '리허설' 
+                                                        when 2 then '본이행' 
+                                                        else '기타' end 			as mgbnm		-- 이행구분명
+                                            , z.mclass							    as mclass       -- 시나리오그룹종류(1:사전준비,2:사전이행,3:본이행)
+                                            , case z.mclass when 1 then '사전준비' 
+                                                            when 2 then '사전이행' 
+                                                            when 3 then '본이행' 
+                                                            when 4 then '사후' 
+                                                            else '기타' end 		as mclassnm     -- 시나리오그룹명
+                                            , z.show                    			as disyn		-- display여부
                                             , x.scgrp							    as scgrp        -- 시나리오그룹
+                                            , x.pkey							    as pkey         -- pkey
+                                            , x.scno							    as scno         -- 시나리오코드
                                             , x.midnm							    as midnm        -- 작업설명
                                             , x.worknm							    as worknm       -- 세부작업내용
                                             , x.planStdt						    as planstdt     -- 계획(시작일시)
@@ -115,21 +130,16 @@ const tmigscene = {
                                             , x.esttime							    as esttime      -- 예상소요시간
                                             , x.acttime							    as acttime      -- 실소요시간
                                             , x.wstat							    as wstat        -- 상태(0:계획,1:진행중,2:작업완료,3:작업오류,99:전체)
-                                            , case x.wstat when 0 then '계획'
+                                            , case x.wstat when 0 then '미수행'
                                                             when 1 then '진행중'
-                                                            when 2 then '작업완료'
-                                                            when 3 then '작업오류'
+                                                            when 2 then '완료'
+                                                            when 3 then '지연'
                                                             else '기타' end 		as wstatnm      -- 상태명
-                                            , y.scenario 						    as scenario     -- 시나리오건수
-                                            , y.desc							    as tmignm       -- 이행설명
-                                            , y.mgb								    as mgb          -- 이행구분(1:리허설,2:본이행)
-                                            , y.startDt							    as startdt      -- 이행시작일
-                                            , y.endDt							    as endDt        -- 이행종료일
-                                            , z.mclass							    as mclass       -- 시나리오그룹종류(1:사전준비,2:사전이행,3:본이행)
-                                            , case z.mclass when 1 then '사전준비' 
-                                                            when 2 then '사전이행' 
-                                                            when 3 then '본이행' 
-                                                            else '기타' end 		as mclassnm     -- 시나리오그룹명
+                                            , x.pscno								as pscno		-- 병행ID
+                                            , x.cscno								as cscno		-- 선행ID
+                                            , x.siusr								as siusr		-- SI등록자
+                                            , x.smusr								as smusr		-- SM등록자
+                                            , x.pserver							    as pserver		-- 수행서버
                                         from ( select a.pkey		as pkey
                                                     , a.mid			as mid
                                                     , a.scno		as scno
@@ -143,6 +153,11 @@ const tmigscene = {
                                                     , a.esttime		as esttime
                                                     , a.acttime		as acttime
                                                     , a.wstat		as wstat
+                                                    , a.pscno		as pscno
+                                                    , a.cscno		as cscno
+                                                    , a.siUsr		as siusr
+                                                    , a.smUsr		as smusr
+                                                    , a.pserver		as pserver
                                                 from tmigscene a
                                                 where a.mid = ?
                                                 and a.wstat between (case ? when 99 then 0 else ? end) and (case ? when 99 then 99 else ? end)
@@ -151,6 +166,7 @@ const tmigscene = {
                                             on x.mid = y.mid
                                         join tmigsgrp z
                                             on x.scgrp = z.scgrp
+                                        where z.show = 0
                                         order by x.mid, x.scgrp, x.wstat	
                                     `, [args.query.mid, args.query.wstat, args.query.wstat, args.query.wstat, args.query.wstat] ) ;
         return(rows) ;
@@ -160,19 +176,8 @@ const tmigscene = {
      * 
      */
     ttransscsave : async (args) => {
-        // console.log("Model args : " + args);
-
         var contact  = JSON.parse(args);
-/*
-        for (var k = 0; k < contact.length; k++) { 	
-            console.log(contact[i]); 		
 
-            console.log(contact[k].mid); 		
-            console.log(contact[k].pkey); 		
-            console.log(contact[k].actstst); 		
-            console.log(contact[k].actendt); 		
-        } 
-*/
         let msg = { message: 'post :' };
         let qstr = '';
         let r = 1;
@@ -184,8 +189,13 @@ const tmigscene = {
             let actendt;
 
             for (var i = 0; i < contact.length; i++) { 	
-               // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-                 
+                // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
+                // console.log(contact[i]); 		
+                // console.log(contact[k].mid); 		
+                // console.log(contact[k].pkey); 		
+                // console.log(contact[k].actstst); 		
+                // console.log(contact[k].actendt); 		
+                    
                 mid = contact[i].mid;
                 pkey = contact[i].pkey;
                 actstst = contact[i].actstst;
@@ -197,11 +207,15 @@ const tmigscene = {
 
                 qstr = `update tmigscene 
                         set ActStdt=?
-                            , ActEndt=?
+                          , ActEndt=?
+                          , case when a.ActStdt = '1900-01-01' and a.ActEndt = '1900-01-01' then 0
+                                 when a.ActStdt <> '1900-01-01' and a.ActEndt = '1900-01-01' then 1
+                                 when a.ActStdt <> '1900-01-01' and a.ActEndt <> '1900-01-01' and datediff(a.planEndt, a.ActEndt) <= 0 then 2
+                                 when a.ActStdt <> '1900-01-01' and a.ActEndt <> '1900-01-01' and datediff(a.planEndt, a.ActEndt) > 0 then 3
+                                 else 2 end
                         where pkey = ? 
-                        and mid = ? ` ;
-        
-                // console.log('qstr : ' + qstr);
+                        and mid = ?
+                        ` ;
 
                 r = mondb.query(qstr, [actstst, actendt, pkey, mid]);
             } 

@@ -54,7 +54,6 @@
                                                      obj.svcnm,
                                                      obj.tstime, obj.stime, 
                                                      obj.etime, obj.svctime, 
-                                                     "결과"
                         ])];
 
     // 🔹 워크시트 생성
@@ -189,12 +188,11 @@
                                     </td><td class="p-3 px-5 border border-zinc-600 ">
                                       {item.svctimeasis}
                                     </td> -->
-                                    <td class="p-3 px-5 border border-zinc-600">결과</td>
                                 </tr>
                             {/each}
                         {:else}
                             <tr>
-                                <td colspan="9" class="p-3 px-5 bordertext-center text-yellow-100">{$t("com.paging.noData")}</td>
+                                <td colspan="9" class="p-3 px-5 text-center border-zinc-600">{$t("com.paging.noData")}</td>
                             </tr>
                         {/if}
                     </tbody>

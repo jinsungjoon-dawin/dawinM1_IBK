@@ -52,7 +52,7 @@
                                                      obj.svcnm,obj.tstime, obj.stime, 
                                                      obj.etime, obj.svctime, 
                                                      obj.stimeasis, obj.etimeasis, 
-                                                     obj.svctimeasis,"결과"
+                                                     obj.svctimeasis
                         ])];
 
     // 🔹 워크시트 생성
@@ -183,9 +183,6 @@
                                     </td>
                                     <td class="p-3 px-5  border border-zinc-600">
                                       {item.svctimeasis}
-                                    </td>
-                                    <td class="p-3 px-5  border border-zinc-600">
-                                      결과
                                     </td>
                                 </tr>
                             {/each}
