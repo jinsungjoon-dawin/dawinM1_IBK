@@ -158,7 +158,8 @@
 
                         {#if paginatedlist.length > 0}
                             {#each paginatedlist as item, index}
-                                <tr class="border-b hover:bg-sky-500">
+                                
+                            <tr class="border-b hover:bg-gray-700">
                                     <td class="p-3 px-5 border border-zinc-600">
                                         {item.apnm} 
                                     </td>
