@@ -159,7 +159,7 @@
 
                         {#if paginatedlist.length > 0}
                             {#each paginatedlist as item, index}
-                                <tr class="border-b hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                                <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                                     <td class="p-3 px-5 border border-zinc-600">
                                         {item.apnm} 
                                     </td>

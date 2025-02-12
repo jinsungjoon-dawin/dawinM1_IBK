@@ -190,7 +190,7 @@ function getSum(column) {
                     <tbody>
                         {#if paginatedList.length > 0}
                             {#each paginatedList as item, index}
-                               <tr class="hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbname} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {item.dbuser} </td>
                                     <td class="text-right  border border-zinc-700 p-3 px-5"> {formatNumber(item.tblasis)} </td>
@@ -266,7 +266,7 @@ function getSum(column) {
                     <tbody>
                         {#if chkList.length > 0}
                             {#each chkList as item, index}
-                               <tr class="hover:bg-orange-100 {index % 2 === 0 ? '' : ''}">
+                               <tr class="border-b hover:outline-none hover:ring-2 hover:ring-blue-500 ml-10 hover:bg-zinc-500">
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlcnt)} </td>
                                     <td class="text-center  border border-zinc-700 p-3 px-5"> {formatNumber(item.sqlnocnt)} </td>
                                 </tr>
