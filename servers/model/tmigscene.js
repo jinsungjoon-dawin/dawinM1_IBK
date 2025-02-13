@@ -180,7 +180,9 @@ const tmigscene = {
 
         let msg = { message: 'post :' };
         let qstr = '';
+        let qstr2 = '';
         let r = 1;
+        let r2 = 1;
 
         try {
             let mid;
@@ -209,19 +211,39 @@ const tmigscene = {
                 // console.log('actendt : ' + actendt); 		
                 // console.log('actendt : ' + wstat); 		
 
+                if (actstst === '') {
+                    actstst = '1900-01-01';
+                }
+
+                if (actendt === '') {
+                    actendt = '1900-01-01';
+                }
+
                 qstr = `update tmigscene 
                         set ActStdt=?
                           , ActEndt=?
-                          , wstat = case when ActStdt = '1900-01-01' and ActEndt = '1900-01-01' then 0
-                                 when ActStdt <> '1900-01-01' and ActEndt = '1900-01-01' then 1
-                                 when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) <= 0 then 2
-                                 when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) > 0 then 3
-                                 else 2 end
                         where pkey = ? 
                         and mid = ?
                     ` ;
 
                 r = mondb.query(qstr, [actstst, actendt, pkey, mid]);
+
+                qstr2 = `update tmigscene 
+                        set wstat = case when ActStdt = '1900-01-01' and ActEndt = '1900-01-01' then 0
+                                         when ActStdt <> '1900-01-01' and ActEndt = '1900-01-01' then 1
+                                         when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) <= 0 then 2
+                                         when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' and datediff(planEndt, ActEndt) > 0 then 3
+                                         else 2 end
+                          , acttime = case when ActStdt = '1900-01-01' and ActEndt = '1900-01-01' then 0
+                                           when ActStdt = '1900-01-01' and ActEndt <> '1900-01-01' then 0
+                                           when ActStdt <> '1900-01-01' and ActEndt = '1900-01-01' then 0
+                                           when ActStdt <> '1900-01-01' and ActEndt <> '1900-01-01' then timestampdiff(hour, date_format(ActStdt, '%Y-%m-%d %H:%i:%s'), date_format(ActEndt, '%Y-%m-%d %H:%i:%s')) end
+                        where pkey = ? 
+                        and mid = ?
+                    ` ;
+
+                r2 = mondb.query(qstr2, [pkey, mid]);
+
             } 
         } catch (e) {
             console.log(e.message);
