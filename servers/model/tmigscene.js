@@ -103,7 +103,7 @@ const tmigscene = {
       // console.log("args.query.wstat : " + args.query.wstat);      
 
       let rows = await mondb.query(`   select ''			                        as flag         -- flag
-                                     	    , 'false'		                        as checked      -- checkbox
+                                     	    , '' 		                            as checked      -- checkbox
                                             , x.mid								    as mid          -- 이행코드
                                             , y.desc							    as tmignm       -- 이행설명
                                             , y.startDt							    as startdt      -- 이행시작일

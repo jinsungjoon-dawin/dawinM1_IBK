@@ -6,7 +6,7 @@ const tuser = {
      */
     ttuserlist : async (args) => {
         let rows = await mondb.query(`   select ''			as flag     -- flag
-                                              , 'false'		as checked  -- checked
+                                              , ''	    	as checked  -- checked
                                               , pkey		as pkey		-- pkey
                                               , Host		as host		-- 접속가능 IP or Host (%:all)
                                               , usrid		as usrid	-- 사용자ID
@@ -39,7 +39,7 @@ const tuser = {
 
         if (gubun === 1){
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''    		as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -55,7 +55,7 @@ const tuser = {
                                     `, [searchtxt] ) ;
         } else if (gubun === 2){
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -71,7 +71,7 @@ const tuser = {
                                     `, [searchtxt] ) ;
         } else if (gubun === 3){
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -87,7 +87,7 @@ const tuser = {
                                     `, [searchtxt] ) ;
         } else if (gubun === 4){
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''    		as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -103,7 +103,7 @@ const tuser = {
                                     `, [searchtxt] ) ;
         } else if (gubun === 5){
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -119,7 +119,7 @@ const tuser = {
                                     `, [searchtxt] ) ;
         } else {
             rows = await mondb.query(` select ''			as flag     -- flag
-                                            , 'false'		as checked  -- checked
+                                            , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
                                             , Host			as host		-- 접속가능 IP or Host (%:all)
                                             , usrid		    as usrid	-- 사용자ID
@@ -179,7 +179,10 @@ const tuser = {
         let msg = { message: 'post :' };
         let qstr = '';
         let r = 0;
+        let qstr2 = '';
+        let r2 = 0;
         
+        let pkey = '';
         let host = '';
         let usrid = '';
         let usrdesc = '';
@@ -197,6 +200,7 @@ const tuser = {
             for (var i = 0; i < contact.length; i++) { 	
                 // console.log(contact[i]); 		
                     
+                pkey = contact[i].pkey;
                 host = contact[i].host;
                 usrid = contact[i].usrid;
                 usrdesc = contact[i].usrdesc;
@@ -206,7 +210,8 @@ const tuser = {
                 lastin = contact[i].lastin;
                 lcnt = contact[i].lcnt;
                 
-                // console.log('host 11: ' + host); 		
+                // console.log('pkey: ' + pkey); 		
+                // console.log('host: ' + host); 		
                 // console.log('usrid : ' + usrid); 		
                 // console.log('usrdesc : ' + usrdesc); 		
                 // console.log('pass1 : ' + pass1); 		
@@ -215,21 +220,28 @@ const tuser = {
                 // console.log('lastin : ' + lastin); 		
                 // console.log('lcnt : ' + lcnt); 		
 
-                qstr = ` INSERT INTO tuser(Host,usrid,usrdesc,pass1,admin,apps,lastin,lcnt,regdt) 
-                            VALUE (NVL(?,''),NVL(?,'test'),NVL(?,''),password(?),NVL(?,0),NVL(?,''),?,NVL(?,0),sysdate())
-                            ON DUPLICATE KEY UPDATE
-                                Host = NVL(?,'')
-                                , usrid = NVL(?,'test')
-                                , usrdesc = NVL(?,'')
-                                , pass1 = password(?)
-                                , admin = NVL(?,0)
-                                , apps = NVL(?,'')
-                                , lastin = ?
-                                , lcnt = NVL(?,0)
-                                , regdt = sysdate()
+                qstr = ` insert into tuser(host,usrid,usrdesc,pass1,admin,apps,lcnt,regdt) 
+                         value (nvl(?,'%'),nvl(?,'default'),nvl(?,'default'),password(nvl(?,?)),nvl(?,0),nvl(?,'default'),nvl(?,0),sysdate())
                         ` ;
 
-                r = mondb.query(qstr, [host,usrid,usrdesc,pass1,admin,apps,lastin,lcnt,host,usrid,usrdesc,pass1,admin,apps,lastin,lcnt]);
+                qstr2 = ` update tuser
+                            set   host = nvl(?,'%')
+                                , usrid = nvl(?,'default')
+                                , usrdesc = nvl(?,'default')
+                                , pass1 = password(nvl(?,?))
+                                , admin = nvl(?,0)
+                                , apps = nvl(?,'default')
+                                , lcnt = nvl(?,0)
+                                , regdt = sysdate()
+                            where pkey = ?
+                        ` ;
+                
+                if (pkey === 0){
+                    r = mondb.query(qstr, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt]);
+                } else {
+                    r2 = mondb.query(qstr2, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt,pkey]);
+                }
+
             } 
             // console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
 
