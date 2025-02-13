@@ -1,10 +1,8 @@
 <script>
   import LoadDataVerifyDetail from "./LoadDataVerifyDetail.svelte";
   import { onMount } from "svelte";
-  import {rooturl} from '../aqtstore';
+  import { rooturl, t } from "../aqtstore";
   import * as XLSX from 'xlsx';
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "../i18n";
 
   let leftDates = [];
   let selData;
@@ -15,8 +13,8 @@
   let currentPage = 1;
   let itemsPerPage = 10;
   let showModal = false;
-  let tableHeader  = $t("loadData.tableHeader");
-  let bTableHeader = $t("loadData.bTableHeader");
+  let tableHeader  = $t.loadData.tableHeader;
+  let bTableHeader = $t.loadData.bTableHeader;
 
   //차수, ASIS 일자, TOBE 일자 조회
   async function getLeftData() {
@@ -98,7 +96,7 @@ function getSum(column) {
 
   function excelDown(){
     // 🔹 헤더 추가
-    let header = $t("loadData.schemaExcelHeader");
+    let header = $t.loadData.schemaExcelHeader;
 
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
     let worksheetData = [header, ...list.map(obj => [obj.dbname, obj.dbuser, 
@@ -116,7 +114,7 @@ function getSum(column) {
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
     // 🔹 엑셀 파일 생성 및 다운로드
-    XLSX.writeFile(wb, selData.dname + " " +  $t("loadData.schemaTitle")+".xlsx");
+    XLSX.writeFile(wb, selData.dname + " " +  $t.loadData.schemaTitle+".xlsx");
   }
   
 </script>
@@ -128,11 +126,11 @@ function getSum(column) {
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 bg-lime-600 ">
       
-      <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600  ">{$t("loadData.leftMainTitle")}</label>
+      <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600  ">{$t.loadData.leftMainTitle}</label>
     </div>
     <div class="flex  border  border-gray-100 rounded border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("loadData.leftTitle")}</label>
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("loadData.leftDate1")}</label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.loadData.leftTitle}</label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.loadData.leftDate1}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
@@ -148,19 +146,19 @@ function getSum(column) {
     {#if leftDates.length !== 0}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData.dname} {$t("loadData.mainTopTitle")}</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">{$t("loadData.leftDate1")}: {selData.wdate}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData.dname} {$t.loadData.mainTopTitle}</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">{$t.loadData.leftDate1}: {selData.wdate}</h1>
           </div>
             <!-- 상단 -->
             <div class="flex flex-wrap w-full p-3 justify-center">
               <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
                 <div class="w-full border-gray-500  py-3 text-end">
-                  <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => excelDown()}>{$t("com.btn.excelDown")}</button>
+                  <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => excelDown()}>{$t.com.btn.excelDown}</button>
                 </div>
                 <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
-                      <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="10">{$t("loadData.schemaTitle")}</th>
+                      <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="10">{$t.loadData.schemaTitle}</th>
                     </tr>
                       {#each tableHeader as row, rowIdx}
                         <tr class="">
@@ -200,7 +198,7 @@ function getSum(column) {
                                 </tr>
                             {/each}
                             <tr>
-                              <th class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</th>
+                              <th class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t.loadData.totCnt}</th>
                               <th class="text-right  border border-zinc-700   p-3 px-5">{getSum("tblasis").toLocaleString()}</th>
                               <th class="text-right  border border-zinc-700   p-3 px-5">{getSum("tbltobe").toLocaleString()}</th>
                               <th class="text-right  border border-zinc-700   p-3 px-5">{getSum("idxasis").toLocaleString()}</th>
@@ -211,16 +209,16 @@ function getSum(column) {
                               <th class="text-right  border border-zinc-700   p-3 px-5">{getSum("invalidasis").toLocaleString()}</th>
                             </tr>
                             <tr>
-                              <th class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" >{$t.loadData.etc}</th>
                               <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html paginatedList[0].sf.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}
                             <tr>
-                                <td colspan="7" class="text-center  border border-zinc-700 p-3 px-5">{$t("com.paging.noData")}</td>
+                                <td colspan="7" class="text-center  border border-zinc-700 p-3 px-5">{$t.com.paging.noData}</td>
                             </tr>
                             <tr>
-                              <td class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t("loadData.totCnt")}</td>
+                              <td class="text-center bg-zinc-600 border border-zinc-700   p-3 px-5" colspan="2">{$t.loadData.totCnt}</td>
                             </tr>
                         {/if}
                     </tbody>
@@ -228,7 +226,7 @@ function getSum(column) {
                 </div>
                 <div class="flex w-full justify-center mt-4">
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-                    {$t("com.paging.previous")}
+                    {$t.com.paging.previous}
                   </button>
                   {#each Array(totalPages).fill() as _, pageIndex}
                       <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={pageIndex + 1 === currentPage} on:click={() => goToPage(pageIndex + 1)}>
@@ -236,7 +234,7 @@ function getSum(column) {
                       </button>
                   {/each}
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                    {$t("com.paging.next")}
+                    {$t.com.paging.next}
                   </button>
                 </div>
               
@@ -246,12 +244,12 @@ function getSum(column) {
             <div class="flex flex-wrap w-full p-3 justify-center">
               <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
                 <!-- <div class="w-full border-gray-500  py-3 text-end">
-                  <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => {getDetail(chkList[0]?.sqlnocnt); }}>{$t("loadData.btn.diff")}</button>
+                  <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => {getDetail(chkList[0]?.sqlnocnt); }}>{$t.loadData.btn.diff}</button>
                 </div> -->
                 <table class="w-full text-md text-nowrap bg-gray-800 text-white  shadow-md rounded mb-4">
                   <thead>
                     <tr class="">
-                      <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="2">{$t("loadData.dataCheckTitle")}</th>
+                      <th class="text-center border border-zinc-700  bg-zinc-600 order p-3 px-5" colspan="2">{$t.loadData.dataCheckTitle}</th>
                     </tr>
                     <tr class="">
                       {#each bTableHeader as item, idx}
@@ -269,16 +267,16 @@ function getSum(column) {
                             {/each}
                            
                             <tr>
-                              <th class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" >{$t("loadData.etc")}</th>
+                              <th class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" >{$t.loadData.etc}</th>
                               <th class="text-left  border border-zinc-700 p-3 px-5" colspan="9">{@html chkList[0].sfdata.replace(/\r\n|\n/g, "<br>")}</th>
                             </tr>
                             
                         {:else}
                             <tr>
-                                <td colspan="7" class="text-center  border border-zinc-700 p-3 px-5">{$t("com.paging.noData")}</td>
+                                <td colspan="7" class="text-center  border border-zinc-700 p-3 px-5">{$t.com.paging.noData}</td>
                             </tr>
                             <tr>
-                              <td class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" colspan="2">{$t("loadData.totCnt")}</td>
+                              <td class="text-center bg-zinc-600 border border-zinc-700 p-3 px-5" colspan="2">{$t.loadData.totCnt}</td>
                             </tr>
                         {/if}
                     </tbody>

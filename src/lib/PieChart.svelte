@@ -2,9 +2,7 @@
   import Chart, { Legend } from "chart.js/auto";
   import { onMount, onDestroy } from "svelte";
   import ChartDataLabels from "chartjs-plugin-datalabels";
-  import { rooturl, intlMs } from "../aqtstore";
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "../i18n";
+  import { rooturl, intlMs, t } from "../aqtstore";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
 
@@ -57,12 +55,13 @@
       plugins: {
         legend: {
           display: true,
+          rtl:true,
           position: "right",
           labels: {
             color: "white",
-            boxWidth: 14,
+            boxWidth: 16,
             font: {
-              size: 15, // 범례 폰트 크기 조정
+              size: 16, // 범례 폰트 크기 조정
             },
           },
         },
@@ -116,14 +115,14 @@
       if (rdata[0].gb === "3") {
         // labels = ["향상", "미수행", "지연"];
         // labels = ["목표달성", "미수행", "미달성"];
-        labels = $t("pie.pLabels");
+        labels = $t.pie.pLabels;
       } else {
-        labels = $t("pie.tLabels");
+        labels = $t.pie.tLabels;
       }
     }else if (page === "P") {
-      labels = $t("pie.pLabels");
+      labels = $t.pie.pLabels;
     }else if (page === "T"){
-      labels = $t("pie.tLabels");
+      labels = $t.pie.tLabels;
     }
     config.data.labels = labels;
     setConfig = true;
@@ -144,7 +143,7 @@
     let totCnt = rdata[0].tcnt;
     
     config.data.datasets[0].data = datas;
-    config.options.plugins.title.text = (title === undefined ? "" : title) + " " + $t("pie.target") + totCnt + $t("pie.cnt");
+    config.options.plugins.title.text = (title === undefined ? "" : title) + " " + $t.pie.target + totCnt + $t.pie.cnt;
     chartx.update();
   }
 

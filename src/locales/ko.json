@@ -1,8 +1,8 @@
 {
     "dash":{
-        "testTitle": "현단계 테스트 :",
+        "testTitle": "현 단계 테스트 :",
         "date" : "수행 일자:",
-        "dataTitle": "현단계 데이터 이행 :"
+        "dataTitle": "현 단계 데이터 이행 :"
     },
     "test":{
         "leftTitle": "차수",
@@ -106,20 +106,40 @@
             "detail":"상세보기",
             "prePage": "이전보기",
             "excelDown": "엑셀 다운로드",
-            "close" : "닫기"
+            "excelUpload": "엑셀 업로드",
+            "close" : "닫기",
+            "search": "조회",
+            "userAdd": "사용자 추가",
+            "save": "저장",
+            "delete": "삭제",
+            "selectdDelete": "선택삭제",
+            "cancel": "취소",
+            "targetCancel": "적용취소"
         },
         "sel":{
                 "status" : {"test" : [{"key" : "ALL", "value" : "전체"},
                                     {"key" : "성공", "value" : "성공"},
                                     {"key" : "실패", "value" : "실패"},
-                                    {"key" : "미수행", "value" : "미수행"}
-                                    ],
+                                    {"key" : "미수행", "value" : "미수행"}],
                             "perform" :  [{"key" : "ALL", "value" : "전체"},
-                        {"key" : "지연", "value" : "지연"},
-                        {"key" : "향상", "value" : "향상"},
-                        {"key" : "미수행", "value" : "미수행"}
-                        ]        
+                                            {"key" : "지연", "value" : "지연"},
+                                            {"key" : "향상", "value" : "향상"},
+                                            {"key" : "미수행", "value" : "미수행"}]        
                     }
                }
+    },
+    "user":{
+        "pageNm" : "사용자 관리",
+        "tableHeader" : [" ", "사용자ID", "Host","사용자명","Admin","접근 가능페이지","등록일"],
+        "selectData" :  [
+                        {"key" : "1", "value" : "사용자ID"},
+                        {"key" : "2", "value" : "Host"},
+                        {"key" : "3", "value" : "사용자명"},
+                        {"key" : "4", "value" : "권한"},
+                        {"key" : "5", "value" : "접근 가능페이지"}
+                        ] ,
+        "usrId" : "사용자ID ",
+        "host" : "host ",
+        "usrdesc" : "사용자명 "
     }
 }

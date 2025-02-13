@@ -2,9 +2,7 @@
   import Chart from "chart.js/auto";
   import ChartDataLabels from "chartjs-plugin-datalabels";
   import { onMount, onDestroy } from "svelte";
-  import { rooturl, intlMs } from "../aqtstore";
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "../i18n";
+  import { rooturl, intlMs, t } from "../aqtstore";
   // 플러그인 등록
   Chart.register(ChartDataLabels);
 
@@ -17,13 +15,13 @@
     data: {
       datasets: [
         {
-          label: $t("bar.label1"), // 첫 번째 데이터셋
+          label: $t.bar.label1, // 첫 번째 데이터셋
           backgroundColor: ["#4427ee"], // 색상
           // backgroundColor: ["#4427eea3"], // 색상
           borderRadius: 10,
         },
         {
-          label: $t("bar.label2"), // 두 번째 데이터셋
+          label: $t.bar.label2, // 두 번째 데이터셋
           // data: [7, 11, 5, 8, 3],
           backgroundColor: ["#ff6384"],
           // backgroundColor: ["#ff6384a3"],
@@ -33,6 +31,10 @@
       ],
     },
     options: {
+      interaction: {
+      mode: "index" ,
+      intersect: false,
+    },
       scales: {
         x: {
           // stacked: true  // x축에 대해 스택되도록 설정
@@ -101,18 +103,18 @@
   function setChartConfig(rdata){
     if(setConfig)return;
     if (page === "S") {
-      if (rdata[0].gb === "3") config.data.datasets[1].label = $t("bar.label3");
-      else config.data.datasets[1].label = $t("bar.label4");
+      if (rdata[0].gb === "3") config.data.datasets[1].label = $t.bar.label3;
+      else config.data.datasets[1].label = $t.bar.label4;
       if (rdata[0].gb === "3") {
         if (config.data.datasets.length == 2) {
           config.data.datasets.push({
-            label: $t("bar.label5"), // 두 번째 데이터셋
+            label: $t.bar.label5, // 두 번째 데이터셋
             backgroundColor: ["#b604ce"],
             // borderWidth: 1,
             borderRadius: 10,
           });
           config.data.datasets.push({
-            label: $t("bar.label6"), // 두 번째 데이터셋
+            label: $t.bar.label6, // 두 번째 데이터셋
             backgroundColor: ["#3cba9f"],
             // borderWidth: 1,
             borderRadius: 10,
@@ -121,13 +123,13 @@
       } else {
         if (config.data.datasets.length == 2) {
           config.data.datasets.push({
-            label: $t("bar.label7"), // 두 번째 데이터셋
+            label: $t.bar.label7, // 두 번째 데이터셋
             backgroundColor: ["#b604ce"],
             // borderWidth: 1,
             borderRadius: 10,
           });
           config.data.datasets.push({
-            label: $t("bar.label6"), // 두 번째 데이터셋
+            label: $t.bar.label6, // 두 번째 데이터셋
             backgroundColor: ["#3cba9f"],
             // borderWidth: 1,
             borderRadius: 10,
@@ -141,19 +143,19 @@
       config.data.datasets[2].stack = "group2";
       config.data.datasets[3].stack = "group2";
       config.data.datasets[2].color = "black";
-      config.options.plugins.title.text = $t("bar.title1");
+      config.options.plugins.title.text = $t.bar.title1;
     } else if (page === "D") {
       //대시보드 데이터 이행 결과
-      let labels = $t("bar.dataLabels1");
+      let labels = $t.bar.dataLabels1;
       config.data.labels = labels;
-      config.options.plugins.title.text = $t("bar.title2");
+      config.options.plugins.title.text = $t.bar.title2;
 
       // config.options.plugins.title.display = false;
     } else if (page === "M") {
       //대시보드 데이터 Value 검증
-      config.data.labels = $t("bar.dataLabels2");
-      config.data.datasets[0].label = $t("bar.label8");
-      config.data.datasets[1].label = $t("bar.label9");
+      config.data.labels = $t.bar.dataLabels2;
+      config.data.datasets[0].label = $t.bar.label8;
+      config.data.datasets[1].label = $t.bar.label9;
       config.options.plugins.title.text = "데이터 Value 검증 결과";
       config.data.datasets[0].barThickness = 50; // 바의 고정 넓이 (픽셀)
       config.data.datasets[1].barThickness = 50; // 바의 고정 넓이 (픽셀)

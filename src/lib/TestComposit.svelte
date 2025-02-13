@@ -3,9 +3,7 @@
   import PieChart from "./PieChart.svelte";
   import StackedBar from "./StackedBar.svelte";
   import { onMount } from "svelte";
-  import {rooturl} from '../aqtstore';
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "../i18n";
+  import {rooturl, t} from '../aqtstore';
   let selected = true;
   let selectedRow = 0;
   let leftDates = [];
@@ -42,13 +40,13 @@
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-zinc-600  text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("test.leftTitle")}  </label>
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("test.leftDate")}</label> 
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.test.leftTitle}  </label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.test.leftDate}</label> 
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => handleRowClick(idx)}>
-            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
+            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
             <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly> 
           </div>
       {/each}
@@ -58,10 +56,10 @@
         {#if selData}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData?.tname} {$t("test.title")}</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">{$t("test.date")} {selData.tobedt}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{selData?.tname} {$t.test.title}</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3">{$t.test.date} {selData.tobedt}</h1>
               <div class="w-36 px-4 text-end">
-                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t("com.btn.detail")}</button>
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t.com.btn.detail}</button>
               </div>  
             </div>
             <div class="flex flex-wrap w-full p-3 justify-center">

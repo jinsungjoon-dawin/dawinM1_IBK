@@ -3,10 +3,8 @@
   import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
   import { onMount } from "svelte";
-  import {rooturl} from '../aqtstore';
+  import {rooturl, t} from '../aqtstore';
   import * as XLSX from 'xlsx';
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "../i18n";
   export let selData;
   export let selectedRow;
   // let { selData,  selectedRow} = $props();
@@ -47,7 +45,7 @@
   });
   function excelDown(){
     // 🔹 헤더 추가
-    let header = $t("testDetail.excelTitles");
+    let header = $t.testDetail.excelTitles;
     
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
     let worksheetData = [header, ...list.map(obj => [obj.apnm, obj.gubun, 
@@ -64,7 +62,7 @@
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
     // 🔹 엑셀 파일 생성 및 다운로드
-    XLSX.writeFile(wb, leftDates[selectedRow].tname + $t("testDetail.excelFileName"));
+    XLSX.writeFile(wb, leftDates[selectedRow].tname + $t.testDetail.excelFileName);
   }
 
 
@@ -96,26 +94,20 @@
       window.print();
   }
 </script>
-<style>
-  .hover\:bg-orange-100:hover {
-      background-color: darkgrey 
-  }
-</style>
 {#if selected}
 
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
     <div class="flex  border border-gray-100 rounded border-gray-100 border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("testDetail.leftTitle")}</label>
+      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.testDetail.leftTitle}</label>
       <!-- <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label> -->
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t("testDetail.leftDate")}</label>
+      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.testDetail.leftDate}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
           <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getPerformcompositList();}}>
-            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.seq}</label>
-            <!-- <input type="text" class="w-2/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly> -->
+            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
             <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
         </div>
       {/each}
@@ -127,28 +119,28 @@
         <!-- {#each datas as item, idx} -->
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} {$t("testDetail.title")} </h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = leftDates[selectedRow]}}>{$t("testDetail.date")} {leftDates[selectedRow].tobedt}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} {$t.testDetail.title} </h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" on:click={() => { selected = false; selectedValue = leftDates[selectedRow]}}>{$t.testDetail.date} {leftDates[selectedRow].tobedt}</h1>
               <div class="w-36 px-4 text-end">
-                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t("com.btn.prePage")}</button>
+                <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t.com.btn.prePage}</button>
               </div>  
             </div>
            
             <div class="flex justify-end items-center w-full mt-3">
-              <label class="text-gray-300">{$t("testDetail.search1")}</label>
-              <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ">
-                {#each $t("com.sel.status.test") as item}
+              <label class="text-gray-300">{$t.testDetail.search1}</label>
+              <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-5">
+                {#each $t.com.sel.status.test as item}
                   <option value={item.key}>{item.value}</option>
                 {/each}
               </select>
-              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3  " on:click={excelDown}>{$t("com.btn.excelDown")}</button>
+              <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline mr-3 ml-5" on:click={excelDown}>{$t.com.btn.excelDown}</button>
             </div>
             <div class="flex flex-wrap w-full p-3 justify-center">
                 <div class="w-full overflow-auto bg-gray-800 p-3 rounded-lg">
                 <table class="w-full text-md bg-gray-800 text-nowrap text-white  shadow-md rounded mb-4">
                     <thead>
                         <tr class="border-b">
-                          {#each $t("testDetail.tableHeader") as item}
+                          {#each $t.testDetail.tableHeader as item}
                          
                             <th class="text-left font-extrabold p-3 px-5 border border-zinc-700 bg-zinc-600">{item}</th>
                           {/each}  
@@ -193,7 +185,7 @@
                             {/each}
                         {:else}
                             <tr>
-                                <td colspan="9" class="p-3 px-5 text-center border-zinc-600">{$t("com.paging.noData")}</td>
+                                <td colspan="9" class="p-3 px-5 text-center border-zinc-600">{$t.com.paging.noData}</td>
                             </tr>
                         {/if}
                     </tbody>
@@ -201,7 +193,7 @@
                 </div>
                 <div class="flex w-full justify-center mt-4">
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
-                    {$t("com.paging.previous")}
+                    {$t.com.paging.previous}
                   </button>
                   {#each Array(totalPages).fill() as _, pageIndex}
                       <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={pageIndex + 1 === currentPage} on:click={() => goToPage(pageIndex + 1)}>
@@ -209,7 +201,7 @@
                       </button>
                   {/each}
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
-                    {$t("com.paging.next")}
+                    {$t.com.paging.next}
                   </button>
               </div>
               

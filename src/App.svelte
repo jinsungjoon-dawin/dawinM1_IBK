@@ -12,10 +12,8 @@
   import UserUploadManagement from "./lib/UserUploadManagement.svelte";
   import TransformBoard from "./lib/TransformBoard.svelte"
   import TestComposit from "./lib/TestComposit.svelte";
-  import { isLogged, userid } from "./aqtstore";
+  import { isLogged, userid, t} from "./aqtstore";
   import { onMount } from "svelte";
-  import { t, locale } from "svelte-i18n";
-  import { changeLanguage } from "./i18n";
   import Parent from "./lib/Parent.svelte";
   let cnm = DashBoard ;
   let pageNm = "모니터링 종합";
@@ -27,7 +25,6 @@
                {pageNm:"이행",cnm:TransformBoard},
                {pageNm:"관리자",cnm:UserUploadManagement},
                {pageNm:"도움말",cnm:HelpManagement}
-               ,{pageNm:"임시",cnm:Parent}
   ]
   
   
@@ -95,7 +92,7 @@
               
             </div>
           </div>
-          <span class="text-yellow-100 text-lg">{$t("com.nowDate")} {today}</span>
+          <span class="text-yellow-100 text-lg">{$t.com.nowDate} {today}</span>
         </div>
       </div>
   
