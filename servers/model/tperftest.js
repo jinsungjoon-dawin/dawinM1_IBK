@@ -169,15 +169,15 @@ const tperftest = {
       // console.log("args.query.tid : " + args.query.tid);
 
       let rows = await mondb.query(` with t as
-                                            (select sid			as sid
-                                                , tstime		as tstime
-                                                , stime			as stime
-                                                , etime			as etime
-                                                , svctime		as svctime
-                                                , stime_asis	as stimeasis
-                                                , etime_asis	as etimeasis
-                                                , svctime_asis	as svctimeasis
-                                                , regdt  		as regdt
+                                            (select sid			        as sid
+                                                , tstime		        as tstime
+                                                , stime			        as stime
+                                                , etime			        as etime
+                                                , truncate(svctime,3)   as svctime
+                                                , stime_asis	        as stimeasis
+                                                , etime_asis	        as etimeasis
+                                                , svctime_asis	        as svctimeasis
+                                                , regdt  		        as regdt
                                             from tperftest
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
@@ -303,16 +303,16 @@ const tperftest = {
         // console.log("args.query.tid : " + args.query.tid);
 
           let rows = await mondb.query(` with t as
-                                            (select sid			    as sid		
-                                                  , tstime		    as tstime
-                                                  , stime			as stime 
-                                                  , etime			as etime
-                                                  , sflag			as sflag
-                                                  , svctime		    as svctime
-                                                  , stime_asis	    as stimeasis
-                                                  , etime_asis	    as etimeasis
-                                                  , svctime_asis	as svctimeasis
-                                                  , regdt  		    as regdt
+                                            (select sid			        as sid		
+                                                  , tstime		        as tstime
+                                                  , stime			    as stime 
+                                                  , etime			    as etime
+                                                  , sflag			    as sflag
+                                                  , truncate(svctime,3) as svctime
+                                                  , stime_asis	        as stimeasis
+                                                  , etime_asis	        as etimeasis
+                                                  , svctime_asis	    as svctimeasis
+                                                  , regdt  		        as regdt
                                             from tperftest
                                             where tid in (select max(tid) as tid
                                                             from tperfcode
