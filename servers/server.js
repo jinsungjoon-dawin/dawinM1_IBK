@@ -12,6 +12,7 @@ import testdetail  from './cntr/testDetail.js' ;
 import transformboard  from './cntr/transformBoard.js' ;
 import transformscenario  from './cntr/transformScenario.js' ;
 import loaddataverifyresult  from './cntr/loadDataVerifyResult.js' ;
+import useruploadmanagement  from './cntr/userUploadManagement.js' ;
 
 const app  = express();
 const port = process.argv[2] ?? process.env.DMONPORT ?? 5880;
@@ -46,6 +47,7 @@ app.use('/testdetail', testdetail) ;
 app.use('/transformboard', transformboard) ;
 app.use('/transformscenario', transformscenario) ;
 app.use('/loaddataverifyresult', loaddataverifyresult) ;
+app.use('/useruploadmanagement', useruploadmanagement) ;
 
 app.listen(port,'0.0.0.0', () => {
    console.log(`Server is up at port ${port}`);
