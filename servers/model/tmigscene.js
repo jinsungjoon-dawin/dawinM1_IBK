@@ -102,7 +102,9 @@ const tmigscene = {
       // console.log("args.query.mid : " + args.query.mid);      
       // console.log("args.query.wstat : " + args.query.wstat);      
 
-      let rows = await mondb.query(`   select x.mid								    as mid          -- 이행코드
+      let rows = await mondb.query(`   select ''			                        as flag         -- flag
+                                     	    , 'false'		                        as checked      -- checkbox
+                                            , x.mid								    as mid          -- 이행코드
                                             , y.desc							    as tmignm       -- 이행설명
                                             , y.startDt							    as startdt      -- 이행시작일
                                             , y.endDt							    as endDt        -- 이행종료일
