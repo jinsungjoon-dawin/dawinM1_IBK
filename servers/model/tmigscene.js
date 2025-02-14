@@ -13,12 +13,12 @@ const tmigscene = {
                                             , x.wstat 		as wstat
                                             , x.cnt 		as cnt
                                             , y.scenario 	as scenario
-                                        from (select a.mid			as mid
-                                                , a.wstat 			as wstat
-                                                , count(a.ActStdt)	as cnt
+                                        from (select a.mid			                    as mid
+                                                   , nvl(a.wstat,0) 	                as wstat
+                                                   , count(nvl(a.ActStdt,'1900-01-01'))	as cnt
                                                 from tmigscene a
                                                 where a.mid = ?
-                                                group by a.mid, a.wstat
+                                                group by a.mid, nvl(a.wstat,0)
                                             ) x
                                         join tmigcode y
                                             on x.mid = y.mid)
@@ -28,13 +28,13 @@ const tmigscene = {
                                             , x.wstat 		as wstat
                                             , x.cnt 		as cnt
                                             , y.scenario 	as scenario
-                                        from (select a.mid			as mid
-                                                , a.scgrp			as scgrp
-                                                , a.wstat 			as wstat
-                                                , count(a.ActStdt)	as cnt
+                                        from (select a.mid			                    as mid
+                                                , a.scgrp			                    as scgrp
+                                                , nvl(a.wstat,0) 	                    as wstat
+                                                , count(nvl(a.ActStdt,'1900-01-01'))	as cnt
                                                 from tmigscene a
                                                 where a.mid = ?
-                                                group by a.mid, a.scgrp, a.wstat
+                                                group by a.mid, a.scgrp, nvl(a.wstat,0)
                                             ) x
                                         join tmigcode y
                                             on x.mid = y.mid
@@ -144,24 +144,24 @@ const tmigscene = {
                                             , x.siusr								as siusr		-- SI등록자
                                             , x.smusr								as smusr		-- SM등록자
                                             , x.pserver							    as pserver		-- 수행서버
-                                        from ( select a.pkey		as pkey
-                                                    , a.mid			as mid
-                                                    , a.scno		as scno
-                                                    , a.scgrp		as scgrp
-                                                    , a.desc		as midnm
-                                                    , a.worknm		as worknm
-                                                    , a.planStdt	as planStdt
-                                                    , a.planEndt	as planEndt
-                                                    , a.ActStdt		as ActStdt
-                                                    , a.ActEndt		as ActEndt
-                                                    , a.esttime		as esttime
-                                                    , a.acttime		as acttime
-                                                    , a.wstat		as wstat
-                                                    , a.pscno		as pscno
-                                                    , a.cscno		as cscno
-                                                    , a.siUsr		as siusr
-                                                    , a.smUsr		as smusr
-                                                    , a.pserver		as pserver
+                                        from ( select a.pkey		    as pkey
+                                                    , a.mid			    as mid
+                                                    , a.scno		    as scno
+                                                    , a.scgrp		    as scgrp
+                                                    , a.desc		    as midnm
+                                                    , a.worknm		    as worknm
+                                                    , a.planStdt	    as planStdt
+                                                    , a.planEndt	    as planEndt
+                                                    , a.ActStdt		    as ActStdt
+                                                    , a.ActEndt		    as ActEndt
+                                                    , nvl(a.esttime,0)	as esttime
+                                                    , nvl(a.acttime,0)	as acttime
+                                                    , nvl(a.wstat,0)	as wstat
+                                                    , a.pscno		    as pscno
+                                                    , a.cscno		    as cscno
+                                                    , a.siUsr		    as siusr
+                                                    , a.smUsr		    as smusr
+                                                    , a.pserver		    as pserver
                                                 from tmigscene a
                                                 where a.mid = ?
                                                 and nvl(a.wstat,99) between (case ? when 99 then 0 else ? end) and (case ? when 99 then 99 else ? end)
