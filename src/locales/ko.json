@@ -140,6 +140,12 @@
                         ] ,
         "usrId" : "사용자ID ",
         "host" : "host ",
-        "usrdesc" : "사용자명 "
+        "usrdesc" : "사용자명 ",
+        "check":"는 필수 항목입니다.",
+        "checkData" : "체크하신 항목이 없습니다.",
+        "deleteConfirm":"삭제를 하시겠습니까?",
+        "deleteSuccess":"삭제를 완료하였습니다.",
+        "saveConfirm" :"저장을 하시겠습니까?",
+        "saveSuccess" :"저장을 완료하였습니다."
     }
 }

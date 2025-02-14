@@ -1,6 +1,7 @@
 <script>
-  import { rooturl, t } from "../aqtstore";
+    import { rooturl, t } from "../aqtstore";
     import * as XLSX from "xlsx";
+    import { onMount } from "svelte";
 
     let selectedRow = 0;
     let fileInput; // 파일 input 요소 참조
@@ -47,7 +48,7 @@
                     obj[key] = row[i] || "";
                 });
                 const merged = {};
-                const cols = {checked : false, pkey: "", usrid: "id", host:"Host",usrdesc: "사용자명",  admin: false, apps:"", regdt:(new Date()).toLocaleDateString(), flag:"new"};
+                const cols = {checked : false, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt:"", flag:"new"};
                 // 모든 키 가져오기
                 const keys = new Set([...Object.keys(obj), ...Object.keys(cols)]);
                 // 각 키별로 병합
@@ -60,7 +61,6 @@
             // 반응성을 유지하며 업데이트
             rows.reverse();
             rows.forEach((item) => {
-                console.log(item);
                 list = [item, ...list];
             });
         
@@ -96,9 +96,20 @@
     
     //사용자 추가
     function addUser() {
-        list = [{checked : true, pkey: "", usrid: "id", host:"Host",usrdesc: "사용자명",  admin: false, apps:"", regdt:(new Date()).toLocaleDateString(), flag:"new"}, ...list]; // 새로운 배열로 업데이트 (반응성 유지)
+        list = [{checked : true, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt: "", flag:"new"}, ...list]; // 새로운 배열로 업데이트 (반응성 유지)
     }
-    //차수, ASIS 일자, TOBE 일자 조회
+   
+    
+    function checkData(){
+        const saveList = list.filter((item, idx) => item.checked);
+        if(saveList.length == 0){
+            alert($t.user.checkData);
+            return false;
+        }
+        return true;
+    }
+    
+    //사용자 조회
     async function searchUser() {
         let serviceUrl = $rooturl + "/useruploadmanagement/user_list?gubun=" + gubun + "&searchtxt=" + searchtxt;
         const res = await fetch(serviceUrl);
@@ -108,51 +119,91 @@
         throw new Error(res.statusText);
     }
     
+    //사용자 삭제
     function deleteUser(){
+        if(!checkData())return;
+        if(!confirm($t.user.deleteConfirm))return;
         const saveList = list.filter((item, idx) => item.checked);
         let serviceUrl = $rooturl + "/useruploadmanagement/user_del";
-        alert("삭제");
+        fetch(serviceUrl, {
+            method: "DELETE" ,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // body:  JSON.stringify({saveList}),
+                body:  JSON.stringify(saveList)
+            })
+            .then(async (res) => {
+                let rmsg = await res.json();
+                if (res.status == 200 && rmsg.rdata===1) {
+                    alert(t.user.deleteSuccess);
+                    searchUser();
+                }
+            })
+            .catch((err) => {
+                alert("error:" + err.message);
+            });
     }
+    //사용자 저장
     function saveUser(){
+        if(!checkData())return;
+        if(!confirm($t.user.saveConfirm))return;
         if(!validationCheck())return;
         const saveList = list.filter((item, idx) => item.checked);
-        console.log(saveList);
         let serviceUrl = $rooturl + "/useruploadmanagement/user_save";
-        alert("저장");
-        console.log(saveList);
+        fetch(serviceUrl, {
+            method: "POST" ,
+            headers: {
+                "Content-Type": "application/json",
+            },
+            // body:  JSON.stringify({saveList}),
+                body:  JSON.stringify(saveList)
+            })
+            .then(async (res) => {
+                let rmsg = await res.json();
+                if (res.status == 200 && rmsg.rdata===1) {
+                    alert($t.user.saveSuccess);
+                    searchUser();
+                }
+            })
+            .catch((err) => {
+                alert("error:" + err.message);
+            });
     }
     let errors = {}; // 에러 상태 저장
     function validationCheck(){
         errors = {};
         for (var i = 0; i < list.length; i++) {
-            if(paginatedlist[i].checked === true){
-                if(paginatedlist[i].usrid.trim() === ""){
-                    errors[i] = { ...errors[i], usrid: $t.user.usrId + "는 필수 항목입니다." }; 
-                    alert($t.user.usrId + "는 필수 항목입니다.");
-                    console.log(errors);
-                    return;
+            if(list[i].checked === true){
+                if(list[i].usrid.trim() === ""){
+                    errors[i] = { ...errors[i], usrid: $t.user.usrId + $t.user.check }; 
+                    alert($t.user.usrId + $t.user.check);
+                    return false;
                 }
-                else if(paginatedlist[i].host.trim() === ""){
-                    errors[i] = { ...errors[i], host: $t.user.host + "는 필수 항목입니다." };  
-                    alert($t.user.host + "는 필수 항목입니다.");
-                    return;
+                else if(list[i].host.trim() === ""){
+                    errors[i] = { ...errors[i], host: $t.user.host + $t.user.check };  
+                    alert($t.user.host + $t.user.check);
+                    return false;
                 }
-                else if(paginatedlist[i].usrdesc.trim() === ""){
-                    errors[i] = { ...errors[i], usrdesc: $t.user.usrdesc + "는 필수 항목입니다." }; 
-                    alert($t.user.usrdesc + "는 필수 항목입니다.");
-                    return;
+                else if(list[i].usrdesc.trim() === ""){
+                    errors[i] = { ...errors[i], usrdesc: $t.user.usrdesc + $t.user.check }; 
+                    alert($t.user.usrdesc + $t.user.check);
+                    return false;
                 }
             }
         }
-        list = list;
+        return true;
     }
     
 
     
-    $: rlist = list;
-    $:{
-        console.log(JSON.stringify(rlist));
-    }
+    // $: rlist = list;
+    // $:{
+    //     console.log(JSON.stringify(rlist));
+    // }
+    onMount(async () => {
+        searchUser();
+    });
 </script>
 <style>
     .error {
