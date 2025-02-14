@@ -126,7 +126,8 @@
         const saveList = list.filter((item, idx) => item.checked);
         let serviceUrl = $rooturl + "/useruploadmanagement/user_del";
         fetch(serviceUrl, {
-            method: "DELETE" ,
+            // method: "DELETE" ,
+            method: "POST" ,
             headers: {
                 "Content-Type": "application/json",
             },
@@ -136,7 +137,7 @@
             .then(async (res) => {
                 let rmsg = await res.json();
                 if (res.status == 200 && rmsg.rdata===1) {
-                    alert(t.user.deleteSuccess);
+                    alert($t.user.deleteSuccess);
                     searchUser();
                 }
             })

@@ -99,16 +99,16 @@
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
-    <div class="flex  border border-gray-100 rounded border-gray-100 border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.testDetail.leftTitle}</label>
-      <!-- <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">Asis</label> -->
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.testDetail.leftDate}</label>
+    <div class="flex  border rounded border-zinc-600 text-zinc-100 ">
+      <label class="px-3 w-2/5 py-2 border-r border-l  border-zinc-600 ">{$t.testDetail.leftTitle}</label>
+      <!-- <label class="px-3 w-2/5 py-2 border-r border-l  border-zinc-600 ">Asis</label> -->
+      <label class="px-3 w-3/5 py-2 border-r border-l  border-zinc-600 ">{$t.testDetail.leftDate}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getPerformcompositList();}}>
-            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
-            <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
+          <div class="flex mb-3 border rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getPerformcompositList();}}>
+            <label class="px-3 w-2/5 py-2 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
+            <input type="text" class="w-3/5 pl-3 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
         </div>
       {/each}
     {/if}

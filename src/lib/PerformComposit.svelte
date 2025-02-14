@@ -41,17 +41,17 @@
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
-    <div class="flex  border border-gray-100 rounded border-zinc-600  text-zinc-100 ">
-      <label class="px-3 w-2/6 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.perform.leftTitle}</label>
-      <label class="px-3 w-2/6 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.perform.leftDate1}</label>
-      <label class="px-3 w-2/6 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.perform.leftDate2}</label>
+    <div class="flex  border rounded border-zinc-600  text-zinc-100 ">
+      <label class="px-3 w-2/6 py-2 border-r border-l  border-zinc-600 ">{$t.perform.leftTitle}</label>
+      <label class="px-3 w-2/6 py-2 border-r border-l  border-zinc-600 ">{$t.perform.leftDate1}</label>
+      <label class="px-3 w-2/6 py-2 border-r border-l  border-zinc-600 ">{$t.perform.leftDate2}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => { handleRowClick(idx);}}>
-            <label class="px-3 w-2/6 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
-            <input type="text" class="w-2/6 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
-            <input type="text" class="w-2/6 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
+          <div class="flex mb-3 border rounded border-zinc-600 text-zinc-100 " on:click={() => { handleRowClick(idx);}}>
+            <label class="px-3 w-2/6 py-2 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.tname}</label>
+            <input type="text" class="w-2/6 pl-3 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.asisdt}" readonly>
+            <input type="text" class="w-2/6 pl-3 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.tobedt}" readonly>
         </div>
       {/each}
     {/if}

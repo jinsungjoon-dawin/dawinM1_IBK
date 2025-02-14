@@ -124,19 +124,19 @@ function getSum(column) {
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex justify-between">
   <div class="w-3/12 bg-gray-700 rounded-lg flex-wrap p-3" >
-    <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 bg-lime-600 ">
+    <div class="flex mb-3 border  rounded border-zinc-600 text-zinc-100 bg-lime-600 ">
       
-      <label class="px-3 w-full py-2 border-gray-100 border-r border-l bg-lime-600 border-zinc-600  ">{$t.loadData.leftMainTitle}</label>
+      <label class="px-3 w-full py-2  border-r border-l bg-lime-600 border-zinc-600  ">{$t.loadData.leftMainTitle}</label>
     </div>
-    <div class="flex  border  border-gray-100 rounded border-zinc-600 text-zinc-100 ">
-      <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.loadData.leftTitle}</label>
-      <label class="px-3 w-3/5 py-2 border-gray-100 border-r border-l  border-zinc-600 ">{$t.loadData.leftDate1}</label>
+    <div class="flex  border   rounded border-zinc-600 text-zinc-100 ">
+      <label class="px-3 w-2/5 py-2  border-r border-l  border-zinc-600 ">{$t.loadData.leftTitle}</label>
+      <label class="px-3 w-3/5 py-2  border-r border-l  border-zinc-600 ">{$t.loadData.leftDate1}</label>
     </div>
     {#if leftDates.length !== 0}
       {#each leftDates as item, idx}
-          <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getData(); getCheckData();}}>
-            <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.dname}</label>
-            <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.wdate}" readonly>
+          <div class="flex mb-3 border  rounded border-zinc-600 text-zinc-100 " on:click={() => {handleRowClick(idx); getData(); getCheckData();}}>
+            <label class="px-3 w-2/5 py-2  border-r border-l bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}">{item.dname}</label>
+            <input type="text" class="w-3/5 pl-3  border-r  bg-zinc-700 border-zinc-600 {selectedRow === idx ? 'text-yellow-100' : ''}" value="{item.wdate}" readonly>
         </div>
       {/each}
     {/if}
