@@ -260,7 +260,7 @@
      
       <div class="flex justify-end h-24">
         &nbsp;
-         <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-20 h-20 object-contain" />
+         <img src="/img/DAWINICT_logo.png" alt="Logo" class="w-20 h-20 object-contain" />
       </div>
       
     </div>
