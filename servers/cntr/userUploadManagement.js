@@ -16,7 +16,7 @@ router.get('/user_list', async function (req, res, next) {
     res.json(rdata) ;
 });
 
-router.post('/user_del', async function (req, res, next) {
+router.delete('/user_del', async function (req, res, next) {
     // console.log("Controller req body  : " + JSON.stringify(req.body));
     
     const rdata = await tuser.ttuserdel(JSON.stringify(req.body)) ;
