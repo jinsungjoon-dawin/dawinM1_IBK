@@ -9,8 +9,16 @@
   let selectedValues;
   let getscenariodetaildata;
   let childMessage = "";
-  let gsts;
-  //let ScenarioAll=98;
+  
+  
+  
+  let mid; 
+  let mid1; 
+  let sts; 
+  let sts1;
+  let wsts;
+  let wsts1;
+  //let scenarioselect;
   let selected = true;
 
 //         "mid": 3,
@@ -43,40 +51,46 @@
       throw new Error(transformboardList.statusText);    
   }
   
-  // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
+  // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회 selectedValues.mid,99,5
   async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
-   // alert("mid="+mid+"scenarioAll="+"sts="+sts);
-    if (sts  != 5) {
-     // alert("5가 아님");
-      let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
-      const transformboardScenario = await fetch($rooturl+transformboardlist);
-      console.log("transformboardScenario==0,1,2,3,99"+transformboardScenario);
-      if (transformboardScenario.ok){
-        getscenariodetaildata= await transformboardScenario.json();
-         selected=false;
-         mid=mid;
-         gsts=sts;
-        return getscenariodetaildata;
-        }else{
-          throw new Error(transformboardScenario.statusText);    
-        }
+    selected=false;
+  mid1=mid; //mid 5
+  wsts1=scenarioAll //99
+  sts1=sts;   //5 전체 보기시 구분값값
+      //mid={mid} wsts={scenarioAll} sts={gsts}
 
-    }else{
-      //alert("5 입니다");
-        let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
-        const transformboardScenario = await fetch($rooturl+transformboardlist);
-        console.log("transformboardScenario==5"+transformboardScenario);
+  // alert(mid)
+  // alert(scenarioAll)
+  // alert(sts)
+    // if (sts  != 5) {
+    //   let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+    //   const transformboardScenario = await fetch($rooturl+transformboardlist);
+    //   if (transformboardScenario.ok){
+    //     getscenariodetaildata= await transformboardScenario.json();
+    //      selected=false;
+    //      mid=mid;
+    //      gsts=sts;
+    //     return getscenariodetaildata;
+    //     }else{
+    //       throw new Error(transformboardScenario.statusText);    
+    //     }
+
+    // }else{
+    //   //alert("5 입니다");
+    //     let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+    //     const transformboardScenario = await fetch($rooturl+transformboardlist);
+    //     console.log("transformboardScenario==5"+transformboardScenario);
         
-        if (transformboardScenario.ok){
-        getscenariodetaildata= await transformboardScenario.json();
-         selected=false;
-         mid=mid;
-         gsts=sts;
-        return getscenariodetaildata;
-        }else{
-          throw new Error(transformboardScenario.statusText);    
-        }
-    }
+    //     if (transformboardScenario.ok){
+    //     getscenariodetaildata= await transformboardScenario.json();
+    //      selected=false;
+    //      mid=mid;
+    //      gsts=sts;
+    //     return getscenariodetaildata;
+    //     }else{
+    //       throw new Error(transformboardScenario.statusText);    
+    //     }
+    // }
   }
 
   const handleRowClick = (idx) => {
@@ -98,17 +112,17 @@
   let chartSyncTime: string | null = null;
   let newtime = false; 
   // 동기화 버튼 클릭 이벤트 처리
-  const handleSyncClick = () => {
-    const currentTime = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); // 현재 시간 가져오기
-    chartSyncTime =  currentTime; // 동기화 시간 상태 업데이트
-    newtime = true;
-    // 5초 후에 시간을 다시 갱신하도록 설정
-    setTimeout(() => {
-      const updatedTime = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      chartSyncTime = updatedTime; // 5초 후 갱신된 시간 업데이트
-      newtime = false; // 시간이 갱신되었으므로, `newtime`을 다시 false로 설정
-    }, $intlMs); // 5초 뒤에 실행
-  };
+  // const handleSyncClick = () => {
+  //   const currentTime = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' }); // 현재 시간 가져오기
+  //   chartSyncTime =  currentTime; // 동기화 시간 상태 업데이트
+  //   newtime = true;
+  //   // 5초 후에 시간을 다시 갱신하도록 설정
+  //   setTimeout(() => {
+  //     const updatedTime = new Date().toLocaleString('en-GB', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+  //     chartSyncTime = updatedTime; // 5초 후 갱신된 시간 업데이트
+  //     newtime = false; // 시간이 갱신되었으므로, `newtime`을 다시 false로 설정
+  //   }, $intlMs); // 5초 뒤에 실행
+  // };
 
   const interval =setInterval(() => {
       currentTime = new Date().toLocaleString('en-GB', { 
@@ -242,6 +256,7 @@
         -->
         
         <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-17" on:click={() => { getScenarioDetail(selectedValues.mid,99,5); }}>전체시나리오 </button> 
+        <!-- <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline ml-17" on:click={() => { selected = false; }}>전체시나리오테스트 </button>  -->
      <!-- 첫 번째 줄: 하나의 차트 -->
       {#if chardata}
       {#each chardata as item,idx }
@@ -273,6 +288,5 @@
   </div>
 </div>
 {:else}
-
-<TransformBoardDetail  getscenariodetaildata={getscenariodetaildata} sts={gsts} ></TransformBoardDetail>
+<TransformBoardDetail   mid={mid1} wsts={wsts1} sts={sts1}></TransformBoardDetail>
 {/if}

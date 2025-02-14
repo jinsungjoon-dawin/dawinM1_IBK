@@ -4,9 +4,7 @@
   import { onMount, createEventDispatcher } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
   import { get } from 'svelte/store';
-  // export let item;
   let { item,getscenariodetaildata, sts } = $props();
-  // console.log(item);
   let selflag;
   let mid;
   let childMessage = "";
@@ -121,9 +119,8 @@
     
     chartx.update();
   }
-// 시나리오 상세내용 조회  sts:9 전체 시나리오 조회회
+// 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
 async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
-    alert("mid="+mid);
     let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
     const transformboardScenario = await fetch($rooturl+transformboardlist);
     console.log("transformboardScenario=="+transformboardScenario);
