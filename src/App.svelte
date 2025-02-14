@@ -6,12 +6,13 @@
   import LoadDataVerifyResult from "./lib/LoadDataVerifyResult.svelte";
   import Login from "./lib/Login.svelte";
   import HelpManagement from "./lib/HelpManagement.svelte";
-  import BulkRegistrationOfUsers from "./lib/BulkRegistrationOfUsers.svelte";
-  import IndividualUserManagement from "./lib/IndividualUserManagement.svelte";
-  import DeleteUsersInBulk from "./lib/DeleteUsersInBulk.svelte";//성능 Data 관리
   import UserUploadManagement from "./lib/UserUploadManagement.svelte";
+  import IndividualUserManagement from "./lib/PerformUploadManagement.svelte";
   import TransformBoard from "./lib/TransformBoard.svelte"
   import TestComposit from "./lib/TestComposit.svelte";
+  import LoadDataUploadManagement from "./lib/LoadDataUploadManagement.svelte";//성능 Data 관리
+  import ScenarioUploadManagement from "./lib/ScenarioUploadManagement.svelte";
+  import PerformUploadManagement from "./lib/PerformUploadManagement.svelte";
   import { isLogged, userid, t} from "./aqtstore";
   import { onMount } from "svelte";
   import Parent from "./lib/Parent.svelte";
@@ -63,9 +64,9 @@
       <div class="mx-auto w-10/12 px-4 sm:px-6 lg:px-8">
         <div class="flex h-16 items-center justify-between">
           <div class="flex items-center">
-            <div class="shrink-0 text-white font-bold">
-              <img src="/src/img/top3.png" class="object-contain">
-               <!-- DAWIN -->
+            <div class="shrink-0 text-white font-bold text-2xl italic font-serif">
+              <!-- <img src="/src/img/top2.png" class="object-contain"> -->
+               T&T Board
             </div>
             <div class="hidden md:block">
               <ul class="ml-10 flex items-baseline space-x-4">
@@ -76,10 +77,10 @@
                         <a class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}">관리자</a>
                         <div class="group-hover:block dropdown-menu absolute hidden h-auto">
                           <ul class="top-0 w-48 bg-gray-900 shadow px-6 py-1">
-                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=BulkRegistrationOfUsers;pageNm = "사용자 관리";menuIdx = idx}}>사용자 관리</a></li>
-                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=DeleteUsersInBulk;pageNm = "성능 Data 관리";menuIdx = idx}}>성능 Data 관리</a></li>
-                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=IndividualUserManagement;pageNm = "Data 검증 관리";menuIdx = idx}}>Data 검증 관리</a></li>
-                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=UploadManagement;pageNm = "시나리오 관리";menuIdx = idx}}>시나리오 관리</a></li>
+                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=UserUploadManagement;pageNm = "사용자 관리";menuIdx = idx}}>사용자 관리</a></li>
+                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=PerformUploadManagement;pageNm = "성능 Data 관리";menuIdx = idx}}>성능 Data 관리</a></li>
+                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=LoadDataUploadManagement;pageNm = "Data 검증 관리";menuIdx = idx}}>Data 검증 관리</a></li>
+                            <li class="py-1"><a href="#" class="menu-item" on:click|preventDefault={ _=> {cnm=ScenarioUploadManagement;pageNm = "시나리오 관리";menuIdx = idx}}>시나리오 관리</a></li>
                           </ul>
                         </div>
                       </div>

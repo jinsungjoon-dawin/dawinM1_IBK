@@ -217,7 +217,7 @@
     <div class="flex justify-between">
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
-              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3"> {$t.user.pageNm}</h1>
+              <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3"> 성능 데이터 적재 관리</h1>
           </div>
           
           <div class="w-full overflow-auto bg-gray-700 p-3 rounded-lg">

@@ -207,8 +207,14 @@
         <img src="src/img/logo8.png" alt="Logo" class="p-5 object-contain" />
       </div> -->
       
-      <div class="flex justify-center">
+      <!-- <div class="flex justify-center font-bold " style="color: #3b82f6;">
         <img src="src/img/logo9.png" alt="Logo" class="p-5 object-contain" />
+      </div> -->
+      <div class="flex justify-center items-end font-bold text-4xl  font-serif text-blue-500 h-24">
+         T&T Boards
+      </div>
+      <div class="flex justify-center font-bold text-[xx-small] italic font-serif ml-40 h-10">
+         Test & Transition
       </div>
       <div class="w-full text-xl font-semibold text-center text-gray-700 mb-6">{rdata[0]?.pjtname}</div>
       
@@ -254,7 +260,7 @@
      
       <div class="flex justify-center h-24">
         &nbsp;
-         <!-- <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-32 h-32 object-contain" /> -->
+         <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-20 h-20 object-contain" />
       </div>
       
     </div>
