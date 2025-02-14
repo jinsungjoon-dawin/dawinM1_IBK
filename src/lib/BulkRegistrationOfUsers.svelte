@@ -48,12 +48,13 @@
                     obj[key] = row[i] || "";
                 });
                 const merged = {};
-                const cols = {checked : false, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt:"", flag:"new"};
+                const cols = {checked : true, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt:"", flag:"new",password:""};
                 // 모든 키 가져오기
                 const keys = new Set([...Object.keys(obj), ...Object.keys(cols)]);
                 // 각 키별로 병합
                 keys.forEach(key => {
                     merged[key] = obj[key] || cols[key];
+                    if(key == "admin") merged[key] = ((merged[key] == "0" || merged[key] == 0 ) ? false : true); 
                 });
                 return merged;
             });
@@ -96,7 +97,7 @@
     
     //사용자 추가
     function addUser() {
-        list = [{checked : true, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt: "", flag:"new"}, ...list]; // 새로운 배열로 업데이트 (반응성 유지)
+        list = [{checked : true, pkey: 0, usrid: "id", host:"Host",usrdesc: $t.user.usrdesc,  admin: false, apps:"", regdt: "", flag:"new",password:""}, ...list]; // 새로운 배열로 업데이트 (반응성 유지)
     }
    
     
@@ -174,19 +175,19 @@
     let errors = {}; // 에러 상태 저장
     function validationCheck(){
         errors = {};
-        for (var i = 0; i < list.length; i++) {
+        for (var i = 0; i < rlist.length; i++) {
             if(list[i].checked === true){
-                if(list[i].usrid.trim() === ""){
+                if(list[i].usrid === ""){
                     errors[i] = { ...errors[i], usrid: $t.user.usrId + $t.user.check }; 
                     alert($t.user.usrId + $t.user.check);
                     return false;
                 }
-                else if(list[i].host.trim() === ""){
+                else if(list[i].host === ""){
                     errors[i] = { ...errors[i], host: $t.user.host + $t.user.check };  
                     alert($t.user.host + $t.user.check);
                     return false;
                 }
-                else if(list[i].usrdesc.trim() === ""){
+                else if(list[i].usrdesc === ""){
                     errors[i] = { ...errors[i], usrdesc: $t.user.usrdesc + $t.user.check }; 
                     alert($t.user.usrdesc + $t.user.check);
                     return false;
@@ -198,10 +199,10 @@
     
 
     
-    // $: rlist = list;
-    // $:{
-    //     console.log(JSON.stringify(rlist));
-    // }
+    $: rlist = list;
+    $:{
+        console.log(JSON.stringify(rlist));
+    }
     onMount(async () => {
         searchUser();
     });
@@ -231,7 +232,7 @@
                         <input type="text" bind:value={searchtxt} class="w-4/12 pl-3 bg-white hover:bg-gray-100 text-gray-800 font-semibold py-2 pl-4 border-y border-gray-400  shadow" >
                         <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold mr-2 py-2 px-4 border border-gray-400 rounded-r shadow"  on:click={() => searchUser()}>{$t.com.btn.search}</button>
                         <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold mx-2 py-2 px-4 border border-gray-400 rounded shadow"  on:click={()=> addUser()}>{$t.com.btn.userAdd}</button>
-                        <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold mx-2 py-2 px-4 border border-gray-400 rounded shadow"  on:click={()=> deleteUser()}>{$t.com.btn.selectdDelete}</button>
+                        <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold mx-2 py-2 px-4 border border-gray-400 rounded shadow"  on:click={()=> deleteUser()}>{$t.com.btn.delete}</button>
                         <button class="bg-white hover:bg-gray-100 text-gray-800 font-semibold mx-2 py-2 px-4 border border-gray-400 rounded shadow"  on:click={() => saveUser()}>{$t.com.btn.save}</button>
                         <!-- 숨겨진 파일 업로드 input -->
                         <input type="file" bind:this={fileInput} accept=".xlsx, .xls" on:change={handleFileUpload} style="display: none;" />
