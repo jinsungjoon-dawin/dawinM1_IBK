@@ -170,7 +170,7 @@ const tuser = {
         return(1) ;
     },       
     /**
-     * 사용자 관리 저장장
+     * 사용자 관리 저장
      * 
      */
     ttusersave : async (args) => {
@@ -179,8 +179,6 @@ const tuser = {
         let msg = { message: 'post :' };
         let qstr = '';
         let r = 0;
-        let qstr2 = '';
-        let r2 = 0;
         
         let pkey = '';
         let host = '';
@@ -191,6 +189,7 @@ const tuser = {
         let apps = '';
         let lastin = '';
         let lcnt = 0;
+        
         try {
             let pkey = 0;
 
@@ -219,27 +218,27 @@ const tuser = {
                 // console.log('apps : ' + apps); 		
                 // console.log('lastin : ' + lastin); 		
                 // console.log('lcnt : ' + lcnt); 		
-
-                qstr = ` insert into tuser(host,usrid,usrdesc,pass1,admin,apps,lcnt,regdt) 
-                         value (nvl(?,'%'),nvl(?,'default'),nvl(?,'default'),password(nvl(?,?)),nvl(?,0),nvl(?,'default'),nvl(?,0),sysdate())
-                        ` ;
-
-                qstr2 = ` update tuser
-                            set   host = nvl(?,'%')
-                                , usrid = nvl(?,'default')
-                                , usrdesc = nvl(?,'default')
-                                , pass1 = password(nvl(?,?))
-                                , admin = nvl(?,0)
-                                , apps = nvl(?,'default')
-                                , lcnt = nvl(?,0)
-                                , regdt = sysdate()
-                            where pkey = ?
-                        ` ;
                 
                 if (pkey === 0){
-                    r = mondb.query(qstr, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt]);
+                    qstr = ` insert into tuser(host,usrid,usrdesc,pass1,admin,apps,lcnt,regdt) 
+                    value (nvl(?,'%'),nvl(?,'default'),nvl(?,'default'),password(nvl(?,?)),nvl(?,0),nvl(?,'default'),nvl(?,0),sysdate())
+                   ` ;
+
+                   r = mondb.query(qstr, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt]);
                 } else {
-                    r2 = mondb.query(qstr2, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt,pkey]);
+                    qstr = ` update tuser
+                    set   host = nvl(?,'%')
+                        , usrid = nvl(?,'default')
+                        , usrdesc = nvl(?,'default')
+                        , pass1 = password(nvl(?,?))
+                        , admin = nvl(?,0)
+                        , apps = nvl(?,'default')
+                        , lcnt = nvl(?,0)
+                        , regdt = sysdate()
+                    where pkey = ?
+                ` ;
+
+                    r = mondb.query(qstr, [host,usrid,usrdesc,pass1,usrid,admin,apps,lcnt,pkey]);
                 }
 
             } 
