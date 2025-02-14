@@ -34,10 +34,11 @@ const tuser = {
 
         gubun = args.gubun;
         searchtxt = args.searchtxt;
+        
         // console.log('gubun : ' + gubun); 		
         // console.log('searchtxt : ' + searchtxt); 		
 
-        if (gubun === 1){
+        if (gubun == 1){
             rows = await mondb.query(` select ''			as flag     -- flag
                                             , ''    		as checked  -- checked
                                             , pkey			as pkey		-- pkey
@@ -53,7 +54,7 @@ const tuser = {
                                         from tuser
                                         where usrid like concat(concat('%',?),'%')
                                     `, [searchtxt] ) ;
-        } else if (gubun === 2){
+        } else if (gubun == 2){
             rows = await mondb.query(` select ''			as flag     -- flag
                                             , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
@@ -69,7 +70,7 @@ const tuser = {
                                         from tuser
                                         where Host like concat(concat('%',?),'%')
                                     `, [searchtxt] ) ;
-        } else if (gubun === 3){
+        } else if (gubun == 3){
             rows = await mondb.query(` select ''			as flag     -- flag
                                             , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
@@ -85,7 +86,7 @@ const tuser = {
                                         from tuser
                                         where usrdesc like concat(concat('%',?),'%')
                                     `, [searchtxt] ) ;
-        } else if (gubun === 4){
+        } else if (gubun == 4){
             rows = await mondb.query(` select ''			as flag     -- flag
                                             , ''    		as checked  -- checked
                                             , pkey			as pkey		-- pkey
@@ -101,7 +102,7 @@ const tuser = {
                                         from tuser
                                         where admin like concat(concat('%',?),'%')
                                     `, [searchtxt] ) ;
-        } else if (gubun === 5){
+        } else if (gubun == 5){
             rows = await mondb.query(` select ''			as flag     -- flag
                                             , ''	    	as checked  -- checked
                                             , pkey			as pkey		-- pkey
@@ -189,7 +190,7 @@ const tuser = {
         let apps = '';
         let lastin = '';
         let lcnt = 0;
-        
+
         try {
             let pkey = 0;
 
