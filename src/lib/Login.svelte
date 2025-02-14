@@ -258,7 +258,7 @@
       </div>
   
      
-      <div class="flex justify-center h-24">
+      <div class="flex justify-end h-24">
         &nbsp;
          <img src="src/img/DAWINICT_logo.png" alt="Logo" class="w-20 h-20 object-contain" />
       </div>

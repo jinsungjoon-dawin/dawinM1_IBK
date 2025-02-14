@@ -26,6 +26,7 @@
                {pageNm:"이행",cnm:TransformBoard},
                {pageNm:"관리자",cnm:UserUploadManagement},
                {pageNm:"도움말",cnm:HelpManagement}
+               ,{pageNm:"임시",cnm:Parent}
   ]
   
   
