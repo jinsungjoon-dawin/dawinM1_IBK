@@ -39,14 +39,15 @@ const tmigscene = {
                                         join tmigcode y
                                             on x.mid = y.mid
                                         order by x.mid, x.scgrp, x.wstat)
-                                    select mid																				  as mid		-- 이행코드
-                                        , '0.전체'																			  as scgrp      -- 시나리오그룹
-                                        , sum(xx.cnt1) 																		  as plancnt	-- 미수행
-                                        , sum(xx.cnt2) 																		  as ingcnt		-- 수행중
-                                        , sum(xx.cnt3) 																		  as comcnt		-- 완료
-                                        , sum(xx.cnt4) 																		  as errcnt		-- 지연
-                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
-                                        , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)   as totrate	-- 비율(수행시나리오건수/총시나리오건수)
+                                    select mid																				                as mid		-- 이행코드
+                                        , '0.전체'																			                as scgrp      -- 시나리오그룹
+                                        , sum(xx.cnt1) 																		                as plancnt	-- 미수행
+                                        , sum(xx.cnt2) 																		                as ingcnt		-- 수행중
+                                        , sum(xx.cnt3) 																		                as comcnt		-- 완료
+                                        , sum(xx.cnt4) 																		                as errcnt		-- 지연
+                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								                as totcnt		-- Task
+                                        , case when sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) = 0 then 0
+    	                                        else round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2) end	as totrate	-- 비율(수행시나리오건수/총시나리오건수)
                                     from (
                                             select aa.mid
                                                 , case aa.wstat when 0 then aa.wstat else '' end 		as wstat1
@@ -65,14 +66,15 @@ const tmigscene = {
                                             ) xx
                                     group by xx.mid 
                                     union all
-                                    select xx.mid																			  as mid		-- 이행코드
-                                         , xx.scgrp																			  as scgrp      -- 시나리오그룹
-                                         , sum(xx.cnt1) 																	  as plancnt	-- 미수행
-                                         , sum(xx.cnt2) 																	  as ingcnt		-- 수행중
-                                         , sum(xx.cnt3) 																	  as comcnt		-- 완료
-                                         , sum(xx.cnt4) 																	  as errcnt		-- 지연
-                                         , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								  as totcnt		-- Task
-                                         , round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2)  as totrate	-- 비율(수행시나리오건수/총시나리오건수)
+                                    select xx.mid																			                as mid		-- 이행코드
+                                        , xx.scgrp																			                as scgrp    -- 시나리오그룹
+                                        , sum(xx.cnt1) 																	                    as plancnt	-- 미수행
+                                        , sum(xx.cnt2) 																	                    as ingcnt	-- 수행중
+                                        , sum(xx.cnt3) 																	                    as comcnt	-- 완료
+                                        , sum(xx.cnt4) 																	                    as errcnt	-- 지연
+                                        , sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) 								                as totcnt	-- Task
+                                        , case when sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4) = 0 then 0
+    	                                       else round(sum(xx.cnt3)/((sum(xx.cnt1)+sum(xx.cnt2)+sum(xx.cnt3)+sum(xx.cnt4)))*100,2) end	as totrate	-- 비율(수행시나리오건수/총시나리오건수)
                                     from (
                                             select aa.mid												as mid
                                                 , aa.scgrp 											    as scgrp
@@ -162,7 +164,7 @@ const tmigscene = {
                                                     , a.pserver		as pserver
                                                 from tmigscene a
                                                 where a.mid = ?
-                                                and a.wstat between (case ? when 99 then 0 else ? end) and (case ? when 99 then 99 else ? end)
+                                                and nvl(a.wstat,99) between (case ? when 99 then 0 else ? end) and (case ? when 99 then 99 else ? end)
                                             ) x
                                         join tmigcode y
                                             on x.mid = y.mid
