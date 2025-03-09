@@ -11,17 +11,19 @@
   export let mid;
   export let wsts;
   export let sts;
-  alert("sts===="+wsts)
+  let selectAll = false; // 전체 체크박스 상태
   let selected = true;
   let childMessage = "";
   let pageNm = "시나리오";
   let list = [];
   let checked = false; // 체크 여부 추적
-  let getscenariodetaildata=[];
-
+  // let getscenariodetaildata=[
+  //   {"pkey":30,"mid":3,"scno":"A-147","scgrp":"1.사전작업","midnm":"시스템나르샤 F","worknm":"시스템이행모니터링","planStdt":"2025-01-21 10:49:24","":"2025-01-21 11:37:24","ActStdt":"2025-01-21 10:49:24","ActEndt":"2025-01-21 11:37:24","esttime":48,"acttime":48,"wstat":0,"scenario":110,"tmignm":"3차 리허설","mgb":1,"startdt":"2025-02-20","endDt":"2025-02-20","mclass":1,"mclassnm":"사전준비"},
+  //   {"pkey": 528,"mid": 5,"scno":"C-231","scgrp":"1.사전작업","midnm": "시스템재기동 F","worknm": "시스템이행모니터링","planStdt":"2025-02-06 11:46:44","planEndt":"2025-02-06 12:28:44","ActStdt":"2025-02-06 11:46:44",    "ActEndt": "2025-02-06 11:46:44","esttime": 0,"acttime": 0,"wstat": 0,"wstatnm": "계획","scenario": 100,"tmignm":"1차 본이행","mgb":2,"startdt":"2025-04-20","endDt":"2025-04-21","mclass": 1,"mclassnm":"사전준비"} 
+  
+  // ]
+  let getscenariodetaildata= [];
   function getScenarioSelect(){
-    alert("상세");
-
     getScenarioDetail()
   }
     // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
@@ -31,12 +33,12 @@
       const transformboardScenario = await fetch($rooturl+transformboardlist);
       if (transformboardScenario.ok){
         getscenariodetaildata= await transformboardScenario.json();
+        currentPage = 1; 
         return getscenariodetaildata;
         }else{
           throw new Error(transformboardScenario.statusText);    
         }
     }else{
-      //alert("5 입니다");
         let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+wsts
         const transformboardScenario = await fetch($rooturl+transformboardlist);
         console.log("transformboardScenario==5"+transformboardScenario);
@@ -63,7 +65,6 @@
      if(getscenariodetaildata.length !=0){
        console.log(getscenariodetaildata)
      }
-      //alert("sts="+sts);
   });
 
   // 이전 페이지로 이동
@@ -77,25 +78,36 @@
     selected=false;
   }
 
-  let selectedStatus = "99";
-  
-
-  // $: paginatedlist = selectedStatus === "ALL" ? 
-  //     list.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
-  //   : list.filter(list => list.gubun === selectedStatus).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); 
-  
-  // $: totalPages = Math.ceil((selectedStatus === "ALL" ? list.length : list.filter(item => item.gubun === selectedStatus).length) / itemsPerPage);
-
-
+//  let selectedStatus = "99";
   let currentPage = 1;
   let itemsPerPage = 10;
 
-  $: paginatedlist = getscenariodetaildata.slice((currentPage - 1) * itemsPerPage,currentPage * itemsPerPage);
-    : getscenariodetaildata.filter(getscenariodetaildata => getscenariodetaildata.wsts === statusOptions).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); 
+  $: paginatedlist = wsts == "99" ?
+    getscenariodetaildata.slice((currentPage - 1) * itemsPerPage,currentPage * itemsPerPage)
+   : getscenariodetaildata.filter(getscenariodetaildata => wsts == getscenariodetaildata.wstat).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); 
   
-  //$: totalPages = Math.ceil(getscenariodetaildata.length / itemsPerPage);
-  $: totalPages = Math.ceil(( getscenariodetaildata.filter(item => getscenariodetaildata.wsts === statusOptions).length) / itemsPerPage);
+  $: totalPages = Math.ceil((wsts == "99" ? getscenariodetaildata.length : getscenariodetaildata.filter(item => item.wstat == wsts).length) / itemsPerPage);
+  
+// 페이징 초기화 함수
+function initializePagination() {
+    currentPage = 1; // 페이지를 첫 번째 페이지로 초기화
+  }
+// 전체 선택/해제 핸들러
+  function toggleAll() {
+    getscenariodetaildata = getscenariodetaildata.map(item => ({ ...item, checked: selectAll }));
+  };
 
+  // 개별 체크박스 상태 변경 시 호출되는 핸들러
+  function updateSelection() {
+    selectAll = getscenariodetaildata.every(item => item.checked); // 개별 체크박스가 모두 체크되면 전체 체크박스도 체크
+  };
+
+  // 각 로우(시작날짜,종료날짜) 클릭 시 체크박스 상태 변경
+  function toggleCheckboxrow(index: number){
+    if(paginatedlist[index].checked == false){
+      paginatedlist[index].checked = !paginatedlist[index].checked;
+    }
+  }
   
   function goToPage(page) {
        if (page > 0 && page <= totalPages) {
@@ -107,8 +119,6 @@
     // 🔹 헤더 추가
     let header =  ["TASKID",
                     "주제영역",
-                    "위치",
-                    "파트/작업 위치",
                     "Level1(단계)",
                     "Level2",
                     "Level3(TASK)",
@@ -124,29 +134,34 @@
                     "SI",
                     "SM",
                     "수행서버",
-                    "작업 방안(Commandlevel)"];
+                    "작업 방안(Commandlevel)",
+                    "진행상태",
+                    "출력여부"
+                  ];
     
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
-    let worksheetData = [header, ...getscenariodetaildata.map(obj => [obj.pkey 
-                                                                    ,obj.mid
-                                                                    ,obj.scno 
+    let worksheetData = [header, ...getscenariodetaildata.map(obj => [
+                                                                    obj.scno 
                                                                     ,obj.scgrp
-                                                                    ,obj.midnm
-                                                                    ,obj.worknm
+                                                                    ,obj.mclassnm 
+                                                                    ,obj.scgrp
+                                                                    ,obj.desc
+                                                                    ,obj.pscno
+                                                                    ,obj.cscno
+                                                                    ,obj.esttime
                                                                     ,obj.planStdt
                                                                     ,obj.planEndt
-                                                                    ,obj.wstatnm
-                                                                    ,obj.actstdt
-                                                                    ,obj.actendt 
-                                                                    ,obj.esttime
                                                                     ,obj.acttime 
-                                                                    ,obj.wstat 
-                                                                    ,obj.scenario
-                                                                    ,obj.tmignm
-                                                                    ,obj.mgb
-                                                                    ,obj.startdt
-                                                                    ,obj.endDt
-                                                                    ,obj.mclass]) 
+                                                                    ,obj.acttime
+                                                                    ,obj.actstdt 
+                                                                    ,obj.actendt
+                                                                    ,obj.siuser
+                                                                    ,obj.smuser
+                                                                    ,obj.pserver
+                                                                    ,obj.worknm
+                                                                    ,obj.wstatnm
+                                                                    ,obj.disyn
+                                                                  ]) 
                         ];
 
     // 🔹 워크시트 생성
@@ -157,40 +172,40 @@
     XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
 
     // 🔹 엑셀 파일 생성 및 다운로드
-    XLSX.writeFile(wb, "a.xlsx");
+    XLSX.writeFile(wb, "시나리오.xlsx");
   }
+
    // 저장 버튼 클릭 시 처리 함수
   const onSave = () => {
     // 선택된 항목 확인
     const selectedItems = paginatedlist.filter(item => item.checked);
    if (selectedItems.length === 0) {
-   //alert("체크박스를 선택하세요.");
+   alert("체크박스를 선택하세요.");
    } else {
    alert(`${selectedItems.length}개의 항목이 선택되었습니다.`);
       if (confirm("저장 하시겠습니까?")) {
       // 저장할 데이터를 준비합니다.
-      const dataToSave = paginatedlist.map(item => ({
+      const dataToSave = selectedItems.map(item => ({
         mid:      item.mid,
         pkey:     item.pkey,
         actstdt: item.actstdt,
         actendt: item.actendt,
         wstat:    item.wstat
-        // 여기에 더 필요한 데이터를 추가
-       }));
-       
-       if(!dataToSave[0].actstdt && !dataToSave[0].actendt ){
-         alert("actstdt")
-         dataToSave[0].actstdt="1900-01-01";
-         dataToSave[0].actendt="1900-01-01";
-         alert("dataToSave="+dataToSave[0].mid+"pkey="+dataToSave[0].pkey+"actstdt="+dataToSave[0].actstdt+"actstdt="+dataToSave[0].actendt+"wstat="+dataToSave[0].wstat) 
-
-
-       }else if (!dataToSave[0].actendt) {
-         dataToSave[0].actstdt="1900-01-01";
-       }else if(!dataToSave[0].actendt) {
-        dataToSave[0].actendt="1900-01-01";
+        // 여기에 더 필요한 데이터를 추가 
+      }));
+       if(!dataToSave[0].actstdt ){
+        alert("시작 날짜를 선택 해주세요.");
+        return false;
        }
-       
+       else if (dataToSave[0].actendt == null) {
+        dataToSave[0].actendt="";
+       } else if (dataToSave[0].actstdt  > dataToSave[0].actendt && dataToSave[0].actendt != "1900-01-01 00:00:00" && dataToSave[0].actendt !="") {
+        alert("종료 날짜와 시간은 시작 날짜와 시간 이후여야 합니다.")        
+        return false;
+       } else{
+
+       }
+              
        let serveUrl=$rooturl+'/transformscenario/transsc_save'
       fetch(serveUrl, {
         method: 'POST',
@@ -200,11 +215,10 @@
         body: JSON.stringify(dataToSave), // 데이터를 JSON으로 전달
       })
         .then(async (res) => {
-         
-           // statuMsessage.set('저장 성공');
-          // getscenariodetaildata = await res.json();
+          
           let rmsg = await res.json();
                 if (res.status == 200 && rmsg.rdata===1) {
+                  alert("저장이 되었습니다.");
                   getScenarioDetail();
             // 추가적으로 저장 후 화면을 업데이트 할 수 있는 로직
           } else {
@@ -212,17 +226,12 @@
           }
         })
         .catch(error => {
-          //statusMessage.set('저장 실패');
+          alert("저장이 실패했습니다.");
           console.error('Error saving data:', error);
         });
       }  
     }
   };
-alert("312312312"+wsts)
-  // 각 항목의 체크박스를 변경하는 함수
-   const toggleCheckbox = (checked) => {
-     paginatedlist[checked].checked = !paginatedlist[checked].checked;
-   };
 
   function handleChildEvent(event) {
       childMessage = event.detail; // 자식에서 전달된 값 저장
@@ -231,30 +240,69 @@ alert("312312312"+wsts)
       getScenarioDetail(childMessage.mid,childMessage.flag);
     }
 
+// 버튼 클릭 핸들러
+// async function downloadFile(): Promise<void> {//서버 연결 시 
+  async function downloadFile() {
+  try {
+    // 파일 URL (서버에서 제공하는 파일 경로)
+    const fileUrl = "/api/files/체크리스트.zip";
 
-  //   let selectedStatus = "ALL";
-  
+    // 파일 요청
+    const response = await fetch(fileUrl);
 
-  // $: paginatedlist = selectedStatus === "ALL" ? 
-  //     list.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
-  //   : list.filter(list => list.gubun === selectedStatus).slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage); 
-  
-  // $: totalPages = Math.ceil((selectedStatus === "ALL" ? list.length : list.filter(item => item.gubun === selectedStatus).length) / itemsPerPage);
-    
+    if (!response.ok) {
+      throw new Error(`Failed to download file: ${response.statusText}`);
+    }
 
-  // 진행상태를 저장할 store 선언
-    // <option value="99">Task</option>
-    // <option value="0">계획</option>
-    // <option value="1">수행중</option>
-    // <option value="2">완료</option>
-    // <option value="3"></option>
+    // 파일을 Blob으로 변환
+    const blob = await response.blob();
+
+    // Blob URL 생성
+    const url = window.URL.createObjectURL(blob);
+
+    // 다운로드를 위한 링크 생성
+    const a = document.createElement("a");
+    a.href = url;
+
+    // 파일명 추출 또는 기본 이름 설정
+    const contentDisposition = response.headers.get("Content-Disposition");
+    const fileName = contentDisposition
+      ? contentDisposition
+          .split("filename=")[1]
+          ?.replace(/['"]/g, "") || "체크리스트.zip"
+      : "체크리스트.zip";
+
+    a.download = fileName;
+    document.body.appendChild(a);
+
+    // 다운로드 트리거 및 링크 제거
+    a.click();
+    document.body.removeChild(a);
+
+    // Blob URL 해제
+    window.URL.revokeObjectURL(url);
+
+    console.log(`File downloaded successfully: ${fileName}`);
+  } catch (error) {
+    console.error("Error downloading file:", error);
+    alert("파일 다운로드 중 오류가 발생했습니다.");
+  }
+}
+
   const statusOptions = [
-    { value: 99, label: "Task" },
+    { value: 99, label:"전체" },
     { value: 0, label: "계획" },
-    { value: 1, label: "수행중" },
+    { value: 1, label: "진행중" },
     { value: 2, label: "완료" },
     { value: 3, label: "미수행" }
-  ];  
+  ]; 
+  
+  const selectedStatus = [
+    { value: 0, label: "계획" },
+    { value: 1, label: "진행중" },
+    { value: 2, label: "완료" },
+    { value: 3, label: "미수행" }
+  ];
 </script>
 
 <style>
@@ -294,7 +342,7 @@ tr:hover {
                   {#if sts !=5}
                   <label class="text-gray-300">상태</label>
                   <select class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10"
-                  bind:value={wsts} >
+                  bind:value={wsts} on:change={getScenarioDetail}>
                   {#each statusOptions as item}
                   <option value={item.value}>{item.label}</option>
                   {/each}
@@ -307,7 +355,7 @@ tr:hover {
                   
                   {/if}
                   <!-- <button  class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"on:click={() =>{TransformBoardSave()}}> -->
-                  <button  class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded">
+                  <button  class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded" on:click={downloadFile}>
                     첨부파일 다운로드
                   </button>
                   <button class="bg-green-500 hover:bg-green-700 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline" on:click={() =>{excelDown()}} >
@@ -322,7 +370,7 @@ tr:hover {
                   <table class="w-full text-md bg-gray-800 text-white text-nowrap shadow-md rounded mb-4" style="border: 1px solid #ccc">
                     <thead>
                     <tr class="border-b text-sm w-full">
-                      <th class="text-left p-3 px-5  border border-white" style="text-align: center;" colspan="3">구분</th>
+                      <th class="text-left p-3 px-5  border border-white sticky left-0" style="text-align: center; background-color: #38bdf8;" colspan="3">구분</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="6">작업 TASK</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="3">본이행 예상소요시간</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="3">실제 소요시간</th>
@@ -334,9 +382,9 @@ tr:hover {
                   </tr>
                   <tr class="border-b text-sm">
                       <!-- <th class="text-left p-3 px-5 border border-white"><input type="checkbox" bibind:checked={checkboxAll} on:change={toggleAll} ></th> -->
-                      <th class="text-left p-3 px-5 border border-white"><input type="checkbox"></th>
-                      <th class="text-left p-3 px-5 border border-white">TASKID</th>
-                      <th class="text-left p-3 px-5 border border-white">주제영역</th>
+                      <th class="text-left p-3 px-5 border border-white sticky left-0" style="background-color: #38bdf8;"><input type="checkbox" bind:checked={selectAll} on:change={toggleAll}></th>
+                      <th class="text-left p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 54px;">TASKID</th>
+                      <th class="text-left p-3 px-5 border border-white  {paginatedlist.length > 0 ? 'sticky' : ''}" style="background-color: #38bdf8; {getscenariodetaildata.length > 0 ? 'left: 248px;' : ''}">주제영역</th>
                       <!-- <th class="text-left p-3 px-5 border border-white">위치</th>
                       <th class="text-left p-3 px-5 border border-white">파트/작업 위치</th> -->
                       <th class="text-left p-3 px-  border border-white">Level1(단계)</th>
@@ -364,15 +412,15 @@ tr:hover {
                         {#if sts !=5}
                           {#each paginatedlist as item, index}
                                   <tr class="border-b hover:bg-orange-100 border-spacing-4 {index % 2 === 0 ? '' : ''}">
-                                      <td class="p-3 px-5  border border-white">
+                                      <td class="p-3 px-5  border border-white sticky left-0" style="background-color: #38bdf8;">
                                         <!-- <input type="checkbox"  bind:checked={item.checked} on:change={toggleItem} /> 개별 체크박스 선택 시 전체 선택 상태 업데이트 -->
                                         <!-- <input type="checkbox"  checked /> -->
-                                        <input type="checkbox"  bind:checked={item.checked}  />
+                                        <input type="checkbox"  bind:checked={item.checked} />
                                       </td>
-                                      <td class="p-3 px-5 border border-white">
+                                      <td class="p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 54px;">
                                           <input type="text" bind:value={item.scno} class="bg-transparent text-center"disabled/> 
                                       </td>
-                                      <td class="p-3 px-5 border border-white">
+                                      <td class="p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 248px;">
                                           <input type="text" bind:value={item.midnm} class="bg-transparent text-center"disabled/>
                                       </td>
                                       <!-- <td class="p-3 px-5 border border-white">
@@ -414,13 +462,22 @@ tr:hover {
                                       <!-- <td class="p-3 px-5 border border-white">
                                         <input type="text" bind:value={item.actstdt} class="bg-transparent" disabled/> 
                                       </td> -->
-                                      <td class="p-3 px-5 border border-white">
+                                      <td class="p-3 px-5 border border-white" on:click={() => toggleCheckboxrow(index)}>
                                           <input type="datetime-local" bind:value={item.actstdt} class="bg-transparent" />
+                                          <!-- <input type="text" bind:value={item.actstdt}  class="bg-transparent"/> -->
                                       </td>
-                                      <td class="p-3 px-5 border border-white">
+                                      <td class="p-3 px-5 border border-white" on:click={() => toggleCheckboxrow(index)}>
+                                          <!-- {#if item.actendt == "1900-01-01 00:00:00"}
+                                          <input type="datetime-local"  class="bg-transparent" />
+                                          {:else}
+                                          <input type="datetime-local" bind:value={item.actendt}  class="bg-transparent"/>
+                                          {/if} -->
+                                          {#if item.actendt == "1900-01-01 00:00:00"}
+                                          {item.actendt=""}
+                                          {/if}
                                           <input type="datetime-local" bind:value={item.actendt}  class="bg-transparent"/>
                                       </td>
-                                      <td class="p-3 px-5 border border-white">
+                                     <td class="p-3 px-5 border border-white">
                                         <input type="text" bind:value={item.siuser} class="bg-transparent" disabled/>
                                       </td>
                                       <td class="p-3 px-5 border border-white">
@@ -433,16 +490,17 @@ tr:hover {
                                           <input type="text" bind:value={item.worknm} class="bg-transparent"disabled/>
                                       </td>
                                       <td class="p-3 px-5 border border-white">
-                                      "text" bind:value={item.wstatnm} class="bg-transparent" disabled/> -->
-                                        <select class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10"
-                                          bind:value={wsts} >
-                                          {#each statusOptions as item}
-                                          <option value={item.value}>{item.label}</option>
-                                          {/each}
-                                        </select>
+                                      <!-- <input type="text" bind:value={item.wstatnm} class="bg-transparent" disabled/>
+                                      <input type="text" bind:value={item.wstat} class="bg-transparent" disabled/> -->
+                                      <select class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-10"
+                                        bind:value={item.wstat} >
+                                        {#each selectedStatus as item}
+                                        <option value={item.value}>{item.label}</option>
+                                        {/each}
+                                      </select>
                                     </td>
                                       <td class="p-3 px-5 border border-white">
-                                        <input type="text" bind:value={item.flag} class="bg-transparent" disabled/>
+                                        <input type="text" bind:value={item.disyn} class="bg-transparent" disabled/>
                                     </td>
                                     
                                  </tr>
@@ -489,7 +547,7 @@ tr:hover {
                                 <input type="text" bind:value={item.planStdt} class="bg-transparent"disabled/> 
                               </td>
                               <td class="p-3 px-5 border border-white">
-                                  <input type="text"  bind:value={item.planEndt} class="bg-transparent"disabled/>
+                                  <input type="text"  bind:value={item.planendt} class="bg-transparent"disabled/>
                               </td>
                               <td class="p-3 px-5 border border-white">
                                   <input type="text" bind:value={item.acttime} class="bg-transparent"disabled/> 

@@ -20,6 +20,7 @@
   let wsts1;
   //let scenarioselect;
   let selected = true;
+  
 
 //         "mid": 3,
 //         "midnm": "3차 본이행",

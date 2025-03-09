@@ -216,7 +216,6 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
   ];
   const dispatch = createEventDispatcher();
   function call(flag,mid){
-    alert(flag,mid)
     childMessage=flag;
     dispatch("message",{"flag":flag, "mid":mid});
     }
