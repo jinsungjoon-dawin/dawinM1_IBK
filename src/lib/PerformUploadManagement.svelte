@@ -9,6 +9,9 @@
     let searchtxt="";
     let currentPage = 1;
     let itemsPerPage = 10;
+
+
+
     // let list = [
     //     {flag:"", checked : false, pkey: 1, usrid:"test1", host:"172.172.0.1",usrdesc: "Davpkey McHenry",  admin: true, apps:"All", regdt:"2023-08-29"},
     //     {flag:"", checked : false, pkey: 2, usrid:"test2", host:"172.172.0.2",usrdesc: "Frank Kirk",  admin: false, apps:"All", regdt:"2024-08-29"},
