@@ -5,14 +5,13 @@
   import { onMount } from "svelte";
   import {rooturl, t} from '../aqtstore';
   import * as XLSX from 'xlsx';
-
+  import { getOdate } from '../common/common.js';
   export let selData;
   export let selectedRow;
   let selected = true;
-  
   let leftDates = [];
   let list = [];
-  
+  let testDate;
   //차수, ASIS 일자, TOBE 일자 조회
   async function getPerformcomposit() {
     const res = await fetch($rooturl + "/performcomposit" );
@@ -39,6 +38,7 @@
     //[{"seq":"1차","asisdt":"2025-01-02","tobedt":"2025-01-20"}]
     if(leftDates.length > 0){
       list = await getPerformcompositList();
+      testDate = getOdate(leftDates[selectedRow].tobedt); 
     }
   });
   function excelDown(){
@@ -68,6 +68,7 @@
   const handleRowClick = (idx) => {
     selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
     currentPage = 1;
+    testDate = getOdate(leftDates[selectedRow].tobedt); 
   };
 
   
@@ -119,7 +120,7 @@
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
               <h1 class="text-2xl w-3/5 tracking-tight text-yellow-100 p-3">{leftDates[selectedRow].tname} {$t.performDetail.title}</h1>
-              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" >{$t.performDetail.date} {leftDates[selectedRow].tobedt}</h1>
+              <h1 class="text-1xl w-2/5 text-end tracking-tight text-yellow-100 p-3" >{$t.performDetail.date} {testDate}</h1>
               <div class="w-36 px-4 text-end">
                 <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t.com.btn.prePage}</button>
               </div>  

@@ -4,8 +4,10 @@
   import LoadingOverlay from "./LoadingOverlay.svelte";
   import { onMount } from "svelte";
   import { rooturl , t} from '../aqtstore';
+  import { getOdate } from '../common/common.js';
   let isLoading: boolean = true;
-  let rdata: null = null;
+  let rdata;
+  let testDate;
   let loading = true;
   async function getData() {
     try{
@@ -22,6 +24,7 @@
   }
   onMount(async () => {
      rdata = await getData();
+     testDate = getOdate(rdata[0]?.performdt);
       setTimeout(() => {
         loading = false;
     }, 1000);
@@ -36,7 +39,7 @@
   <div class=" bg-gray-700 rounded-lg">
     <div class="flex w-full border-b-2 border-gray-500 items-center text-yellow-100">
         <h1 class="w-3/5 text-2xl tracking-tight p-3">{$t.dash.testTitle} {rdata[0]?.performnm} </h1>
-        <h1 class="w-2/5 text-1xl tracking-tight text-end p-3">{$t.dash.date} {rdata[0]?.performdt}</h1>
+        <h1 class="w-2/5 text-1xl tracking-tight text-end p-3">{$t.dash.date} {testDate}</h1>
     </div>
       <div class="flex justify-between w-full p-3">
         <div class="flex bg-gray-800 px-12 rounded-lg w-1/2 mx-1 justify-center ">
