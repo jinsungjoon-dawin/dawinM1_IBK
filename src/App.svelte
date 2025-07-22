@@ -13,6 +13,7 @@
   import LoadDataUploadManagement from "./lib/LoadDataUploadManagement.svelte";//성능 Data 관리
   import ScenarioUploadManagement from "./lib/ScenarioUploadManagement.svelte";
   import PerformUploadManagement from "./lib/PerformUploadManagement.svelte";
+  import LoadFileVerifyResult from "./lib/LoadFileVerifyResult.svelte";
   import { isLogged, userid, t} from "./aqtstore";
   import { onMount } from "svelte";
   import Parent from "./lib/Parent.svelte";
@@ -24,8 +25,8 @@
                {pageNm:"성능",cnm:PerformComposit},
                {pageNm:"데이터",cnm:LoadDataVerifyResult},
                {pageNm:"이행",cnm:TransformBoard},
-               {pageNm:"관리자",cnm:UserUploadManagement},
-               {pageNm:"도움말",cnm:HelpManagement}
+              //  {pageNm:"관리자",cnm:UserUploadManagement},
+              //  {pageNm:"도움말",cnm:HelpManagement}
               //  ,{pageNm:"임시",cnm:Parent}
   ]
   
@@ -85,7 +86,21 @@
                           </ul>
                         </div>
                       </div>
-                      {:else}
+                      {:else if item.pageNm === "데이터"}
+                      <div class="group relative dropdown px-4 rounded-md px-3 py-2 text-sm font-medium text-gray-300">
+                        <a class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}">데이터</a>
+                        <div class="group-hover:block dropdown-menu absolute hidden h-auto">
+                          <ul class="top-0 w-48 bg-gray-900 shadow px-6 py-1">
+                            <li class="py-1">
+                              <a href="#" class="menu-item" on:click|preventDefault={_ => {cnm=LoadDataVerifyResult; pageNm = "데이터 관리"; menuIdx = idx}}>데이터 관리</a>
+                            </li>
+                            <li class="py-1">
+                              <a href="#" class="menu-item" on:click|preventDefault={_ => {cnm=LoadFileVerifyResult; pageNm = "파일 관리"; menuIdx = idx}}>파일 관리</a>
+                            </li>
+                          </ul>
+                        </div>
+                      </div>
+                    {:else}
                       <a href="#" class="rounded-md px-3 py-2 text-sm font-medium {idx === menuIdx ? 'text-white bg-gray-900' : 'text-gray-300 hover:bg-gray-700 hover:text-white'}" on:click|preventDefault={ _=> {cnm=item.cnm;pageNm = item.pageNm; menuIdx = idx}}>{item.pageNm}</a>
                       {/if}
                   </li>

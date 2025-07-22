@@ -147,5 +147,21 @@
         "deleteSuccess":"삭제를 완료하였습니다.",
         "saveConfirm" :"저장을 하시겠습니까?",
         "saveSuccess" :"저장을 완료하였습니다."
+    },
+    "fileData": {
+      "leftTitle": "차수",
+      "leftDate1": "이관일자",
+      "leftMainTitle": "파일 이관 차수",
+      "mainTopTitle": "파일 이관 결과",
+      "totCnt": "총 수량",
+      "cnt": "수량",
+      "schemaTitle": "파일 검증 결과",
+      "dataCheckTitle": "파일 검증 결과",
+      "etc": "특이사항",
+      "tableHeader": ["디렉토리", "총건수", "복제건수", "건수 차이 수량", "비율(%)", "Size 다른 수량"],
+      "excelTitles": ["디렉토리", "총건수", "복제건수", "건수 차이 수량", "비율(%)", "Size 다른 수량"],
+      "btn": {
+        "diff": "불일치 상세보기"
+      }
     }
 }

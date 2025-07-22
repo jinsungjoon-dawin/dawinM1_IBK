@@ -1,10 +1,12 @@
 <script lang="ts">
   import BarChart from "./BarChart.svelte";
   import PieChart from "./PieChart.svelte";
+  import LoadingOverlay from "./LoadingOverlay.svelte";
   import { onMount } from "svelte";
   import { rooturl , t} from '../aqtstore';
   let isLoading: boolean = true;
   let rdata: null = null;
+  let loading = true;
   async function getData() {
     try{
     const res = await fetch($rooturl + "/dashboard");
@@ -20,11 +22,14 @@
   }
   onMount(async () => {
      rdata = await getData();
+      setTimeout(() => {
+        loading = false;
+    }, 1000);
   });
 </script>
-<style>
- 
-</style>
+{#if loading}
+<LoadingOverlay />
+{/if}
 <div class="mx-auto p-3 w-10/12 h-5/6">
 <div class="flex flex-col  max-h-svh">
   {#if rdata}
