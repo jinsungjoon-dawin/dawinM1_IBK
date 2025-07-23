@@ -33,10 +33,10 @@
         "leftDate2" : "Tobe(odate)",
         "date" : "수행 일자:",
         "title": "테스트",
-        "excelTitles" : ["주제", "결과", "서비스명", "테스트일시","시작시간","종료시간","수행시간","ASIS시작시간","ASIS종료시간","수행시간"],
+        "excelTitles" : ["주제", "결과", "서비스명", "TOBE 시작시간","TOBE 종료시간","TOBE 수행시간","ASIS시작시간","ASIS종료시간","ASIS 수행시간"],
         "excelFileName" : "_테스트결과.xlsx",
         "search1" : "조회조건 상태:",
-        "tableHeader" : ["주제", "결과", "서비스명", "테스트일시","시작시간","종료시간","수행시간","ASIS시작시간","ASIS종료시간","수행시간"]         
+        "tableHeader" :  ["주제", "결과", "서비스명", "TOBE 시작시간","TOBE 종료시간","TOBE 수행시간","ASIS시작시간","ASIS종료시간","ASIS 수행시간"]         
     },
     "loadData":{
         "leftTitle": "차수",
