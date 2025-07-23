@@ -18,6 +18,7 @@
   let sts1;
   let wsts;
   let wsts1;
+	let scgrp;
   //let scenarioselect;
   let selected = true;
   
@@ -53,10 +54,11 @@
   }
   
   // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회 selectedValues.mid,99,5
-  async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
+  async function getScenarioDetail (mid:number,scenarioAll:number,sts:number, scgrp:string) {
     selected=false;
   mid1=mid; //mid 5
   wsts1=scenarioAll //99
+	scgrp=scgrp;
   sts1=sts;   //5 전체 보기시 구분값값
       //mid={mid} wsts={scenarioAll} sts={gsts}
 
