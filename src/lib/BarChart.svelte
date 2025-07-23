@@ -103,6 +103,7 @@
   function setChartConfig(rdata){
     if(setConfig)return;
     if (page === "S") {
+      config.data.datasets[0].label = $t.stacked.label1;
       if (rdata[0].gb === "3") config.data.datasets[1].label = $t.bar.label3;
       else config.data.datasets[1].label = $t.bar.label4;
       if (rdata[0].gb === "3") {
@@ -144,18 +145,30 @@
       config.data.datasets[3].stack = "group2";
       config.data.datasets[2].color = "black";
       config.options.plugins.title.text = $t.bar.title1;
+      config.options.plugins.datalabels.font = 10;
+      config.options.plugins.datalabels.display = function(context){
+      	const value = context.dataset.data[context.dataIndex];
+        return value > 300;  
+      };
     } else if (page === "D") {
       //대시보드 데이터 이행 결과
       let labels = $t.bar.dataLabels1;
       config.data.labels = labels;
       config.options.plugins.title.text = $t.bar.title2;
+      config.data.datasets[0].categoryPercentage = 0.8;
+      config.data.datasets[0].barPercentage = 0.5;
+      config.data.datasets[1].categoryPercentage = 0.8;
+      config.data.datasets[1].barPercentage = 0.5;
+      config.data.datasets.categoryPercentage = 0.5;
+      config.data.datasets.barPercentage = 0.5;
+      
 
       // config.options.plugins.title.display = false;
     } else if (page === "M") {
       //대시보드 데이터 Value 검증
       config.data.labels = $t.bar.dataLabels2;
-      config.data.datasets[0].label = $t.bar.label8;
-      config.data.datasets[1].label = $t.bar.label9;
+      config.data.datasets[0].label = $t.bar.label10;
+      config.data.datasets[1].label = $t.bar.label11;
       config.options.plugins.title.text = "데이터 Value 검증 결과";
       config.data.datasets[0].barThickness = 50; // 바의 고정 넓이 (픽셀)
       config.data.datasets[1].barThickness = 50; // 바의 고정 넓이 (픽셀)
@@ -212,8 +225,8 @@
       // config.options.plugins.title.display = false;
     } else if (page === "M") {
       //대시보드 데이터 Value 검증
-      config.data.datasets[0].data = [rdata[0].tbltobe, 0];
-      config.data.datasets[1].data = [0, rdata[0].tblasistobesum];
+      config.data.datasets[0].data = [rdata[0].tbltobe, rdata[1].tbltobe];
+      config.data.datasets[1].data = [rdata[0].tblasistobesum,rdata[1].tblasistobesum];
       // config.options.plugins.title.text = "데이터 Value 검증";
     }
     chartx.update();
