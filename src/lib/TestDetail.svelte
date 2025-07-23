@@ -77,8 +77,16 @@
   let selectedStatus = "ALL";
   let currentPage = 1;
   let itemsPerPage = 10;
-
-
+ 	let pageRange = 10;
+  $: pageNumbers = (() => {
+    let start = Math.max(1, currentPage - Math.floor(pageRange / 2));
+    let end = start + pageRange - 1;
+    if(end > totalPages){
+      end = totalPages;
+      start = Math.max(1, end - pageRange + 1);
+    }
+    return Array.from({length: end - start + 1},(_,i) => start + i);)
+  })();
 
   $: paginatedlist = selectedStatus === "ALL" ? 
       list.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage) 
@@ -194,16 +202,23 @@
                 </table>
                 </div>
                 <div class="flex w-full justify-center mt-4">
-                  <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
+
+									<button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(1)} disabled={currentPage === 1}>
+                    {$t.com.paging.first}
+                  </button>
+									<button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage - 1)} disabled={currentPage === 1}>
                     {$t.com.paging.previous}
                   </button>
-                  {#each Array(totalPages).fill() as _, pageIndex}
-                      <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={pageIndex + 1 === currentPage} on:click={() => goToPage(pageIndex + 1)}>
-                          {pageIndex + 1}
+                  {#each pageNumbers as page}
+                      <button class="px-3 py-1 bg-gray-300 text-black rounded mx-1 hover:bg-gray-500" class:bg-gray-700={page === currentPage} on:click={() => goToPage(page)}>
+                          {page}
                       </button>
                   {/each}
                   <button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(currentPage + 1)} disabled={currentPage === totalPages}>
                     {$t.com.paging.next}
+                  </button>
+									<button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(totalPages)} disabled={currentPage === totalPages}>
+                    {$t.com.paging.last}
                   </button>
               </div>
               
