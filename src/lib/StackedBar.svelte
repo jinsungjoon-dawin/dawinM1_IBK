@@ -71,6 +71,10 @@
             }
             return "";
           },
+          display : function(context){
+            const value = context.dataset.data[context.dataIndex];
+            return value > 300;
+          },
         },
         title: {
           display: true,
