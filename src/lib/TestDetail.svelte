@@ -78,6 +78,7 @@
   let currentPage = 1;
   let itemsPerPage = 10;
  	let pageRange = 10;
+  
   $: pageNumbers = (() => {
     let start = Math.max(1, currentPage - Math.floor(pageRange / 2));
     let end = start + pageRange - 1;
@@ -85,7 +86,7 @@
       end = totalPages;
       start = Math.max(1, end - pageRange + 1);
     }
-    return Array.from({length: end - start + 1},(_,i) => start + i);)
+    return Array.from({length: end - start + 1},(_,i) => start + i);
   })();
 
   $: paginatedlist = selectedStatus === "ALL" ? 
