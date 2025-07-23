@@ -10,6 +10,7 @@ export const authApps = writable("");
 export const userid = writable("");
 export const appids = writable([]) ;
 export const rooturl = readable('http://localhost:5880');
+//export const rooturl = readable('http://172.18.122.129:5880');'
 export const intlMs = writable(0);
 export const t = readable(ko);
 export const getCheckPass = async ( password ) => {
