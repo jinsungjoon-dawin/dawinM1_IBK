@@ -47,7 +47,7 @@
     
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
     let worksheetData = [header, ...list.map(obj => [obj.apnm, obj.gubun, 
-                                                     obj.svcnm,obj.tstime, obj.stime, 
+                                                     obj.svcnm,obj.stime, 
                                                      obj.etime, obj.svctime, 
                                                      obj.stimeasis, obj.etimeasis, 
                                                      obj.svctimeasis
@@ -161,9 +161,6 @@
                                   <td class="p-3 px-5 border border-zinc-600 ">
                                     {item.svcnm}
                                   </td>
-                                    <td class="p-3 px-5  border border-zinc-600">
-                                        {item.tstime}
-                                    </td>
                                     <td class="p-3 px-5  border border-zinc-600">
                                       {item.stime}
                                     </td>
