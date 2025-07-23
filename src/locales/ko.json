@@ -69,8 +69,8 @@
        ,"cnt"     : "개"
     },
     "bar":{
-        "label1":"대상",
-        "label2":"이행",
+        "label1":"추출Table 수",
+        "label2":"적재 Table 수",
         "label3": "목표달성",
         "label4": "성공",
         "label5": "미달성",
@@ -78,9 +78,10 @@
         "label7": "실패",
         "label8": "Table", 
         "label9": "불일치 건수",
+        "label10": "검증대상",
+        "label11": "불이치 건수",
         "dataLabels1": ["Table", "Index", "Object", "Invalid Object"],
         "dataLabels2": ["Table", "불일치 건수"],
-        
         "title1": "주제별 진행 현황",
         "title2": "DB 리소스 이행 결과"
     },
