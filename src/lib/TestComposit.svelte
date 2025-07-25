@@ -57,7 +57,7 @@
       {/each}
     {/if}
   </div>
-    <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
+    <div class="flex flex-wrap flex-row mx-2 w-9/12">
         {#if selData}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
@@ -67,13 +67,13 @@
                 <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t.com.btn.detail}</button>
               </div>  
             </div>
-            <div class="flex flex-wrap w-full p-3 justify-center">
-              <div class="flex bg-gray-800 p-3 rounded-lg my-3 w-11/12 justify-center items-center">
+            <div class="flex flex-wrap w-full p-1 justify-center">
+              <div class="flex bg-gray-800 p-1 rounded-lg my-1 w-11/12 justify-center items-center">
                 <div class="flex w-2/6  justify-center items-center">
                   <PieChart page={'T'} selData={selData} bind:this={childPieRef} title={selData.tname} ></PieChart>
                 </div>
               </div>
-              <div class="flex justify-center bg-gray-800 p-3 rounded-lg w-11/12 ">
+              <div class="flex justify-center bg-gray-800 rounded-lg w-11/12 ">
                 <div class="w-9/12">
                   <StackedBar page={'T'} selData={selData} bind:this={childBarRef} ></StackedBar>
                 </div>
