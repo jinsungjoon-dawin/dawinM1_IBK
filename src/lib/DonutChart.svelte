@@ -1,18 +1,21 @@
 <script lang="ts">
-  import Chart from 'chart.js/auto';
+  import Chart, { layouts } from 'chart.js/auto';
   import ChartDataLabels from 'chartjs-plugin-datalabels';
-  import { onMount, createEventDispatcher } from "svelte";
+  import { onMount, createEventDispatcher, onDestroy } from "svelte";
   import {rooturl, intlMs } from '../aqtstore';
   import { get } from 'svelte/store';
-  let { item,getscenariodetaildata, sts } = $props();
-  let selflag;
+  //let { item,getscenariodetaildata, sts } = $props();
+  export let item; export let getscenariodetaildata; export let sts; let selflag;
   let mid;
   let childMessage = "";
+  let scgrp;
+
   // 플러그인 등록
   Chart.register(ChartDataLabels);
   let ctx, chartx;
   let chartCanvas;
-
+  $: rlist = item;
+  
   let totalSum = item.totrate;
   // 플러그인 정의
   const centerTextPlugin = {
@@ -114,6 +117,9 @@
     config.data.datasets[0].data = [item.plancnt,item.ingcnt,item.comcnt,item.errcnt];
     console.log(item.scgrp)
 
+		for(let index = 0; index < statusData.length; index++){
+    	const element = statusData[index];  
+    }
     //1~타이틀
     config.options.plugins.title.text = [item.scgrp];
     
@@ -121,7 +127,7 @@
   }
 // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
 async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
-    let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll
+    let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+scenarioAll+"&scgrp"+scgrp
     const transformboardScenario = await fetch($rooturl+transformboardlist);
     console.log("transformboardScenario=="+transformboardScenario);
     
@@ -136,6 +142,10 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
     chartDraw();
    
   });
+	
+	const interval = setInterval(() => {
+    chartDraw();
+  }, $intlMs);
   // 박스 데이터 타입 정의
   interface ChartTitle {
     title: string;
@@ -201,12 +211,12 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
   }
 // "이행전광판 우측(Task건수, 계획건수, 진행중건수, 작업완료건수, 작업오류건수, 비율(완료건수/Task건수)"
 // item.totcnt,item.plancnt,item.ingcnt,item.comcnt,item.errcnt
-  const statusData: StatusItem[] = [
-    { label: "Task", count: item.totcnt   ,flag: 99,mid:item.mid},
-    { label: "계획", count: item.plancnt  ,flag: 0,mid:item.mid},
-    { label: "진행중", count: item.ingcnt ,flag: 1,mid:item.mid},
-    { label: "완료", count: item.comcnt   ,flag: 2,mid:item.mid},
-    { label: "미수행", count: item.errcnt ,flag: 3,mid:item.mid}
+  let statusData: StatusItem[] = [
+    { label: "Task", count: item.totcnt   ,flag: 99,mid:item.mid, scgrp:item.scgrp},
+    { label: "계획", count: item.plancnt  ,flag: 0,mid:item.mid , scgrp:item.scgrp},
+    { label: "진행중", count: item.ingcnt ,flag: 1,mid:item.mid , scgrp:item.scgrp},
+    { label: "완료", count: item.comcnt   ,flag: 2,mid:item.mid , scgrp:item.scgrp},
+    { label: "미수행", count: item.errcnt ,flag: 3,mid:item.mid , scgrp:item.scgrp}
     
     // { label: "Task", count: 100 },
     // { label: "완료", count: 4 },
@@ -214,11 +224,17 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
     // { label: "계획", count: 3 },
     // { label: "미수행", count: 93 }
   ];
+  $:rstatisData = statusData;
+  $:{
+    console.log(rstatusData);
+  }
   const dispatch = createEventDispatcher();
-  function call(flag,mid){
+  function call(flag,mid,scgrp){
     childMessage=flag;
-    dispatch("message",{"flag":flag, "mid":mid});
+    dispatch("message",{"flag":flag, "mid":mid, "scgrp":scgrp});
     }
+	// 데이터 값 확인용
+	onDestroy(() => clearInterval(interval));
 </script>
 <style>
   .item {
@@ -236,32 +252,6 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
 </style>
   <canvas bind:this={chartCanvas} id="myChart"></canvas>
   <div class="flex w-full ">
-    <!-- <span class="w-1/4 text-center -mt-5 item">
-      Task  <br>
-      100  
-    </span>
-    <span class="w-1/4 text-center -mt-5 item">
-      완료  <br>
-      4
-    </span>
-    <span class="w-1/4 text-center -mt-5 item">
-      진행중  <br>
-      3
-    </span>
-    <span class="w-1/4 text-center -mt-5 item">
-      미수행  <br>
-     93
-    </span> -->
-
-    {#each statusData as { label, count,flag,mid}}
-    <span class="w-1/3 text-center -mt-5 item mb-1 testCol text-xs">
-     <div on:click={() => {call(flag,mid)}}>
-      {label} <br>
-      {count}<br>
-      {selflag}
-    </div>
-    </span>
-  {/each}
-  </div>
+    
   
 
