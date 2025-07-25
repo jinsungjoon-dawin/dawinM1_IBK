@@ -51,8 +51,9 @@
     // 🔹 JSON 데이터를 배열로 변환 (첫 줄은 헤더)
     let worksheetData = [header, ...list.map(obj => [obj.apnm, obj.gubun, 
                                                      obj.svcnm,
-                                                     obj.tstime, obj.stime, 
-                                                     obj.etime, obj.svctime, 
+                                                     obj.stime, 
+                                                     obj.etime,
+                                                     obj.svctime, 
                         ])];
 
     // 🔹 워크시트 생성
@@ -125,7 +126,7 @@
     {/if}
   </div>
     
-  <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
+  <div class="flex flex-wrap flex-row flex-start mx-2 w-9/12">
     {#if leftDates.length !== 0}
         <!-- {#each datas as item, idx} -->
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
@@ -173,16 +174,13 @@
                                       {item.svcnm}
                                     </td>
                                     <td class="p-3 px-5 border border-zinc-600 ">
-                                        {item.tstime}
-                                    </td>
-                                    <td class="p-3 px-5 border border-zinc-600 ">
                                       {item.stime}
                                     </td>
 
                                     <td class="p-3 px-5 border border-zinc-600 ">
                                       {item.etime}
                                     </td>
-                                    <td class="p-3 px-5 border border-zinc-600">
+                                    <td class="p-3 px-5 border border-zinc-600 text-right">
                                       {item.svctime}
                                     </td>
                                     <!-- <td class="p-3 px-5 border border-zinc-600 ">
