@@ -96,10 +96,10 @@
     // }
   }
 
-  const handleRowClick = (idx) => {
-    selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
-    currentPage = 1;
-  };
+  //const handleRowClick = (idx) => {
+  //  selectedRow = idx; // 현재 클릭된 row의 seq를 기준으로 선택 상태 설정
+  //  currentPage = 1;
+  //};
   
   let clickedText: string = '';  // 클릭한 텍스트를 저장할 변수
   let PageTitle ='';
@@ -127,13 +127,13 @@
   //   }, $intlMs); // 5초 뒤에 실행
   // };
 
-  const interval =setInterval(() => {
-      currentTime = new Date().toLocaleString('en-GB', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-      });
-    }, $intlMs) // 5초마다 시간 갱신
+//  const interval =setInterval(() => {
+//      currentTime = new Date().toLocaleString('en-GB', { 
+//        hour: '2-digit', 
+//        minute: '2-digit', 
+//        second: '2-digit' 
+//      });
+//    }, $intlMs) // 5초마다 시간 갱신
 
 
   clearInterval(currentTime);
@@ -148,31 +148,36 @@
     //   selected=false;
     // } else {
       
-     selectedValues.midnm=selectedValues.midnm;
+     //selectedValues.midnm=selectedValues.midnm;
      chardata =await getDataList();
-
-    setInterval(() => {
-      currentTime = new Date().toLocaleString('en-GB', { 
-        hour: '2-digit', 
-        minute: '2-digit', 
-        second: '2-digit' 
-      });
-    }, $intlMs) // 5초마다 시간 갱신
+     const timeInterval = setInterval(updateTime, $intlMs);
+     const datainterval = setInterval(async() => {
+     	chardata = await getDataList(); 
+     }, $intlMs);
+     
+     return () => {
+     	onDestroy(() => clearInterval(timeInterval));
+      onDestroy(() => clearInterval(datainterval)); 
+     };
+     
   });
  
   
   // Handle the click event on the date inputs
-  const handleDateClick = (date: string) => {
-    selectedDate = date;
-  };
+  
   // 텍스트 박스를 클릭했을 때 실행되는 함수
   const handleTextClick = async (enddt: string,midnm:string,mid:string,index:number) => {
+    PageTitle = "";
+    
     clickedText = enddt; // 클릭한 텍스트를 clickedText에 저장
     PageTitle=midnm;
-    //alert(mid);
     selectedValues.midnm=PageTitle;
     selectedValues.enddt=clickedText;
-    
+    selectedValues.mid = mid;
+    if(index == 0){
+      rdata = await getData();
+      selectedValues = rdata[0];
+    }
     //왼쪽 차수별 이행 상황판 클릭한 값으로 조회 후 차트 조회
     chardata =selectedDataList(mid);
     chardata = await  selectedDataList(mid);
@@ -191,9 +196,8 @@
   }
   function handleChildEvent(event) {
       childMessage = event.detail; // 자식에서 전달된 값 저장
-      //alert("childMessage="+childMessage.flag +" " +childMessage.mid);
-    
-      getScenarioDetail(childMessage.mid,childMessage.flag);
+      scgrp = childMessage.scgrp;
+      getScenarioDetail(childMessage.mid,childMessage.flag, childMessage.scgrp);
     }
 </script>
 
@@ -223,7 +227,7 @@
           {/if}
           {/if}
           {#if index != 0}
-            <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 "on:click={() => handleTextClick(item.enddt,item.midnm, item.mid)} >
+            <div class="flex mb-3 border border-gray-100 rounded border-zinc-600 text-zinc-100 "on:click={() => handleTextClick(item.enddt,item.midnm, item.mid, index)} >
               <label class="px-3 w-2/5 py-2 border-gray-100 border-r border-l bg-zinc-700 border-zinc-600 ">{item.midnm}</label>
               <input type="text" class="w-3/5 pl-3 border-gray-100 border-r  bg-zinc-700 border-zinc-600 " readonly value={item.enddt}>
             </div> 
@@ -291,5 +295,5 @@
   </div>
 </div>
 {:else}
-<TransformBoardDetail   mid={mid1} wsts={wsts1} sts={sts1}></TransformBoardDetail>
+<TransformBoardDetail   mid={mid1} wsts={wsts1} sts={sts1} scgrp={scgrp}></TransformBoardDetail>
 {/if}
