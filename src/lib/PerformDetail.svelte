@@ -126,7 +126,7 @@
     {/if}
   </div>
     
-  <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
+  <div class="flex flex-wrap flex-row flex-start mx-2 w-9/12">
     {#if leftDates.length !== 0}
         <div class="flex-col bg-gray-700 rounded-lg w-full" >
           <div class="flex w-full  border-b-2 border-gray-500 items-center">
@@ -136,7 +136,7 @@
                 <button class="bg-gray-500 hover:bg-sky-500 text-yellow-100 py-2 px-4 rounded focus:outline-none focus:shadow-outline"  on:click={() => { selected = false; }}>{$t.com.btn.prePage}</button>
               </div>  
             </div>
-            <div class="flex justify-end items-center w-full mt-3">
+            <div class="flex justify-end items-center flex-center w-full mt-3">
               <label class="text-gray-300">{$t.performDetail.search1}</label>
               <select on:change={currentPage = 1} bind:value={selectedStatus}  class="bg-gray-800 text-white border border-gray-600 rounded px-3 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 ml-5">
                 {#each $t.com.sel.status.perform as item}
@@ -178,14 +178,14 @@
                                     <td class="p-3 px-5  border border-zinc-600">
                                       {item.etime}
                                     </td>
-                                    <td class="p-3 px-5 border border-zinc-600">
+                                    <td class="p-3 px-5 border border-zinc-600 text-right">
                                       {item.svctime}
                                     </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.stimeasis}
                                     </td><td class="p-3 px-5  border border-zinc-600">
                                       {item.etimeasis}
                                     </td>
-                                    <td class="p-3 px-5  border border-zinc-600">
+                                    <td class="p-3 px-5  border border-zinc-600 text-right">
                                       {item.svctimeasis}
                                     </td>
                                 </tr>
