@@ -252,6 +252,40 @@ async function getScenarioDetail (mid:number,scenarioAll:number,sts:number) {
 </style>
   <canvas bind:this={chartCanvas} id="myChart"></canvas>
   <div class="flex w-full ">
-    
-  
+    <table class="mb-2 -mt-6">
+			<tbody>
+				<tr>
+					<td class="text-center item mb-1 testCol text-xs" 
+							style="width:60px; height:50px;"
+							on:click={()=>{call(99,item.mid,item.scgrp)}}
+					>Task <br> {item.totcnt}
+					</td>
+					
+					<td class="text-center item mb-1 testCol text-xs" 
+							style="width:60px; height:50px;"
+							on:click={()=>{call(0,item.mid,item.scgrp)}}
+					>계획 <br> {item.plancnt}
+					</td>
+					
+					<td class="text-center item mb-1 testCol text-xs" 
+							style="width:60px; height:50px;"
+							on:click={()=>{call(1,item.mid,item.scgrp)}}
+				 >진행중 <br> {item.ingcnt}
+					</td>
+					
+					<td class="text-center item mb-1 testCol text-xs" 
+							style="width:60px; height:50px;"
+							on:click={()=>{call(2,item.mid,item.scgrp)}}
+				 >완료 <br> {item.comcnt}
+					</td>
+				
+					<td class="text-center item mb-1 testCol text-xs" 
+							style="width:60px; height:50px;"
+							on:click={()=>{call(3,item.mid,item.scgrp)}}
+				 >미수행 <br> {item.errcnt}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+  </div>
 
