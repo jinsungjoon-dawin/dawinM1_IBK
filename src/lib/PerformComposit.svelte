@@ -60,7 +60,7 @@
       {/each}
     {/if}
   </div>
-    <div class="flex flex-wrap flex-row items-center mx-2 w-9/12">
+    <div class="flex flex-wrap flex-row mx-2 w-9/12">
       {#if selData}
           <div class="flex-col bg-gray-700 rounded-lg w-full" >
             <div class="flex w-full  border-b-2 border-gray-500 items-center">
