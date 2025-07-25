@@ -11,13 +11,14 @@
   export let mid;
   export let wsts;
   export let sts;
+  export let scgrp = String;
   let selectAll = false; // 전체 체크박스 상태
   let selected = true;
   let childMessage = "";
   let pageNm = "시나리오";
   let list = [];
-  let checked = false; // 체크 여부 추적
-  // let getscenariodetaildata=[
+  let selectedRow = 0; 
+	// let getscenariodetaildata=[
   //   {"pkey":30,"mid":3,"scno":"A-147","scgrp":"1.사전작업","midnm":"시스템나르샤 F","worknm":"시스템이행모니터링","planStdt":"2025-01-21 10:49:24","":"2025-01-21 11:37:24","ActStdt":"2025-01-21 10:49:24","ActEndt":"2025-01-21 11:37:24","esttime":48,"acttime":48,"wstat":0,"scenario":110,"tmignm":"3차 리허설","mgb":1,"startdt":"2025-02-20","endDt":"2025-02-20","mclass":1,"mclassnm":"사전준비"},
   //   {"pkey": 528,"mid": 5,"scno":"C-231","scgrp":"1.사전작업","midnm": "시스템재기동 F","worknm": "시스템이행모니터링","planStdt":"2025-02-06 11:46:44","planEndt":"2025-02-06 12:28:44","ActStdt":"2025-02-06 11:46:44",    "ActEndt": "2025-02-06 11:46:44","esttime": 0,"acttime": 0,"wstat": 0,"wstatnm": "계획","scenario": 100,"tmignm":"1차 본이행","mgb":2,"startdt":"2025-04-20","endDt":"2025-04-21","mclass": 1,"mclassnm":"사전준비"} 
   
@@ -29,7 +30,7 @@
     // 시나리오 상세내용 조회  sts:9 전체 시나리오 조회
   async function getScenarioDetail () {
     if (sts  != 5) {
-      let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+wsts
+      let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+wsts+"&scgrp="+scgrp
       const transformboardScenario = await fetch($rooturl+transformboardlist);
       if (transformboardScenario.ok){
         getscenariodetaildata= await transformboardScenario.json();
@@ -39,12 +40,14 @@
           throw new Error(transformboardScenario.statusText);    
         }
     }else{
-        let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+wsts
+        scgrp="0.전체";
+        let transformboardlist="/transformscenario/transsc_list?mid="+mid+"&wstat="+wsts+"&scgrp"+scgrp;
         const transformboardScenario = await fetch($rooturl+transformboardlist);
         console.log("transformboardScenario==5"+transformboardScenario);
         
         if (transformboardScenario.ok){
         getscenariodetaildata= await transformboardScenario.json();
+        
         return getscenariodetaildata;
         }else{
           throw new Error(transformboardScenario.statusText);    
@@ -88,10 +91,12 @@
   
   $: totalPages = Math.ceil((wsts == "99" ? getscenariodetaildata.length : getscenariodetaildata.filter(item => item.wstat == wsts).length) / itemsPerPage);
   
-// 페이징 초기화 함수
-function initializePagination() {
-    currentPage = 1; // 페이지를 첫 번째 페이지로 초기화
-  }
+//헌재 페이지에서만 전체 샨택
+function getCurrentPagechecked() {
+	const start = (currentPage - 1) * itemsPerPage;
+	return getscenariodetaildata.slice(start, start + itemsPerPage);
+}
+
 // 전체 선택/해제 핸들러
   function toggleAll() {
     getscenariodetaildata = getscenariodetaildata.map(item => ({ ...item, checked: selectAll }));
@@ -160,7 +165,7 @@ function initializePagination() {
                                                                     ,obj.pserver
                                                                     ,obj.worknm
                                                                     ,obj.wstatnm
-                                                                    ,obj.disyn
+                                                                    ,obj.flag
                                                                   ]) 
                         ];
 
@@ -175,6 +180,8 @@ function initializePagination() {
     XLSX.writeFile(wb, "시나리오.xlsx");
   }
 
+	let selectedValue: number | null=null;
+  const handleChange = (event: Event) => { const target = event.target as HTMLSelectElement; selectedValue = parseInt(target.value);}
    // 저장 버튼 클릭 시 처리 함수
   const onSave = () => {
     // 선택된 항목 확인
@@ -233,12 +240,11 @@ function initializePagination() {
     }
   };
 
-  function handleChildEvent(event) {
-      childMessage = event.detail; // 자식에서 전달된 값 저장
-      //alert("childMessage="+childMessage.flag +" " +childMessage.mid);
-    
-      getScenarioDetail(childMessage.mid,childMessage.flag);
-    }
+  //function handleChildEvent(event) {
+  //    childMessage = event.detail; // 자식에서 전달된 값 저장
+  //    alert("childMessage="+childMessage.flag +" " +childMessage.mid);
+  //    getScenarioDetail(childMessage.mid,childMessage.flag);
+  //  }
 
 // 버튼 클릭 핸들러
 // async function downloadFile(): Promise<void> {//서버 연결 시 
@@ -306,13 +312,7 @@ function initializePagination() {
 </script>
 
 <style>
-  .input-boder {
-    
-    padding: 8px;
-    margin-bottom: 10px;
-    border-bottom: 1px solid #ccc;
-    border-radius: 4px;
-  }
+  
 th {
     background-color: #333; /* 헤더 배경 색상 */
     color: yellow; /* 헤더 텍스트 색상 */
@@ -370,7 +370,7 @@ tr:hover {
                   <table class="w-full text-md bg-gray-800 text-white text-nowrap shadow-md rounded mb-4" style="border: 1px solid #ccc">
                     <thead>
                     <tr class="border-b text-sm w-full">
-                      <th class="text-left p-3 px-5  border border-white sticky left-0" style="text-align: center; background-color: #38bdf8;" colspan="3">구분</th>
+                      <th class="text-left p-3 px-5  border border-white sticky left-0" style="text-align: center; background-color: #6b7280;" colspan="3">구분</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="6">작업 TASK</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="3">본이행 예상소요시간</th>
                       <th class="text-left p-3 px-5 border border-white" style="text-align: center;" colspan="3">실제 소요시간</th>
@@ -382,9 +382,9 @@ tr:hover {
                   </tr>
                   <tr class="border-b text-sm">
                       <!-- <th class="text-left p-3 px-5 border border-white"><input type="checkbox" bibind:checked={checkboxAll} on:change={toggleAll} ></th> -->
-                      <th class="text-left p-3 px-5 border border-white sticky left-0" style="background-color: #38bdf8;"><input type="checkbox" bind:checked={selectAll} on:change={toggleAll}></th>
-                      <th class="text-left p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 54px;">TASKID</th>
-                      <th class="text-left p-3 px-5 border border-white  {paginatedlist.length > 0 ? 'sticky' : ''}" style="background-color: #38bdf8; {getscenariodetaildata.length > 0 ? 'left: 248px;' : ''}">주제영역</th>
+                      <th class="text-left p-3 px-5 border border-white sticky left-0" style="background-color: #6b7280;"><input type="checkbox" bind:checked={selectAll} on:change={toggleAll}></th>
+                      <th class="text-left p-3 px-5 border border-white sticky" style="background-color: #6b7280; left: 54px;">TASKID</th>
+                      <th class="text-left p-3 px-5 border border-white  {paginatedlist.length > 0 ? 'sticky' : ''}" style="background-color: #6b7280; {getscenariodetaildata.length > 0 ? 'left: 248px;' : ''}">주제영역</th>
                       <!-- <th class="text-left p-3 px-5 border border-white">위치</th>
                       <th class="text-left p-3 px-5 border border-white">파트/작업 위치</th> -->
                       <th class="text-left p-3 px-  border border-white">Level1(단계)</th>
@@ -412,15 +412,15 @@ tr:hover {
                         {#if sts !=5}
                           {#each paginatedlist as item, index}
                                   <tr class="border-b hover:bg-orange-100 border-spacing-4 {index % 2 === 0 ? '' : ''}">
-                                      <td class="p-3 px-5  border border-white sticky left-0" style="background-color: #38bdf8;">
+                                      <td class="p-3 px-5  border border-white sticky left-0 bg-gray-500">
                                         <!-- <input type="checkbox"  bind:checked={item.checked} on:change={toggleItem} /> 개별 체크박스 선택 시 전체 선택 상태 업데이트 -->
                                         <!-- <input type="checkbox"  checked /> -->
                                         <input type="checkbox"  bind:checked={item.checked} />
                                       </td>
-                                      <td class="p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 54px;">
+                                      <td class="p-3 px-5 border border-white sticky bg-gray-500" style="left: 54px;">
                                           <input type="text" bind:value={item.scno} class="bg-transparent text-center"disabled/> 
                                       </td>
-                                      <td class="p-3 px-5 border border-white sticky" style="background-color: #38bdf8; left: 248px;">
+                                      <td class="p-3 px-5 border border-white sticky bg-gray-500" style="left: 248px;">
                                           <input type="text" bind:value={item.midnm} class="bg-transparent text-center"disabled/>
                                       </td>
                                       <!-- <td class="p-3 px-5 border border-white">
@@ -500,7 +500,7 @@ tr:hover {
                                       </select>
                                     </td>
                                       <td class="p-3 px-5 border border-white">
-                                        <input type="text" bind:value={item.disyn} class="bg-transparent" disabled/>
+                                        <input type="text" bind:value={item.display} class="bg-transparent" disabled/>
                                     </td>
                                     
                                  </tr>
