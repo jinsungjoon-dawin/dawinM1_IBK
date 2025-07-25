@@ -198,7 +198,7 @@
                     </tbody>
                 </table>
                 </div>
-                 <div class="flex w-full justify-center mt-4">
+                 <div class="flex w-full justify-center my-4">
 
 									<button class="px-3 py-1 bg-gray-500 text-yellow-100 rounded mx-1 hover:bg-gray-700" on:click={() => goToPage(1)} disabled={currentPage === 1}>
                     {$t.com.paging.first}
